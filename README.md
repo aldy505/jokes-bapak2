@@ -1,3 +1,3 @@
 # Jokes Bapak2 API
 
-This is the golang version. Still a work in progress.
+This is the nodejs version. Still a work in progress.
