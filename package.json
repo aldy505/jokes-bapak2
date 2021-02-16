@@ -1,0 +1,51 @@
+{
+  "name": "jokes-bapak2-api",
+  "version": "0.1.0",
+  "description": "Jokes Bapak2 API",
+  "main": "dist/main.js",
+  "scripts": {
+    "test": "nyc npm run mocha",
+    "dev": "nodemon --watch src/ src/main.js",
+    "build": "babel --out-dir dist/ src/",
+    "mocha": "mocha test/**/*.js --exit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aldy505/jokes-bapak2-api.git"
+  },
+  "keywords": [
+    "jokes",
+    "bapak2",
+    "bapack2",
+    "api",
+    "rest",
+    "api"
+  ],
+  "author": "Reinaldy Rafli <hi@reinaldyrafli.com>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/aldy505/jokes-bapak2-api/issues"
+  },
+  "homepage": "https://github.com/aldy505/jokes-bapak2-api#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.12.16",
+    "@babel/core": "^7.12.16",
+    "@babel/preset-env": "^7.12.16",
+    "@babel/runtime": "^7.12.13",
+    "eslint": "^7.20.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "mocha": "^8.3.0",
+    "nodemon": "^2.0.7",
+    "nyc": "^15.1.0",
+    "supertest-fetch": "^1.4.3"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express-rate-limit": "^5.2.5",
+    "helmet": "^4.4.1",
+    "pg": "^8.5.1",
+    "polka": "^0.5.2",
+    "validator": "^13.5.2"
+  }
+}
