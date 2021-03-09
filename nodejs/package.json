@@ -45,7 +45,7 @@
     "express-rate-limit": "^5.2.5",
     "helmet": "^4.4.1",
     "pg": "^8.5.1",
-    "polka": "^0.5.2",
+    "pure-http": "^2.2.2",
     "validator": "^13.5.2"
   }
 }
