@@ -2,7 +2,20 @@
 
 Still work in progress
 
-## 
+## Development
+
+```bash
+# Install modules
+$ go install
+# or
+$ go mod vendor
+
+# run the local server
+$ go run ./
+
+# build everything
+$ go build ./
+```
 
 ## Modules
 

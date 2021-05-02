@@ -22,9 +22,19 @@ Currently I'm searching for an alternative for AWS S3 that I can use for free.
 ## Tech stacks
 
  * Go
- * 
+ * Node.js (for development on `client`)
+ * Postgres
+ * Redis
 
 That's it.
+
+## Development
+
+Two ways of doing this:
+  1. Install all the tech stack on your local machine
+  2. Use docker-compose
+
+See README files on each project directory for further instruction on how to run the development environment.
 
 ## License
 
