@@ -1,0 +1,22 @@
+{
+  "name": "jokes-bapak2-api",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview",
+    "lint": "eslint --fix --ext .js --ignore-path .gitignore ."
+  },
+  "dependencies": {
+    "@rollup/plugin-eslint": "^8.0.1",
+    "tailwindcss": "^2.1.2",
+    "vite": "^2.2.3"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.2.5",
+    "eslint": "^7.25.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "postcss": "^8.2.13"
+  }
+}
