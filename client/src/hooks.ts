@@ -1,3 +1,4 @@
+// TODO: Find out what the fuck this file is doing
 import cookie from 'cookie';
 import { v4 as uuid } from '@lukeed/uuid';
 import type { Handle } from '@sveltejs/kit';
