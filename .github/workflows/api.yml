@@ -1,0 +1,49 @@
+name: API
+
+on: 
+  push:
+    paths:
+      - "api/**"
+  pull_request:
+    paths:
+      - "api/**"
+
+jobs:
+  api-build:
+    name: Build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./api
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.16.x
+
+      - name: cache node_modules
+        uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+      
+      - name: Installling dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: go mod vendor
+      
+      - name: Build
+        run: go build ./
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v1
+        with:
+          languages: go
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v1
