@@ -17,6 +17,8 @@ github.com/afex/hystrix-go v0.0.0-20180502004556-fa1af6a1f4f5/go.mod h1:SkGFH1ia
 github.com/ajg/form v1.5.1/go.mod h1:uL1WgH+h2mgNtvBq0339dVnzXdBETtL2LeUXaIv25UY=
 github.com/aldy505/bob v0.0.0-20210630160113-75547d606a54 h1:U9GFaqa00Ft1kqmUxoNz+CugEmXGdX6bz2L+O/dbB/8=
 github.com/aldy505/bob v0.0.0-20210630160113-75547d606a54/go.mod h1:/8HuD17XXgzuaFw5j4oDyB8O+NlW8mKWd0QCCbeoLVE=
+github.com/aldy505/bob v0.0.1 h1:L/nvD9+ViLJaWbgbeBes/4xQfz7YtQLJtk8OjSa9L2k=
+github.com/aldy505/bob v0.0.1/go.mod h1:/8HuD17XXgzuaFw5j4oDyB8O+NlW8mKWd0QCCbeoLVE=
 github.com/aldy505/phc-crypto v1.1.0 h1:BagRKCrB7FOYy5vnuXR6xs6ml2gJD/CvSJkX/Ozo63w=
 github.com/aldy505/phc-crypto v1.1.0/go.mod h1:LJugClOkOWKnpLrWhSaIDRN/5ftvZPD48S5oXsT7iTg=
 github.com/alecthomas/template v0.0.0-20160405071501-a0175ee3bccc/go.mod h1:LOuyumcjzFXgccqObfd/Ljyb9UuFJ6TxHnclSeseNhc=
@@ -243,6 +245,8 @@ github.com/jackc/puddle v1.1.1/go.mod h1:m4B5Dj62Y0fbyuIc15OsIqK0+JU8nkqQjsgx7dv
 github.com/jackc/puddle v1.1.3 h1:JnPg/5Q9xVJGfjsO5CPUOjnJps1JaRUm8I9FXVCFK94=
 github.com/jackc/puddle v1.1.3/go.mod h1:m4B5Dj62Y0fbyuIc15OsIqK0+JU8nkqQjsgx7dvjSWk=
 github.com/jmespath/go-jmespath v0.0.0-20180206201540-c2b33e8439af/go.mod h1:Nht3zPeWKUH0NzdCt2Blrr5ys8VGpn0CEB0cQHVjt7k=
+github.com/joho/godotenv v1.3.0 h1:Zjp+RcGpHhGlrMbJzXTrZZPrWj+1vfm90La1wgB6Bhc=
+github.com/joho/godotenv v1.3.0/go.mod h1:7hK45KPybAkOC6peb+G5yklZfMxEjkZhHbwpqxOKXbg=
 github.com/jonboulle/clockwork v0.1.0/go.mod h1:Ii8DK3G1RaLaWxj9trq07+26W01tbo22gdxWY5EU2bo=
 github.com/json-iterator/go v1.1.6/go.mod h1:+SdeFBvtyEkXs7REEP0seUULqWtbJapLOCVDaaPEHmU=
 github.com/json-iterator/go v1.1.7/go.mod h1:KdQUCv79m/52Kvf8AW2vK1V8akMuk1QjK/uOdHXbAo4=

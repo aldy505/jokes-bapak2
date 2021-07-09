@@ -2,7 +2,6 @@ package handler
 
 import (
 	"context"
-	"strconv"
 	"time"
 
 	"github.com/Masterminds/squirrel"
@@ -38,20 +37,20 @@ func TodayJoke(c *fiber.Ctx) error {
 
 	if eq {
 		c.Attachment(joke.link)
-		return c.SendStatus(200)
+		return c.SendStatus(fiber.StatusOK)
 	} else {
 		var link string
 		err := db.QueryRow(context.Background(), "SELECT link FROM jokesbapak2 WHERE random() < 0.01 LIMIT 1").Scan(&link)
 		if err != nil {
 			return err
 		}
-		now := strconv.Itoa(int(time.Now().Unix()))
+		now := time.Now().UTC().Format(time.RFC3339)
 		err = redis.MSet(context.Background(), "today:link", link, "today:date", now).Err()
 		if err != nil {
 			return err
 		}
 		c.Attachment(link)
-		return c.SendStatus(200)
+		return c.SendStatus(fiber.StatusOK)
 	}
 
 }
@@ -66,7 +65,7 @@ func SingleJoke(c *fiber.Ctx) error {
 		return err
 	}
 	c.Attachment(link)
-	return c.SendStatus(200)
+	return c.SendStatus(fiber.StatusOK)
 }
 
 func JokeByID(c *fiber.Ctx) error {
@@ -79,8 +78,8 @@ func JokeByID(c *fiber.Ctx) error {
 		return err
 	}
 	if link == "" {
-		return c.Status(404).Send([]byte("Requested ID was not found."))
+		return c.Status(fiber.StatusNotFound).Send([]byte("Requested ID was not found."))
 	}
 	c.Attachment(link)
-	return c.SendStatus(200)
+	return c.SendStatus(fiber.StatusOK)
 }

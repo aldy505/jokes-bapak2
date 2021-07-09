@@ -15,7 +15,7 @@ var db = database.New()
 
 func RequireAuth() fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		var auth models.Auth
+		var auth models.RequestAuth
 		err := c.BodyParser(&auth)
 		if err != nil {
 			return err
@@ -33,8 +33,8 @@ func RequireAuth() fiber.Handler {
 		}
 
 		if token == "" {
-			return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
-				"error": "Invalid token",
+			return c.Status(fiber.StatusForbidden).JSON(models.ResponseError{
+				Error: "Invalid token",
 			})
 		}
 
@@ -61,8 +61,9 @@ func RequireAuth() fiber.Handler {
 		if verify {
 			c.Next()
 		}
-		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
-			"error": "Invalid key",
+
+		return c.Status(fiber.StatusForbidden).JSON(models.ResponseError{
+			Error: "Invalid key",
 		})
 	}
 }

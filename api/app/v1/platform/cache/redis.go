@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/go-redis/redis/v8"
+	_ "github.com/joho/godotenv/autoload"
 )
 
 // Connect to the database

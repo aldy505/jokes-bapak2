@@ -12,31 +12,24 @@ import (
 var db = database.New()
 var redis = cache.New()
 
-func New() *fiber.App {
-	app := fiber.New(fiber.Config{
-		ETag:             true,
-		DisableKeepalive: true,
-		CaseSensitive:    true,
-	})
-
-	v1 := app.Group("/v1")
+func Joke(app *fiber.App) *fiber.App {
 	// Single route
-	v1.Get("/", handler.SingleJoke)
+	app.Get("/", handler.SingleJoke)
 
 	// Today's joke
-	v1.Get("/today", handler.TodayJoke)
+	app.Get("/today", handler.TodayJoke)
 
 	// Joke by ID
-	v1.Get("/:id", handler.JokeByID)
+	app.Get("/:id", handler.JokeByID)
 
 	// Add new joke
-	v1.Put("/", middleware.RequireAuth(), handler.AddNewJoke)
+	app.Put("/", middleware.RequireAuth(), handler.AddNewJoke)
 
 	// Update a joke
-	v1.Patch("/:id")
+	app.Patch("/:id", middleware.RequireAuth(), handler.UpdateJoke)
 
 	// Delete a joke
-	v1.Delete("/:id")
+	app.Delete("/:id", middleware.RequireAuth(), handler.DeleteJoke)
 
 	return app
 }

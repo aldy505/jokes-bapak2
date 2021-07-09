@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/jackc/pgx/v4/pgxpool"
+	_ "github.com/joho/godotenv/autoload"
 )
 
 // Connect to the database

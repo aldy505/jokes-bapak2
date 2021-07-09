@@ -3,16 +3,18 @@ package main
 import (
 	"log"
 	"os"
+	"os/signal"
 	"time"
 
+	v1 "github.com/aldy505/jokes-bapak2-api/api/app/v1"
 	"github.com/aldy505/jokes-bapak2-api/api/app/v1/platform/database"
-	"github.com/aldy505/jokes-bapak2-api/api/app/v1/routes"
 
 	"github.com/getsentry/sentry-go"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/etag"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
+	_ "github.com/joho/godotenv/autoload"
 )
 
 func main() {
@@ -45,14 +47,54 @@ func main() {
 	app.Use(limiter.New())
 	app.Use(etag.New())
 
-	app.Mount("/", routes.New())
+	app.Mount("/v1", v1.New())
 
-	log.Fatal(app.Listen(":" + os.Getenv("PORT")))
+	// Start server (with or without graceful shutdown).
+	if os.Getenv("ENV") == "development" {
+		StartServer(app)
+	} else {
+		StartServerWithGracefulShutdown(app)
+	}
 }
 
 func errorHandler(c *fiber.Ctx, err error) error {
 	sentry.CaptureException(err)
-	return c.Status(500).JSON(fiber.Map{
+	return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 		"error": "Something went wrong on our end",
 	})
+}
+
+// StartServerWithGracefulShutdown function for starting server with a graceful shutdown.
+func StartServerWithGracefulShutdown(a *fiber.App) {
+	// Create channel for idle connections.
+	idleConnsClosed := make(chan struct{})
+
+	go func() {
+		sigint := make(chan os.Signal, 1)
+		signal.Notify(sigint, os.Interrupt) // Catch OS signals.
+		<-sigint
+
+		// Received an interrupt signal, shutdown.
+		if err := a.Shutdown(); err != nil {
+			// Error from closing listeners, or context timeout:
+			log.Printf("Oops... Server is not shutting down! Reason: %v", err)
+		}
+
+		close(idleConnsClosed)
+	}()
+
+	// Run server.
+	if err := a.Listen(":" + os.Getenv("PORT")); err != nil {
+		log.Printf("Oops... Server is not running! Reason: %v", err)
+	}
+
+	<-idleConnsClosed
+}
+
+// StartServer func for starting a simple server.
+func StartServer(a *fiber.App) {
+	// Run server.
+	if err := a.Listen(":" + os.Getenv("PORT")); err != nil {
+		log.Printf("Oops... Server is not running! Reason: %v", err)
+	}
 }

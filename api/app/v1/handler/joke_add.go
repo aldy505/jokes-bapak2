@@ -8,7 +8,7 @@ import (
 )
 
 func AddNewJoke(c *fiber.Ctx) error {
-	var body models.JokePost
+	var body models.RequestJokePost
 	err := c.BodyParser(&body)
 	if err != nil {
 		return err
@@ -24,7 +24,7 @@ func AddNewJoke(c *fiber.Ctx) error {
 		return err
 	}
 
-	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
-		"link": body.Link,
+	return c.Status(fiber.StatusCreated).JSON(models.ResponseJoke{
+		Link: body.Link,
 	})
 }
