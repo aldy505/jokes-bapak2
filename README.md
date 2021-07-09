@@ -21,8 +21,8 @@ Currently I'm searching for an alternative for AWS S3 that I can use for free.
 
 ## Tech stacks
 
- * Go
- * Node.js (for development on `client`)
+ * Go (for `api`/back end)
+ * Node.js (for `client`/front end)
  * Postgres
  * Redis
 
