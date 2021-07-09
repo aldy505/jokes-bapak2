@@ -12,7 +12,7 @@ export function enhance(
     result: (res: Response, form: HTMLFormElement) => void;
   }
 ) {
-  let current_token: {};
+  let current_token: Record<string, unknown>;
 
   async function handle_submit(e: Event) {
     const token = (current_token = {});
