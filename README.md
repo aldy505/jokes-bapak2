@@ -32,7 +32,7 @@ That's it.
 
 Two ways of doing this:
   1. Install all the tech stack on your local machine
-  2. Use docker-compose
+  2. Use docker-compose (TODO)
 
 See README files on each project directory for further instruction on how to run the development environment.
 

@@ -1,4 +1,3 @@
 build:
-  web: cd api && go build -v main.go
-run:
-  web: ./api/main
+  docker:
+    web: api/Dockerfile
