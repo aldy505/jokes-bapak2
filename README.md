@@ -1,6 +1,6 @@
 # Jokes Bapak2 API
 
-⚠ Still work in progress
+👋 Hey there! Still work in progress, if you'd like to contribute this while this repo is still growing, that would be so great!
 
 ## Brief explanation of what is this
 
@@ -9,7 +9,7 @@ This project will be a website like icanhazdadjokes but in Indonesian version an
 ## Project Directories
 
 * `api` - REST API service. Created with Go.
-* `client` - Front facing website (front end). Created with Vite.js
+* `client` - Front facing website (front end). Created with [Svelte Kit](https://kit.svelte.dev/).
 
 Anyway, later you can consume this API via a website (that will be created later on when this is finished) with a few endpoints:
 
@@ -38,16 +38,4 @@ See README files on each project directory for further instruction on how to run
 
 ## License
 
-Copyright 2021-present Jokes Bapak2 API Contributors
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+Jokes Bapak2 API is licensed under [GNU GENERAL PUBLIC LICENSE v3 license](./LICENSE)

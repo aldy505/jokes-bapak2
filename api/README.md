@@ -21,14 +21,14 @@ $ go build main.go
 
 | Name | Version | Type |
 | --- | --- | --- |
-| gofiber/fiber | v2.14.0 | Framework |
-| jackc/pgx | v4.11.0 | Database |
-| go-redis/redis | v8.11.0 | Cache |
-| joho/godotenv | v1.3.0 | Config |
-| getsentry/sentry-go | v0.11.0 | Logging |
-| aldy505/phc-crypto | v1.1.0 | Utils |
-| Masterminds/squirrel | v1.5.0 | Utils |
-| aldy505/bob | v0.0.1 | Utils |
+| [gofiber/fiber](https://github.com/gofiber/fiber) | `v2.14.0` | Framework |
+| [jackc/pgx](https://github.com/jackc/pgx) | `v4.11.0` | Database |
+| [go-redis/redis](https://github.com/go-redis/redis) | `v8.11.0` | Cache |
+| [joho/godotenv](https://github.com/joho/godotenv) | `v1.3.0` | Config |
+| [getsentry/sentry-go](https://github.com/getsentry/sentry-go) | `v0.11.0` | Logging |
+| [aldy505/phc-crypto](https://github.com/aldy505/phc-crypto) | `v1.1.0` | Utils |
+| [Masterminds/squirrel](https://github.com/Masterminds/squirrel ) | `v1.5.0` | Utils |
+| [aldy505/bob](https://github.com/aldy505/bob) | `v0.0.1` | Utils |
 
 ## Directory structure
 
