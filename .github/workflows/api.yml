@@ -39,6 +39,9 @@ jobs:
       
       - name: Build
         run: go build ./
+      
+      - name: Run test & coverage
+        run: go test -v -race -coverprofile=coverage.out -covermode=atomic -failfast ./...
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v1
