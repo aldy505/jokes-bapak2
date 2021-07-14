@@ -27,4 +27,14 @@ func TestIsToday(t *testing.T) {
 			t.Error("today should be false:", today)
 		}
 	})
+
+	t.Run("should return false with no error if no date is supplied", func(t *testing.T) {
+		today, err := utils.IsToday("")
+		if err != nil {
+			t.Error(err.Error())
+		}
+		if today != false {
+			t.Error("it should be false:", today)
+		}
+	})
 }

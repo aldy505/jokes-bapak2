@@ -38,10 +38,10 @@ jobs:
         run: go mod vendor
       
       - name: Build
-        run: go build ./
+        run: go build main.go
       
       - name: Run test & coverage
-        run: go test -v -race -coverprofile=coverage.out -covermode=atomic -failfast ./...
+        run: go test -v -race -coverprofile=coverage.out -covermode=atomic ./...
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v1
