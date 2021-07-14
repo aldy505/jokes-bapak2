@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN go mod download -v
+RUN go mod download
 RUN go build -v main.go
 
-CMD ["main"]
+CMD ["./main"]
