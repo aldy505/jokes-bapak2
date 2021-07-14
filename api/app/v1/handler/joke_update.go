@@ -3,8 +3,9 @@ package handler
 import (
 	"context"
 
+	"jokes-bapak2-api/app/v1/models"
+
 	"github.com/Masterminds/squirrel"
-	"github.com/aldy505/jokes-bapak2-api/api/app/v1/models"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -29,7 +30,7 @@ func UpdateJoke(c *fiber.Ctx) error {
 			return err
 		}
 
-		sql, args, err = psql.Update("jokesbapak2").Set("link", body.Link).Set("key", body.Key).ToSql()
+		sql, args, err = psql.Update("jokesbapak2").Set("link", body.Link).Set("creator", c.Locals("userID")).ToSql()
 		if err != nil {
 			return err
 		}

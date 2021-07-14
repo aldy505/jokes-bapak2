@@ -3,8 +3,9 @@ package handler
 import (
 	"context"
 
+	"jokes-bapak2-api/app/v1/models"
+
 	"github.com/Masterminds/squirrel"
-	"github.com/aldy505/jokes-bapak2-api/api/app/v1/models"
 	"github.com/gofiber/fiber/v2"
 )
 

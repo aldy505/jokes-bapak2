@@ -1,11 +1,16 @@
 package models
 
 type RequestJokePost struct {
-	Key  string `json:"string"`
-	Link string `json:"link"`
+	Link string `json:"link" form:"link"`
 }
 
 type RequestAuth struct {
-	Key   string `json:"key"`
-	Token string `json:"token"`
+	Key   string `json:"key" form:"key"`
+	Token string `json:"token" form:"token"`
+}
+
+type Today struct {
+	Date        string `redis:"today:date"`
+	Image       string `redis:"today:image"`
+	ContentType string `redis:"today:contentType"`
 }

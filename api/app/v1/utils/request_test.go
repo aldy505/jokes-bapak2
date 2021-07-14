@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/aldy505/jokes-bapak2-api/api/app/v1/utils"
+	"jokes-bapak2-api/app/v1/utils"
 )
 
 func TestRequest(t *testing.T) {

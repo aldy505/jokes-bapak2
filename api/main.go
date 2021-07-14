@@ -6,8 +6,8 @@ import (
 	"os/signal"
 	"time"
 
-	v1 "github.com/aldy505/jokes-bapak2-api/api/app/v1"
-	"github.com/aldy505/jokes-bapak2-api/api/app/v1/platform/database"
+	v1 "jokes-bapak2-api/app/v1"
+	"jokes-bapak2-api/app/v1/platform/database"
 
 	"github.com/getsentry/sentry-go"
 	"github.com/gofiber/fiber/v2"
@@ -58,6 +58,7 @@ func main() {
 }
 
 func errorHandler(c *fiber.Ctx, err error) error {
+	log.Println(err)
 	sentry.CaptureException(err)
 	return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 		"error": "Something went wrong on our end",

@@ -2,10 +2,13 @@ package middleware
 
 import (
 	"context"
+	"log"
+	"time"
+
+	"jokes-bapak2-api/app/v1/models"
+	"jokes-bapak2-api/app/v1/platform/database"
 
 	"github.com/Masterminds/squirrel"
-	"github.com/aldy505/jokes-bapak2-api/api/app/v1/models"
-	"github.com/aldy505/jokes-bapak2-api/api/app/v1/platform/database"
 	phccrypto "github.com/aldy505/phc-crypto"
 	"github.com/gofiber/fiber/v2"
 )
@@ -21,30 +24,22 @@ func RequireAuth() fiber.Handler {
 			return err
 		}
 
-		// Check if token exists
-		sql, args, err := psql.Select("token").From("authorization").Where("token", auth.Token).ToSql()
+		// Check if key exists
+		sql, args, err := psql.Select("token").From("administrators").Where(squirrel.Eq{"key": auth.Key}).ToSql()
 		if err != nil {
 			return err
 		}
+		log.Println(args)
+
 		var token string
 		err = db.QueryRow(context.Background(), sql, args...).Scan(&token)
 		if err != nil {
-			return err
-		}
-
-		if token == "" {
-			return c.Status(fiber.StatusForbidden).JSON(models.ResponseError{
-				Error: "Invalid token",
-			})
-		}
-
-		sql, args, err = psql.Select("key").From("authorization").Where("token", token).ToSql()
-		if err != nil {
-			return err
-		}
-		var key string
-		err = db.QueryRow(context.Background(), sql, args...).Scan(&key)
-		if err != nil {
+			if err.Error() == "no rows in result set" {
+				return c.Status(fiber.StatusForbidden).JSON(models.ResponseError{
+					Error: "Invalid key",
+				})
+			}
+			log.Println("31 - auth.go")
 			return err
 		}
 
@@ -53,13 +48,34 @@ func RequireAuth() fiber.Handler {
 			return err
 		}
 
-		verify, err := crypto.Verify(key, auth.Key)
+		verify, err := crypto.Verify(token, auth.Token)
 		if err != nil {
 			return err
 		}
 
 		if verify {
-			c.Next()
+			sql, args, err = psql.Update("administrator").Set("last_used", time.Now().UTC().Format(time.RFC3339)).ToSql()
+			if err != nil {
+				return err
+			}
+
+			_, err = db.Query(context.Background(), sql, args...)
+			if err != nil {
+				return err
+			}
+
+			sql, args, err = psql.Select("id").From("administrators").Where(squirrel.Eq{"key": auth.Key}).ToSql()
+			if err != nil {
+				return err
+			}
+
+			var id int
+			err = db.QueryRow(context.Background(), sql, args...).Scan(&id)
+			if err != nil {
+				return err
+			}
+			c.Locals("userID", id)
+			return c.Next()
 		}
 
 		return c.Status(fiber.StatusForbidden).JSON(models.ResponseError{

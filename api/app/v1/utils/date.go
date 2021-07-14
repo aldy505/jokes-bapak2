@@ -4,6 +4,10 @@ import "time"
 
 // IsToday checks if a date is in fact today or not.
 func IsToday(date string) (bool, error) {
+	if date == "" {
+		return false, nil
+	}
+
 	parse, err := time.Parse(time.RFC3339, date)
 	if err != nil {
 		return false, err

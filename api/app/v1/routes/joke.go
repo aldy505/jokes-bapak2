@@ -1,16 +1,11 @@
 package routes
 
 import (
-	"github.com/aldy505/jokes-bapak2-api/api/app/v1/handler"
-	"github.com/aldy505/jokes-bapak2-api/api/app/v1/middleware"
-	"github.com/aldy505/jokes-bapak2-api/api/app/v1/platform/cache"
-	"github.com/aldy505/jokes-bapak2-api/api/app/v1/platform/database"
+	"jokes-bapak2-api/app/v1/handler"
+	"jokes-bapak2-api/app/v1/middleware"
 
 	"github.com/gofiber/fiber/v2"
 )
-
-var db = database.New()
-var redis = cache.New()
 
 func Joke(app *fiber.App) *fiber.App {
 	// Single route
