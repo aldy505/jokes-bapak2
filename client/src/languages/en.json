@@ -67,6 +67,7 @@
     }
   },
   "api": {
+    "limit": "We limit the request to be 15 request/minute.",
     "get": {
       "title": "Get Jokes",
       "random": {

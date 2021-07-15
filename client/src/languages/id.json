@@ -67,6 +67,7 @@
     }
   },
   "api": {
+    "limit": "Kami membatasi request menjadi 15 request/menit.",
     "get": {
       "title": "Dapatkan Jokes",
       "random": {

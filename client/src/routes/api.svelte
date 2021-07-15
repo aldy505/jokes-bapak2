@@ -3,6 +3,7 @@
   import { _ } from 'svelte-i18n';
   import env from '$lib/env';
   import Codeblock from '../components/codeblock.svelte';
+  import Notice from '../components/notice.svelte';
 </script>
 
 <svelte:head>
@@ -13,6 +14,12 @@
   <meta name="twitter:description" content="Largest collection of Indonesian dad jokes as a consumable API" />
   <meta property="og:description" content="Largest collection of Indonesian dad jokes as a consumable API" />
 </svelte:head>
+
+<section>
+  <Notice emoji="💡">
+    {$_('api.limit')}
+  </Notice>
+</section>
 
 <section>
   <h1>{$_('api.get.title')}</h1>
