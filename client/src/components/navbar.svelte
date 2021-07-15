@@ -54,10 +54,42 @@
     style="transition: left {duration}s ease-in-out"
   >
     <div class="flex flex-col items-center content-center text-center pt-20">
-      <div on:click={() => goto('/')} class="hover:cursor-pointer flex-1 font-bold text-4xl py-6">Jokesbapak2</div>
-      <div on:click={() => goto('/why')} class="flex-1 py-3 text-3xl">{$_('navigation.why')}</div>
-      <div on:click={() => goto('/guide')} class="flex-1 py-3 text-3xl">{$_('navigation.guide')}</div>
-      <div on:click={() => goto('/api')} class="flex-1 py-3 text-3xl">{$_('navigation.api')}</div>
+      <div
+        on:click={() => {
+          open = false;
+          return goto('/');
+        }}
+        class="hover:cursor-pointer flex-1 font-bold text-4xl py-6"
+      >
+        Jokesbapak2
+      </div>
+      <div
+        on:click={() => {
+          open = false;
+          return goto('/why');
+        }}
+        class="flex-1 py-3 text-3xl"
+      >
+        {$_('navigation.why')}
+      </div>
+      <div
+        on:click={() => {
+          open = false;
+          return goto('/guide');
+        }}
+        class="flex-1 py-3 text-3xl"
+      >
+        {$_('navigation.guide')}
+      </div>
+      <div
+        on:click={() => {
+          open = false;
+          return goto('/api');
+        }}
+        class="flex-1 py-3 text-3xl"
+      >
+        {$_('navigation.api')}
+      </div>
     </div>
   </menu>
 {/if}
