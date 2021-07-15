@@ -6,13 +6,24 @@ import { windi } from 'svelte-windicss-preprocess';
 const config = {
   // Consult https://github.com/sveltejs/svelte-preprocess
   // for more information about preprocessors
-  preprocess: [windi(), preprocess({ postcss: false })],
+  preprocess: [
+    windi({
+      configPath: './windi.config.js',
+    }), 
+    preprocess({ postcss: false })
+  ],
 
   kit: {
     // hydrate the <div id="svelte"> element in src/app.html
     target: '#svelte',
     ssr: false,
     trailingSlash: 'never',
+    files: {
+      routes: './src/routes',
+      assets: './static',
+      hooks: './src',
+      lib: './src/lib'
+    },
     adapter: adapter({
       // default options are shown
       pages: 'dist',

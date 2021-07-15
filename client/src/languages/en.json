@@ -1,0 +1,87 @@
+{
+  "meta": {
+    "title": "Jokesbapak2",
+    "tagline": "Largest collection of Indonesian dad jokes",
+    "explanation": "Instead of returning a joke in JSON format like others normally would, we return it on images!"
+  },
+  "error": {
+    "heading": "Whoops, you got an error!",
+    "homepage": "Click here to go to homepage."
+  },
+  "navigation": {
+    "why": "Why?",
+    "guide": "Guide",
+    "api": "API"
+  },
+  "footer": {
+    "made": "Made with",
+    "indonesia": "in Indonesia",
+    "available": "This project is available on",
+    "github": "Github"
+  },
+  "home": {
+    "more": {
+      "1": "Find out more on",
+      "2": "and"
+    }
+  },
+  "why": {
+    "exists": {
+      "title": "Why does this project exist?",
+      "body": {
+        "1": "Sometime around early 2020, I was interested on seeing Indonesian dad jokes all over Twitter.",
+        "2": "By the end of the month, I was obsessed with it.",
+        "3": "Then, it was that time where I learn and created my Discord bot,",
+        "4": "which I added a feature which you can ask for Indonesian dad jokes on a form of an image.",
+        "5": "I thought, why not make it into an API where people can use it too?",
+        "6": "Therefore, this was born."
+      }
+    },
+    "submit": {
+      "title": "Can I submit my dad joke?",
+      "body": {
+        "1": "You sure can!",
+        "2": "Submit the image to",
+        "3": "my email",
+        "4": ", and I'll get back to you as soon as possible.",
+        "5": "Bear in mind, your joke (or at least the content of the image) must not insult anyone and be racists.",
+        "6": "Let's keep the jokes healthy."
+      }
+    },
+    "contribute": {
+      "title": "I don't have any dad joke, can I contribute?",
+      "body": {
+        "1": "Of course!",
+        "2": "This project is",
+        "3": "open sourced on Github.",
+        "4": "Feel free to crunch a bug, add a feature, or fix a small typo."
+      }
+    },
+    "inquiries": {
+      "title": "I have other inquiries",
+      "body": {
+        "1": "You can contact me through",
+        "2": "my email",
+        "3": "and I'll be in touch as soon as possible."
+      }
+    }
+  },
+  "api": {
+    "get": {
+      "title": "Get Jokes",
+      "random": {
+        "title": "Get single random joke",
+        "body": "You'll get different result for every call."
+      },
+      "today": {
+        "title": "Get today's joke",
+        "body": "A joke a day makes more of a dad out of you."
+      },
+      "id": {
+        "title": "Get joke by ID",
+        "body": "You'll get consistent joke for every call with the same ID."
+      }
+    },
+    "more": "More documentation will soon arrive here..."
+  }
+}
