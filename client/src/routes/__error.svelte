@@ -2,7 +2,7 @@
   import type { LoadOutput } from '@sveltejs/kit';
   import Sentry from '$lib/logging';
 
-  export async function load({ error }: LoadOutput): Promise<void> {
+  export function load({ error }: LoadOutput): void {
     Sentry.captureException(error);
   }
 </script>

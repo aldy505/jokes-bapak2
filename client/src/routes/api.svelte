@@ -7,6 +7,11 @@
 
 <svelte:head>
   <title>{$_('navigation.api')} - {$_('meta.title')}</title>
+  <meta name="twitter:title" content={$_('navigation.api') + '-' + $_('meta.title')} />
+  <meta property="og:title" content={$_('navigation.api') + '-' + $_('meta.title')} />
+  <link rel="canonical" href="https://jokesbapak2.pages.dev/api" />
+  <meta name="twitter:description" content="Largest collection of Indonesian dad jokes as a consumable API" />
+  <meta property="og:description" content="Largest collection of Indonesian dad jokes as a consumable API" />
 </svelte:head>
 
 <section>
@@ -30,6 +35,9 @@
 
 <section>
   <p class="pt-8">{$_('api.more')}</p>
+  <meta name="twitter:title" content={$_('navigation.api') + '-' + $_('meta.title')} />
+  <meta property="og:title" content={$_('navigation.api') + '-' + $_('meta.title')} />
+  <link rel="canonical" href="https://jokesbapak2.pages.dev/why" />
 </section>
 
 <style>

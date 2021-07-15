@@ -10,6 +10,19 @@
   import Navbar from '../components/navbar.svelte';
 </script>
 
+<svelte:head>
+  <meta name="author" content="Reinaldy Rafli" />
+  <meta name="theme-color" content="#f4a9f5" />
+  <meta name="publisher" content="https://jokesbapak2.pages.dev/" />
+  <meta property="og:image" content="/social.jpg" />
+  <meta property="og:image:alt" content="Jokesbapak2 - Largest collection of Indonesian dad jokes" />
+  <meta property="og:image:secure_url" content="/social.jpg" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:site_name" content={$_('meta.title')} />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:creator" content="Reinaldy Rafli" />
+</svelte:head>
+
 <div
   class="bg-gradient-to-br from-transparent to-lavender-300 dark:(bg-gray-900 to-lavender-900 text-white) min-h-screen h-full w-full"
 >

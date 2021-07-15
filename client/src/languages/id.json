@@ -27,42 +27,42 @@
   },
   "why": {
     "exists": {
-      "title": "Why does this project exist?",
+      "title": "Mengapa ada proyek ini?",
       "body": {
-        "1": "Sometime around early 2020, I was interested on seeing Indonesian dad jokes all over Twitter.",
-        "2": "By the end of the month, I was obsessed with it.",
-        "3": "Then, it was that time where I learn and created my Discord bot,",
-        "4": "which I added a feature which you can ask for Indonesian dad jokes on a form of an image.",
-        "5": "I thought, why not make it into an API where people can use it too?",
-        "6": "Therefore, this was born."
+        "1": "Pada awal 2020, saya tertarik melihat jokes bapak2 di jagat Twitter.",
+        "2": "Akhir bulannya, saya nggak abis-abisnya liatin jokes bapak2.",
+        "3": "Lalu, pada masa itu juga saya belajar dan membuat bot untuk Discord,",
+        "4": "yang saya tambahkan fitur agar bisa mengirimkan jokes bapak2 dalam bentuk foto.",
+        "5": "Saya pikir, kenapa nggak sekalian buat API agar orang-orang juga bisa pakai?",
+        "6": "Kemudian, proyek ini lahir."
       }
     },
     "submit": {
-      "title": "Can I submit my dad joke?",
+      "title": "Bolehkah saya submit jokes?",
       "body": {
-        "1": "You sure can!",
-        "2": "Submit the image to",
-        "3": "my email",
-        "4": ", and I'll get back to you as soon as possible.",
-        "5": "Bear in mind, your joke (or at least the content of the image) must not insult anyone and be racists.",
-        "6": "Let's keep the jokes healthy."
+        "1": "Boleh banget!",
+        "2": "Kirim fotonya ke",
+        "3": "email saya",
+        "4": "dan saya akan segera memprosesnya.",
+        "5": "Namun, joke yang kamu kirim (atau isi kontennya) tidak boleh menghina siapapun atau mengandung SARA.",
+        "6": "Tetap jadikan becandaannya sehat, ya."
       }
     },
     "contribute": {
-      "title": "I don't have any dad joke, can I contribute?",
+      "title": "Saya tidak punya jokes, boleh kontribusi saja?",
       "body": {
-        "1": "Of course!",
-        "2": "This project is",
-        "3": "open sourced on Github.",
-        "4": "Feel free to crunch a bug, add a feature, or fix a small typo."
+        "1": "Pastinya!",
+        "2": "Proyek ini terdapat secara",
+        "3": "open source di Github.",
+        "4": "Kamu boleh menghancurkan bug, tambah fitur, atau memperbaiki typo kecil."
       }
     },
     "inquiries": {
-      "title": "I have other inquiries",
+      "title": "Saya punya pertanyaan lain",
       "body": {
-        "1": "You can contact me through",
-        "2": "my email",
-        "3": "and I'll be in touch as soon as possible."
+        "1": "Kamu bisa menghubungi saya melalui",
+        "2": "email saya",
+        "3": "dan saya akan segera menghubungi kamu secepatnya."
       }
     }
   },
