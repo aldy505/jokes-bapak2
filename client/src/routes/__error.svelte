@@ -1,9 +1,10 @@
 <script lang="ts" context="module">
-  import type { LoadOutput } from '@sveltejs/kit';
+  import type { ErrorLoad } from '@sveltejs/kit';
   import Sentry from '$lib/logging';
 
-  export function load({ error }: LoadOutput): void {
+  export const load: ErrorLoad = ({ error }) => {
     Sentry.captureException(error);
+    return {};
   }
 </script>
 

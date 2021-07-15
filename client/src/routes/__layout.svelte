@@ -26,7 +26,7 @@
 <div
   class="bg-gradient-to-br from-transparent to-lavender-300 dark:(bg-gray-900 to-lavender-900 text-white) min-h-screen h-full w-full"
 >
-  <div class="container mx-auto lg:px-40 md:px-20 sm:px-12 px-8 w-full">
+  <div class="container mx-auto xl:px-40 lg:px-28 md:px-20 sm:px-12 px-8 w-full">
     <header>
       <Navbar />
     </header>
