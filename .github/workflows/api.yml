@@ -60,4 +60,4 @@ jobs:
         with:
           environment: production
           set_commits: skip
-          version: ${{ github.ref }}
+          version: ${{ github.sha }}
