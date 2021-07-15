@@ -1,7 +1,7 @@
 <script lang="ts">
-import { goto } from "$app/navigation";
-import { _ } from "svelte-i18n";
-// TODO: Create hamburger navigation (I know, just bit lazy on this one)
+  import { goto } from '$app/navigation';
+  import { _ } from 'svelte-i18n';
+  // TODO: Create hamburger navigation (I know, just bit lazy on this one)
 </script>
 
 <nav class="flex flex-col md:flex-row py-6 font-body">

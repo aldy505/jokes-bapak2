@@ -9,8 +9,8 @@ const config = {
   preprocess: [
     windi({
       configPath: './windi.config.js',
-    }), 
-    preprocess({ postcss: false })
+    }),
+    preprocess({ postcss: false }),
   ],
 
   kit: {
@@ -22,7 +22,7 @@ const config = {
       routes: './src/routes',
       assets: './static',
       hooks: './src',
-      lib: './src/lib'
+      lib: './src/lib',
     },
     adapter: adapter({
       // default options are shown

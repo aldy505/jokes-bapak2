@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { _ } from 'svelte-i18n'
+  import { _ } from 'svelte-i18n';
 </script>
 
 <svelte:head>
@@ -12,20 +12,24 @@
   <p>{$_('why.exists.body.5')} {$_('why.exists.body.6')}</p>
   <h1 id="can-i-submit-my-dad-joke">{$_('why.submit.title')}</h1>
   <p>
-    {$_('why.submit.body.1')} {$_('why.submit.body.2')} 
-    <a href="mailto:aldy505@tutanota.com">{$_('why.submit.body.3')}</a> 
-    {$_('why.submit.body.4')} {$_('why.submit.body.5')} {$_('why.submit.body.6')}
+    {$_('why.submit.body.1')}
+    {$_('why.submit.body.2')}
+    <a href="mailto:aldy505@tutanota.com">{$_('why.submit.body.3')}</a>
+    {$_('why.submit.body.4')}
+    {$_('why.submit.body.5')}
+    {$_('why.submit.body.6')}
   </p>
   <h1 id="can-i-contribute">{$_('why.contribute.title')}</h1>
   <p>
-    {$_('why.contribute.body.1')} {$_('why.contribute.body.2')} 
-    <a href="https://www.github.com/aldy505/jokes-bapak2-api">{$_('why.contribute.body.3')}</a> 
+    {$_('why.contribute.body.1')}
+    {$_('why.contribute.body.2')}
+    <a href="https://www.github.com/aldy505/jokes-bapak2-api">{$_('why.contribute.body.3')}</a>
     {$_('why.contribute.body.4')}
   </p>
   <h1 id="other-inquiries">{$_('why.inquiries.title')}</h1>
   <p>
-    {$_('why.inquiries.body.1')} 
-     <a href="mailto:aldy505@tutanota.com">{$_('why.inquiries.body.2')}</a>, {$_('why.inquiries.body.3')}
+    {$_('why.inquiries.body.1')}
+    <a href="mailto:aldy505@tutanota.com">{$_('why.inquiries.body.2')}</a>, {$_('why.inquiries.body.3')}
   </p>
 </section>
 

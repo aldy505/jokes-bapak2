@@ -1,8 +1,8 @@
 <script lang="ts">
   // This page is meant to explain available API endpoints.
-  import { _ } from 'svelte-i18n'
-  import env from '$lib/env'
-  import Codeblock from '../components/codeblock.svelte'
+  import { _ } from 'svelte-i18n';
+  import env from '$lib/env';
+  import Codeblock from '../components/codeblock.svelte';
 </script>
 
 <svelte:head>

@@ -3,13 +3,13 @@
   import Sentry from '$lib/logging';
 
   export async function load({ error }: LoadOutput): Promise<void> {
-    Sentry.captureException(error)
-  }  
+    Sentry.captureException(error);
+  }
 </script>
 
 <script lang="ts">
-  import { goto } from '$app/navigation'
-  import { _ } from 'svelte-i18n'
+  import { goto } from '$app/navigation';
+  import { _ } from 'svelte-i18n';
 </script>
 
 <section>
