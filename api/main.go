@@ -44,7 +44,11 @@ func main() {
 		ErrorHandler: errorHandler,
 	})
 	app.Use(cors.New())
-	app.Use(limiter.New())
+	app.Use(limiter.New(limiter.Config{
+		Max:          15,
+		Duration:     1 * time.Minute,
+		LimitReached: limitHandler,
+	}))
 	app.Use(etag.New())
 
 	app.Mount("/v1", v1.New())
@@ -62,6 +66,12 @@ func errorHandler(c *fiber.Ctx, err error) error {
 	sentry.CaptureException(err)
 	return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 		"error": "Something went wrong on our end",
+	})
+}
+
+func limitHandler(c *fiber.Ctx) error {
+	return c.Status(fiber.StatusTooManyRequests).JSON(fiber.Map{
+		"message": "we only allow up to 15 request per minute",
 	})
 }
 
