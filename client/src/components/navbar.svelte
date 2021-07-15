@@ -13,6 +13,6 @@
 
 <style>
   .navigation-item {
-    @apply flex-1 duration-300 transition ease-in-out py-2 'md:py-0' 'md:opacity-50' 'hover:cursor-pointer' 'hover:scale-110' 'hover:opacity-100';
+    @apply flex-auto 'md:flex-1' duration-300 transition ease-in-out py-2 'md:py-0' 'md:opacity-50' 'hover:cursor-pointer' 'hover:scale-110' 'hover:opacity-100';
   }
 </style>

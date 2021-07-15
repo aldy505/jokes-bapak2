@@ -40,10 +40,10 @@
 
 <style>
   p {
-    @apply text-base py-2 'md:w-2/3';
+    @apply text-base py-2 'lg:w-2/3';
   }
   h1 {
-    @apply text-4xl font-bold py-4;
+    @apply text-3xl 'md:text-4xl' font-bold py-4;
   }
   a {
     /* This would probably be an error if you installed WindiCSS extension on VSCode */
