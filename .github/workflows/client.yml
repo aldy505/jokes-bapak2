@@ -47,6 +47,9 @@ jobs:
       
       - name: Build
         run: yarn build
+        env:
+          VITE_SENTRY_DSN: https://examplePublicKey@o0.ingest.sentry.io/0
+          VITE_NODE_ENV: development
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v1
