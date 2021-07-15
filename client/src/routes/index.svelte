@@ -1,3 +1,7 @@
+<script context="module">
+	export const prerender = true;
+</script>
+
 <script lang="ts">
   import { _ } from 'svelte-i18n';
   import { goto } from '$app/navigation';
