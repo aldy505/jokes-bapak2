@@ -5,7 +5,7 @@
   export const load: ErrorLoad = ({ error }) => {
     Sentry.captureException(error);
     return {};
-  }
+  };
 </script>
 
 <script lang="ts">

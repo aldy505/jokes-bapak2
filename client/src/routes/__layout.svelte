@@ -3,7 +3,6 @@
 </script>
 
 <script lang="ts">
-  //import '../locale'
   import '@fontsource/fira-mono';
   import '@fontsource/rubik';
   import { _ } from 'svelte-i18n';

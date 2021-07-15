@@ -11,8 +11,8 @@
 
 <svelte:head>
   <title>{$_('meta.title')} - {$_('meta.tagline')}</title>
-  <meta name="twitter:title" content={$_('navigation.index') + '-' + $_('meta.title')} />
-  <meta property="og:title" content={$_('navigation.index') + '-' + $_('meta.title')} />
+  <meta name="twitter:title" content={$_('meta.title') + '-' + $_('meta.tagline')} />
+  <meta property="og:title" content={$_('meta.title') + '-' + $_('meta.tagline')} />
   <link rel="canonical" href="https://jokesbapak2.pages.dev/" />
   <meta name="twitter:description" content="Largest collection of Indonesian dad jokes as a consumable API" />
   <meta property="og:description" content="Largest collection of Indonesian dad jokes as a consumable API" />
