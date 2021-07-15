@@ -14,9 +14,9 @@
   <meta name="author" content="Reinaldy Rafli" />
   <meta name="theme-color" content="#f4a9f5" />
   <meta name="publisher" content="https://jokesbapak2.pages.dev/" />
-  <meta property="og:image" content="/social.jpg" />
+  <meta property="og:image" content="https://jokesbapak2.pages.dev/social.jpg" />
   <meta property="og:image:alt" content="Jokesbapak2 - Largest collection of Indonesian dad jokes" />
-  <meta property="og:image:secure_url" content="/social.jpg" />
+  <meta property="og:image:secure_url" content="https://jokesbapak2.pages.dev/social.jpg" />
   <meta property="og:locale" content="en_US" />
   <meta property="og:site_name" content={$_('meta.title')} />
   <meta name="twitter:card" content="summary_large_image" />
