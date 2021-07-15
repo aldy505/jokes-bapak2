@@ -1,0 +1,76 @@
+services:
+  api:
+    build: ./api/
+    restart: always
+    env_file: ./api/.env
+    ports:
+      - 5000:5000
+    depends_on:
+      - db
+      - cache
+    # Uncomment these if you want to have it on
+    # volumes:
+    #   ./api:/app
+  
+  client:
+    build: ./client/
+    restart: always
+    env_file: ./client/.env
+    ports:
+      - 3000:3000
+    depends_on:
+      - api
+    # Uncomment these if you want to have it on
+    # volumes:
+    #   ./client:/app
+  
+  db:
+    build: ./database/postgres/
+    command: >
+      -c ssl=on
+      -c ssl_cert_file=/var/lib/postgresql/server.crt
+      -c ssl_key_file=/var/lib/postgresql/server.key
+    restart: always
+    ports: 
+      - 5432:5432
+    environment: 
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: jokesbapak2
+      PGDATA: /data/postgres
+      # I got this key from somewhere. It works when you run it locally.
+      POSTGRES_SSL_CA_CERT: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURjekNDQWx1Z0F3SUJBZ0lVR3lDaElvR3g0
+    volumes:
+      - ./database/postgres/data:/data/postgres
+
+  cache:
+    image: redis:6.2.4-alpine
+    restart: always
+    ports:
+      - 6379:6379
+    volumes:
+      - ./database/redis/etc:/usr/local/etc/redis
+      - ./database/redis/data:/data
+
+  cache-admin:
+    image: rediscommander/redis-commander:latest
+    restart: always
+    environment:
+      REDIS_PORT: 6379
+      REDIS_HOST: redis
+    ports:
+      - 2084:8081
+    depends_on:
+      - cache
+
+  db-admin:  
+    image: sosedoff/pgweb:0.11.8
+    restart: always
+    ports:
+      - 2086:8081
+    links:
+      - postgres:postgres
+    environment:
+      DATABASE_URL: postgres://postgres:password@db/jokesbapak2
+    depends_on:
+      - db

@@ -19,3 +19,5 @@ vendor/
 
 # Heroku bin directory
 bin
+
+main

@@ -8,4 +8,6 @@ RUN npm install -g yarn
 RUN yarn install
 RUN yarn build
 
+EXPOSE ${PORT}
+
 CMD ["yarn", "preview"]
