@@ -29,21 +29,30 @@ $ go build main.go
 | [aldy505/phc-crypto](https://github.com/aldy505/phc-crypto) | `v1.1.0` | Utils |
 | [Masterminds/squirrel](https://github.com/Masterminds/squirrel ) | `v1.5.0` | Utils |
 | [aldy505/bob](https://github.com/aldy505/bob) | `v0.0.1` | Utils |
+| [gojek/heimdall](github.com/gojek/heimdall) | `v7.0.2` | Utils |
 
 ## Directory structure
 
 ```
-└-- /app
-    └---- /v1
-          └---- /handler
-          └---- /middleware             folder for add middleware 
-          └---- /models
-          └---- /platform
-                └--------- /cache       folder with in-memory cache setup functions
-                └--------- /database    folder with database setup functions 
-          └---- /routes                 folder for describe routes
-          └---- /utils                  folder with utility functions 
+.
+├── app
+│  └── v1
+│     ├── app.go        - v1 application entry point
+│     ├── handler       - Route handler
+│     ├── middleware    - App middleware handler
+│     ├── models        - Output and input schema
+│     ├── platform
+│     │  ├── cache      - In-memory cache setup functions
+│     │  └── database   - Database setup functions
+│     ├── routes        - Routes definition & assignment
+│     └── utils         - Utility functions
+├── Dockerfile          - Docker image for API
+├── go.mod              - Module information & dependencies
+├── go.sum              - Packages lock file
+├── main.go             - Application entry point
+└── README.md           - You are here
 ```
+
 ## `.env` configuration
 
 ```ini

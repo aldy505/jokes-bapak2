@@ -2,16 +2,18 @@
 
 👋 Hey there! Still work in progress, if you'd like to contribute this while this repo is still growing, that would be so great!
 
+It's on alpha phase now. You can access the front facing web on [jokesbapak2.pages.dev](http://jokesbapak2.pages.dev/).
+
 ## Brief explanation of what is this
 
 This project will be a website like icanhazdadjokes but in Indonesian version and it's not text, it's images. Dad jokes in Indonesia is somewhat a bit different than in US/UK because I guess here, it's a lot dumber.
 
 ## Project Directories
 
-* `api` - REST API service. Created with Go.
+* `api` - REST API service. Created with Go with [Fiber](https://gofiber.io/) framework.
 * `client` - Front facing website (front end). Created with [Svelte Kit](https://kit.svelte.dev/).
 
-Anyway, later you can consume this API via a website (that will be created later on when this is finished) with a few endpoints:
+Later you can consume this API via a website (linked in the front facing web) with a few endpoints:
 
  * `/v1/` - Random jokes bapak2
  * `/v1/id/[number]` - Jokes bapak2 based on ID
