@@ -50,16 +50,16 @@
 
 {#if open}
   <menu
-    class="top-of-the-world dark:bg-gray-900 dark:text-white bg-lavender-200 text-black w-full h-full overscroll-none"
-    style="transition: left {duration}s ease-in-out"
+    class="top-of-the-world dark:bg-gray-900 dark:text-white bg-lavender-200 bg-gradient-to-br to-lavender-400 dark:to-lavender-900 text-black w-full h-full overscroll-none"
   >
+  <div class="container -pr-10">
     <div class="flex flex-col items-center content-center text-center pt-20">
       <div
         on:click={() => {
           open = false;
           return goto('/');
         }}
-        class="hover:cursor-pointer flex-1 font-bold text-4xl py-6"
+        class="hover:cursor-pointer flex-1 font-bold text-3xl pt-6 pb-10"
       >
         Jokesbapak2
       </div>
@@ -68,7 +68,7 @@
           open = false;
           return goto('/why');
         }}
-        class="flex-1 py-3 text-3xl"
+        class="flex-1 py-3 text-4xl"
       >
         {$_('navigation.why')}
       </div>
@@ -77,7 +77,7 @@
           open = false;
           return goto('/guide');
         }}
-        class="flex-1 py-3 text-3xl"
+        class="flex-1 py-3 text-4xl"
       >
         {$_('navigation.guide')}
       </div>
@@ -86,11 +86,12 @@
           open = false;
           return goto('/api');
         }}
-        class="flex-1 py-3 text-3xl"
+        class="flex-1 py-3 text-4xl"
       >
         {$_('navigation.api')}
       </div>
     </div>
+  </div>
   </menu>
 {/if}
 
