@@ -17,7 +17,10 @@
     "made": "Made with",
     "indonesia": "in Indonesia",
     "available": "This project is available on",
-    "github": "Github"
+    "github": "Github",
+    "language": "Languages:",
+    "english": "English",
+    "indonesian": "Indonesian"
   },
   "home": {
     "more": {
