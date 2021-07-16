@@ -87,5 +87,20 @@
       }
     },
     "more": "More documentation will soon arrive here..."
+  },
+  "guide": {
+    "introduction": {
+      "1": "To access the API, there are a few ways to do it.",
+      "2": "It depends on what you are trying to accomplish with it."
+    },
+    "direct": {
+      "1": "Direct request with",
+      "2": "block"
+    },
+    "fetch": {
+      "1": "Using fetch API",
+      "2": "You can use it, but I personally don't recommend it.",
+      "3": "data is a base64 string"
+    }
   }
 }

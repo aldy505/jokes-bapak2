@@ -87,5 +87,20 @@
       }
     },
     "more": "Dokumentasi lebih lanjut akan segera tiba disini..."
+  },
+  "guide": {
+    "introduction": {
+      "1": "Ada beberapa cara untuk mengakses API.",
+      "2": "Cara tersebut tergantung pada apa yang Bapak ingin capai."
+    },
+    "direct": {
+      "1": "Request langsung dengan blok",
+      "2": ""
+    },
+    "fetch": {
+      "1": "Menggunakan fetch API",
+      "2": "Bapak bisa menggunakannya, tapi saya secara personal tidak merekomendasikannya.",
+      "3": "data adalah string dengan isi base64"
+    }
   }
 }

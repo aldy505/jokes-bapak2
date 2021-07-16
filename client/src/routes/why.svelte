@@ -50,7 +50,7 @@
     @apply text-base py-2 'lg:w-2/3';
   }
   h1 {
-    @apply text-3xl 'md:text-3xl' font-bold py-2;
+    @apply text-3xl font-bold py-2;
   }
   a {
     /* This would probably be an error if you installed WindiCSS extension on VSCode */
