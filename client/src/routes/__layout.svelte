@@ -5,7 +5,6 @@
 <script lang="ts">
   import '@fontsource/fira-mono';
   import '@fontsource/rubik';
-  import { goto } from '$app/navigation'
   import { _ } from 'svelte-i18n';
   import Navbar from '../components/navbar.svelte';
 </script>
@@ -17,9 +16,13 @@
   <meta property="og:image" content="https://jokesbapak2.pages.dev/social.jpg" />
   <meta property="og:image:alt" content="Jokesbapak2 - Largest collection of Indonesian dad jokes" />
   <meta property="og:image:secure_url" content="https://jokesbapak2.pages.dev/social.jpg" />
+  <meta property="og:image:width" content="1280" />
+  <meta property="og:image:height" content="640" />
   <meta property="og:locale" content="en_US" />
+  <meta property="og:type" content="object" />
   <meta property="og:site_name" content={$_('meta.title')} />
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image:src" content="https://jokesbapak2.pages.dev/social.jpg" />
   <meta name="twitter:creator" content="Reinaldy Rafli" />
 </svelte:head>
 
@@ -41,9 +44,7 @@
         {$_('footer.available')}
         <a href="https://www.github.com/aldy505/jokes-bapak2-api" class="hover:underline">{$_('footer.github')}</a>.
       </p>
-      <p class="text-sm opacity-50 inline-block">
-        &nbsp;|&nbsp;
-      </p>
+      <p class="text-sm opacity-50 inline-block">&nbsp;|&nbsp;</p>
       <p class="text-sm opacity-50 hover:opacity-90 transition duration-300 ease-in-out inline-block">
         {$_('footer.language')}
         <a href="?lang=en" target="_top" class="hover:underline">{$_('footer.english')}</a>

@@ -52,46 +52,46 @@
   <menu
     class="top-of-the-world dark:bg-gray-900 dark:text-white bg-lavender-200 bg-gradient-to-br to-lavender-400 dark:to-lavender-900 text-black w-full h-full overscroll-none"
   >
-  <div class="container -pr-10">
-    <div class="flex flex-col items-center content-center text-center pt-20">
-      <div
-        on:click={() => {
-          open = false;
-          return goto('/');
-        }}
-        class="hover:cursor-pointer flex-1 font-bold text-3xl pt-6 pb-10"
-      >
-        Jokesbapak2
-      </div>
-      <div
-        on:click={() => {
-          open = false;
-          return goto('/why');
-        }}
-        class="flex-1 py-3 text-4xl"
-      >
-        {$_('navigation.why')}
-      </div>
-      <div
-        on:click={() => {
-          open = false;
-          return goto('/guide');
-        }}
-        class="flex-1 py-3 text-4xl"
-      >
-        {$_('navigation.guide')}
-      </div>
-      <div
-        on:click={() => {
-          open = false;
-          return goto('/api');
-        }}
-        class="flex-1 py-3 text-4xl"
-      >
-        {$_('navigation.api')}
+    <div class="container -pr-10">
+      <div class="flex flex-col items-center content-center text-center pt-20">
+        <div
+          on:click={() => {
+            open = false;
+            return goto('/');
+          }}
+          class="hover:cursor-pointer flex-1 font-bold text-3xl pt-6 pb-10"
+        >
+          Jokesbapak2
+        </div>
+        <div
+          on:click={() => {
+            open = false;
+            return goto('/why');
+          }}
+          class="flex-1 py-3 text-4xl"
+        >
+          {$_('navigation.why')}
+        </div>
+        <div
+          on:click={() => {
+            open = false;
+            return goto('/guide');
+          }}
+          class="flex-1 py-3 text-4xl"
+        >
+          {$_('navigation.guide')}
+        </div>
+        <div
+          on:click={() => {
+            open = false;
+            return goto('/api');
+          }}
+          class="flex-1 py-3 text-4xl"
+        >
+          {$_('navigation.api')}
+        </div>
       </div>
     </div>
-  </div>
   </menu>
 {/if}
 
