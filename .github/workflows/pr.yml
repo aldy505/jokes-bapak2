@@ -39,8 +39,11 @@ jobs:
         run: yarn
 
       - name: Lint
-        run: yarn lint
+        run: npx eslint --ext .svelte,.js,.ts --ignore-path .gitignore .
       
+      - name: Formatting
+        run: npx prettier --check --ignore-path .gitignore --plugin-search-dir=. "./**/*.(ts|json|js|svelte)"
+
       - name: Build
         run: yarn build
         env:
