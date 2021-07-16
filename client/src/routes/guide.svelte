@@ -6,6 +6,7 @@
 
 <svelte:head>
   <title>{$_('navigation.guide')} - {$_('meta.title')}</title>
+  <meta name="title" content={$_('navigation.guide') + '-' + $_('meta.title')} />
   <meta name="twitter:title" content={$_('navigation.guide') + '-' + $_('meta.title')} />
   <meta property="og:title" content={$_('navigation.guide') + '-' + $_('meta.title')} />
   <link rel="canonical" href="https://jokesbapak2.pages.dev/guide" />

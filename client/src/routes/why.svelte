@@ -4,6 +4,7 @@
 
 <svelte:head>
   <title>{$_('navigation.why')} - {$_('meta.title')}</title>
+  <meta name="title" content={$_('navigation.why') + '-' + $_('meta.title')} />
   <meta name="twitter:title" content={$_('navigation.why') + '-' + $_('meta.title')} />
   <meta property="og:title" content={$_('navigation.why') + '-' + $_('meta.title')} />
   <link rel="canonical" href="https://jokesbapak2.pages.dev/why" />

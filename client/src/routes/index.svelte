@@ -1,7 +1,3 @@
-<script context="module">
-  export const prerender = true;
-</script>
-
 <script lang="ts">
   import { _ } from 'svelte-i18n';
   import { goto } from '$app/navigation';
@@ -11,6 +7,7 @@
 
 <svelte:head>
   <title>{$_('meta.title')} - {$_('meta.tagline')}</title>
+  <meta name="title" content={$_('meta.title') + '-' + $_('meta.tagline')} />
   <meta name="twitter:title" content={$_('meta.title') + '-' + $_('meta.tagline')} />
   <meta property="og:title" content={$_('meta.title') + '-' + $_('meta.tagline')} />
   <link rel="canonical" href="https://jokesbapak2.pages.dev/" />

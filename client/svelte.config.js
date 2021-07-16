@@ -28,7 +28,6 @@ const config = {
       // default options are shown
       pages: 'dist',
       assets: 'dist',
-      fallback: '200.html',
     }),
   },
 };

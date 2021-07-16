@@ -10,20 +10,7 @@
 </script>
 
 <svelte:head>
-  <meta name="author" content="Reinaldy Rafli" />
-  <meta name="theme-color" content="#f4a9f5" />
-  <meta name="publisher" content="https://jokesbapak2.pages.dev/" />
-  <meta property="og:image" content="https://jokesbapak2.pages.dev/social.jpg" />
-  <meta property="og:image:alt" content="Jokesbapak2 - Largest collection of Indonesian dad jokes" />
-  <meta property="og:image:secure_url" content="https://jokesbapak2.pages.dev/social.jpg" />
-  <meta property="og:image:width" content="1280" />
-  <meta property="og:image:height" content="640" />
-  <meta property="og:locale" content="en_US" />
-  <meta property="og:type" content="object" />
   <meta property="og:site_name" content={$_('meta.title')} />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:image:src" content="https://jokesbapak2.pages.dev/social.jpg" />
-  <meta name="twitter:creator" content="Reinaldy Rafli" />
 </svelte:head>
 
 <div
