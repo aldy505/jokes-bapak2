@@ -24,21 +24,19 @@
 
 <section>
   <h2>{$_('guide.direct.1')} <code>&lt;img&gt;</code> {$_('guide.direct.2')}</h2>
-  <Codeblock>
-    &lt;img src="https://jokesbapak2.herokuapp.com/v1/" /&gt;
-  </Codeblock>
+  <Codeblock>&lt;img src="https://jokesbapak2.herokuapp.com/v1/" /&gt;</Codeblock>
 </section>
 
 <section>
   <h2>{$_('guide.fetch.1')}</h2>
   <p>{$_('guide.fetch.2')}</p>
   <Codeblock>
-    fetch("https://jokesbapak2.herokuapp.com/v1/")<br>
-    &nbsp;&nbsp;.then(response => response.text())<br>
-    &nbsp;&nbsp;.then(data => console.log(data))<br>
-    <br>
-    // {$_('guide.fetch.3')}<br>
-      <br>
+    fetch("https://jokesbapak2.herokuapp.com/v1/")<br />
+    &nbsp;&nbsp;.then(response => response.text())<br />
+    &nbsp;&nbsp;.then(data => console.log(data))<br />
+    <br />
+    // {$_('guide.fetch.3')}<br />
+    <br />
     &lt;img src="data:image/jpeg;base64, &lcub; data &rcub;" /&gt;
   </Codeblock>
 </section>

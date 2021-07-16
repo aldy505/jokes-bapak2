@@ -2,11 +2,7 @@ name: API
 
 on: 
   push:
-    paths:
-      - "api/**"
-  pull_request:
-    paths:
-      - "api/**"
+    branches: [ "master" ]
 
 jobs:
   api-build:

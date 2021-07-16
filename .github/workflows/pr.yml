@@ -1,12 +1,12 @@
-name: Client
+name: PR
 
 on: 
-  push:
-    branches: [ "master" ]
+  pull_request:
+    branches: [ "*" ]
 
 jobs:
   client-build:
-    name: Build
+    name: Client
     runs-on: ubuntu-latest
 
     defaults:
@@ -55,13 +55,44 @@ jobs:
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v1
 
-      - name: Create Sentry release
-        uses: getsentry/action-release@v1
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_TOKEN }}
-          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
-          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT_CLIENT }}
+  api-build:
+    name: API
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./api
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install Go
+        uses: actions/setup-go@v2
         with:
-          environment: production
-          set_commits: skip
-          version: ${{ github.sha }}
+          go-version: 1.16.x
+
+      - name: cache node_modules
+        uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+      
+      - name: Installling dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: go mod vendor
+      
+      - name: Build
+        run: go build main.go
+      
+      - name: Run test & coverage
+        run: go test -v -race -coverprofile=coverage.out -covermode=atomic ./...
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v1
+        with:
+          languages: go
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v1
