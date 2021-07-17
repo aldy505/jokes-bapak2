@@ -48,6 +48,7 @@ func TestJokeGet(t *testing.T) {
 	app := v1.New()
 
 	t.Run("TodayJoke - should return 200", func(t *testing.T) {
+		t.SkipNow()
 		req, _ := http.NewRequest("GET", "/today", nil)
 		res, err := app.Test(req, -1)
 
