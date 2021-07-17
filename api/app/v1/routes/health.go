@@ -9,5 +9,6 @@ import (
 func Health(app *fiber.App) *fiber.App {
 	// Health check
 	app.Get("/health", handler.Health)
+
 	return app
 }

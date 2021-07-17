@@ -24,12 +24,15 @@ $ go build main.go
 | [gofiber/fiber](https://github.com/gofiber/fiber) | `v2.14.0` | Framework |
 | [jackc/pgx](https://github.com/jackc/pgx) | `v4.11.0` | Database |
 | [go-redis/redis](https://github.com/go-redis/redis) | `v8.11.0` | Cache |
+| [patrickmn/go-cache](https://github.com/patrickmn/go-cache) | `v2.1.0+incompatible` | Cache |
 | [joho/godotenv](https://github.com/joho/godotenv) | `v1.3.0` | Config |
 | [getsentry/sentry-go](https://github.com/getsentry/sentry-go) | `v0.11.0` | Logging |
 | [aldy505/phc-crypto](https://github.com/aldy505/phc-crypto) | `v1.1.0` | Utils |
 | [Masterminds/squirrel](https://github.com/Masterminds/squirrel ) | `v1.5.0` | Utils |
 | [aldy505/bob](https://github.com/aldy505/bob) | `v0.0.1` | Utils |
-| [gojek/heimdall](github.com/gojek/heimdall) | `v7.0.2` | Utils |
+| [gojek/heimdall](https://github.com/gojek/heimdall) | `v7.0.2` | Utils |
+| [georgysavva/scany](https://github.com/georgysavva/scany) | `v0.2.9` | Utils |
+| [stretchr/testify](https://github.com/stretchr/testify) | `v1.5.1` | Tests |
 
 ## Directory structure
 
@@ -38,6 +41,7 @@ $ go build main.go
 ├── app
 │  └── v1
 │     ├── app.go        - v1 application entry point
+│     ├── core          - Pure business logic
 │     ├── handler       - Route handler
 │     ├── middleware    - App middleware handler
 │     ├── models        - Output and input schema

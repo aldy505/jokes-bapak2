@@ -22,6 +22,7 @@ func AddNewJoke(c *fiber.Ctx) error {
 		return err
 	}
 
+	// TODO: Implement solution if the link provided already exists.
 	_, err = db.Query(context.Background(), sql, args...)
 	if err != nil {
 		return err
