@@ -51,7 +51,7 @@ func RequireAuth() fiber.Handler {
 		}
 
 		if verify {
-			sql, args, err = psql.Update("administrator").Set("last_used", time.Now().UTC().Format(time.RFC3339)).ToSql()
+			sql, args, err = psql.Update("administrators").Set("last_used", time.Now().UTC().Format(time.RFC3339)).ToSql()
 			if err != nil {
 				return err
 			}
