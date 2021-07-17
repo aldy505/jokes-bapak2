@@ -3,23 +3,16 @@ package handler
 import (
 	"context"
 	"io/ioutil"
-	"log"
+	"strconv"
 	"time"
 
+	"jokes-bapak2-api/app/v1/core"
 	"jokes-bapak2-api/app/v1/models"
-	"jokes-bapak2-api/app/v1/platform/cache"
-	"jokes-bapak2-api/app/v1/platform/database"
 	"jokes-bapak2-api/app/v1/utils"
 
-	"github.com/Masterminds/squirrel"
 	"github.com/gofiber/fiber/v2"
-	"github.com/gojek/heimdall/v7/httpclient"
+	"github.com/patrickmn/go-cache"
 )
-
-var psql = squirrel.StatementBuilder.PlaceholderFormat(squirrel.Dollar)
-var db = database.New()
-var redis = cache.New()
-var client = httpclient.NewClient(httpclient.WithHTTPTimeout(10 * time.Second))
 
 func TodayJoke(c *fiber.Ctx) error {
 	// check from redis if today's joke already exists
@@ -37,7 +30,6 @@ func TodayJoke(c *fiber.Ctx) error {
 	}
 
 	if eq {
-		log.Println("through cached")
 		c.Set("Content-Type", joke.ContentType)
 		return c.Status(fiber.StatusOK).Send([]byte(joke.Image))
 	} else {
@@ -75,11 +67,17 @@ func TodayJoke(c *fiber.Ctx) error {
 }
 
 func SingleJoke(c *fiber.Ctx) error {
-	// get a joke from db
-	// fetch the image url
-	// send the image as proxied file
-	var link string
-	err := db.QueryRow(context.Background(), "SELECT \"link\" FROM \"jokesbapak2\" ORDER BY random() LIMIT 1").Scan(&link)
+	checkCache := core.CheckJokesCache(memory)
+
+	if !checkCache {
+		jokes, err := core.GetAllJSONJokes(db)
+		if err != nil {
+			return err
+		}
+		memory.Set("jokes", jokes, cache.NoExpiration)
+	}
+
+	link, err := core.GetRandomJokeFromCache(memory)
 	if err != nil {
 		return err
 	}
@@ -97,20 +95,33 @@ func SingleJoke(c *fiber.Ctx) error {
 
 	c.Set("Content-Type", response.Header.Get("content-type"))
 	return c.Status(fiber.StatusOK).Send(data)
+
 }
 
 func JokeByID(c *fiber.Ctx) error {
-	// get a joke from db by id
-	// fetch image url
-	// send the image as proxied file
-	var link string
-	err := db.QueryRow(context.Background(), "SELECT \"link\" FROM \"jokesbapak2\" WHERE \"id\" = $1", c.Params("id")).Scan(&link)
-	if err != nil {
-		if err.Error() == "no rows in result set" {
-			return c.Status(fiber.StatusNotFound).Send([]byte("Requested ID was not found."))
+	checkCache := core.CheckJokesCache(memory)
+
+	if !checkCache {
+		jokes, err := core.GetAllJSONJokes(db)
+		if err != nil {
+			return err
 		}
+		memory.Set("jokes", jokes, cache.NoExpiration)
+		if err != nil {
+			return err
+		}
+	}
+
+	id, err := strconv.Atoi(c.Params("id"))
+	if err != nil {
 		return err
 	}
+
+	link, err := core.GetCachedJokeByID(memory, id)
+	if err != nil {
+		return err
+	}
+
 	if link == "" {
 		return c.Status(fiber.StatusNotFound).Send([]byte("Requested ID was not found."))
 	}

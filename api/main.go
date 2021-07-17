@@ -13,6 +13,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/etag"
+	"github.com/gofiber/fiber/v2/middleware/favicon"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
 	_ "github.com/joho/godotenv/autoload"
 )
@@ -46,10 +47,13 @@ func main() {
 	app.Use(cors.New())
 	app.Use(limiter.New(limiter.Config{
 		Max:          15,
-		Duration:     1 * time.Minute,
+		Expiration:   1 * time.Minute,
 		LimitReached: limitHandler,
 	}))
 	app.Use(etag.New())
+	app.Use(favicon.New(favicon.Config{
+		File: "./favicon.png",
+	}))
 
 	app.Mount("/v1", v1.New())
 

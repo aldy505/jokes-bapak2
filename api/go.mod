@@ -6,10 +6,12 @@ require (
 	github.com/Masterminds/squirrel v1.5.0
 	github.com/aldy505/bob v0.0.1
 	github.com/aldy505/phc-crypto v1.1.0
+	github.com/georgysavva/scany v0.2.9
 	github.com/getsentry/sentry-go v0.11.0
 	github.com/go-redis/redis/v8 v8.11.0
 	github.com/gofiber/fiber/v2 v2.14.0
 	github.com/gojek/heimdall/v7 v7.0.2
 	github.com/jackc/pgx/v4 v4.11.0
 	github.com/joho/godotenv v1.3.0
+	github.com/patrickmn/go-cache v2.1.0+incompatible
 )

@@ -1,6 +1,6 @@
 package models
 
-type ResponseError struct {
+type Error struct {
 	Error string `json:"error"`
 }
 

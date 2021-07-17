@@ -1,12 +1,16 @@
 package models
 
-type RequestJokePost struct {
-	Link string `json:"link" form:"link"`
+type Joke struct {
+	ID      int    `json:"id" form:"id" db:"id"`
+	Link    string `json:"link" form:"link" db:"link"`
+	Creator int    `json:"creator" form:"creator" db:"creator"`
 }
 
-type RequestAuth struct {
-	Key   string `json:"key" form:"key"`
-	Token string `json:"token" form:"token"`
+type Auth struct {
+	ID       int    `json:"id" form:"id" db:"id"`
+	Key      string `json:"key" form:"key" db:"key"`
+	Token    string `json:"token" form:"token" db:"token"`
+	LastUsed string `json:"last_used" form:"last_used" db:"last_used"`
 }
 
 type Today struct {

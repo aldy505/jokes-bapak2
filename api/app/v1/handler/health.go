@@ -13,7 +13,7 @@ func Health(c *fiber.Ctx) error {
 	if err != nil {
 		return c.
 			Status(fiber.StatusServiceUnavailable).
-			JSON(models.ResponseError{
+			JSON(models.Error{
 				Error: "REDIS: " + err.Error(),
 			})
 	}
@@ -22,7 +22,7 @@ func Health(c *fiber.Ctx) error {
 	if err != nil {
 		return c.
 			Status(fiber.StatusServiceUnavailable).
-			JSON(models.ResponseError{
+			JSON(models.Error{
 				Error: "POSTGRESQL: " + err.Error(),
 			})
 	}

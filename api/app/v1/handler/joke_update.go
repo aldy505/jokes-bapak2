@@ -3,10 +3,12 @@ package handler
 import (
 	"context"
 
+	"jokes-bapak2-api/app/v1/core"
 	"jokes-bapak2-api/app/v1/models"
 
 	"github.com/Masterminds/squirrel"
 	"github.com/gofiber/fiber/v2"
+	"github.com/patrickmn/go-cache"
 )
 
 func UpdateJoke(c *fiber.Ctx) error {
@@ -19,12 +21,12 @@ func UpdateJoke(c *fiber.Ctx) error {
 
 	var jokeID string
 	err = db.QueryRow(context.Background(), sql, args...).Scan(&jokeID)
-	if err != nil {
+	if err != nil && err != models.ErrNoRows {
 		return err
 	}
 
 	if jokeID == id {
-		body := new(models.RequestJokePost)
+		body := new(models.Joke)
 		err = c.BodyParser(&body)
 		if err != nil {
 			return err
@@ -40,13 +42,19 @@ func UpdateJoke(c *fiber.Ctx) error {
 			return err
 		}
 
+		jokes, err := core.GetAllJSONJokes(db)
+		if err != nil {
+			return err
+		}
+		memory.Set("jokes", jokes, cache.NoExpiration)
+
 		return c.Status(fiber.StatusOK).JSON(models.ResponseJoke{
 			Message: "specified joke id has been updated",
 			Link:    body.Link,
 		})
 	}
 
-	return c.Status(fiber.StatusNotAcceptable).JSON(models.ResponseError{
+	return c.Status(fiber.StatusNotAcceptable).JSON(models.Error{
 		Error: "specified joke id does not exists",
 	})
 }

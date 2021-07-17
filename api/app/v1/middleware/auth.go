@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"context"
-	"log"
 	"time"
 
 	"jokes-bapak2-api/app/v1/models"
@@ -18,7 +17,7 @@ var db = database.New()
 
 func RequireAuth() fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		var auth models.RequestAuth
+		var auth models.Auth
 		err := c.BodyParser(&auth)
 		if err != nil {
 			return err
@@ -29,17 +28,15 @@ func RequireAuth() fiber.Handler {
 		if err != nil {
 			return err
 		}
-		log.Println(args)
 
 		var token string
 		err = db.QueryRow(context.Background(), sql, args...).Scan(&token)
 		if err != nil {
 			if err.Error() == "no rows in result set" {
-				return c.Status(fiber.StatusForbidden).JSON(models.ResponseError{
+				return c.Status(fiber.StatusForbidden).JSON(models.Error{
 					Error: "Invalid key",
 				})
 			}
-			log.Println("31 - auth.go")
 			return err
 		}
 
@@ -78,7 +75,7 @@ func RequireAuth() fiber.Handler {
 			return c.Next()
 		}
 
-		return c.Status(fiber.StatusForbidden).JSON(models.ResponseError{
+		return c.Status(fiber.StatusForbidden).JSON(models.Error{
 			Error: "Invalid key",
 		})
 	}
