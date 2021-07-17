@@ -38,12 +38,13 @@
   <h2>{$_('api.get.id.title')}</h2>
   <p>{$_('api.get.id.body')}</p>
   <Codeblock>
-    GET {env.API_ENDPOINT}/&lcub;id&rcub;
+    GET {env.API_ENDPOINT}/id/&lcub;id&rcub;
   </Codeblock>
-</section>
-
-<section>
-  <p class="pt-8">{$_('api.more')}</p>
+  <h2>{$_('api.get.total.title')}</h2>
+  <p>{$_('api.get.total.body')}</p>
+  <Codeblock>
+    GET {env.API_ENDPOINT}/total
+  </Codeblock>
 </section>
 
 <style>

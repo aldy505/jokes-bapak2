@@ -84,6 +84,10 @@
       "id": {
         "title": "Get joke by ID",
         "body": "You'll get consistent joke for every call with the same ID."
+      },
+      "total": {
+        "title": "Get total number of jokes",
+        "body": "...in a form of JSON response."
       }
     },
     "more": "More documentation will soon arrive here..."

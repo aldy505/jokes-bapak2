@@ -84,6 +84,10 @@
       "id": {
         "title": "Dapatkan joke berdasarkan ID",
         "body": "Bapak akan dapat hasil yang konsisten pada setiap request dengan ID yang sama."
+      },
+      "total": {
+        "title": "Dapatkan total jumlah jokes",
+        "body": "...dalam bentuk JSON response."
       }
     },
     "more": "Dokumentasi lebih lanjut akan segera tiba disini..."
