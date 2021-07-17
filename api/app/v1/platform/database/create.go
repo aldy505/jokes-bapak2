@@ -7,7 +7,7 @@ import (
 	"github.com/aldy505/bob"
 )
 
-// Set up the table connection, create table if not exists
+// Setup the table connection, create table if not exists
 func Setup() error {
 	db := New()
 

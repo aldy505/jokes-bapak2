@@ -45,7 +45,12 @@ func GetRandomJokeFromCache(memory *cache.Cache) (string, error) {
 		return "", nil
 	}
 
-	random := rand.Intn(len(data))
+	dataLength := len(data)
+	if dataLength == 0 {
+		return "", models.ErrEmpty
+	}
+
+	random := rand.Intn(dataLength)
 	joke := data[random].Link
 
 	return joke, nil
