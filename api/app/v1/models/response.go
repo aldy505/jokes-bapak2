@@ -5,6 +5,6 @@ type Error struct {
 }
 
 type ResponseJoke struct {
-	Link    string `json:"link"`
-	Message string `json:"message"`
+	Link    string `json:"link,omitempty"`
+	Message string `json:"message,omitempty"`
 }

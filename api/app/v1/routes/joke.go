@@ -15,7 +15,10 @@ func Joke(app *fiber.App) *fiber.App {
 	app.Get("/today", handler.TodayJoke)
 
 	// Joke by ID
-	app.Get("/:id", handler.JokeByID)
+	app.Get("/id/:id", handler.JokeByID)
+
+	// Count total jokes
+	app.Get("/total", handler.TotalJokes)
 
 	// Add new joke
 	app.Put("/", middleware.RequireAuth(), handler.AddNewJoke)
