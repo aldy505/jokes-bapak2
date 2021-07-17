@@ -2,6 +2,7 @@
   "meta": {
     "title": "Jokesbapak2",
     "tagline": "Koleksi jokes bapak2 terbesar",
+    "tagline-total": "Koleksi jokes bapak2 terbesar ({total}!)",
     "explanation": "Daripada mengirimkan candaan dalam format JSON seperti yang lainnya, kami mengirimkan gambar!"
   },
   "error": {

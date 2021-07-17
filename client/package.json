@@ -42,6 +42,7 @@
     "@fontsource/rubik": "4.5.0",
     "@sentry/browser": "6.9.0",
     "dotenv": "10.0.0",
+    "ohmyfetch": "^0.2.0",
     "svelte-i18n": "3.3.9"
   }
 }

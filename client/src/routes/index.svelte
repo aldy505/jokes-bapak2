@@ -1,8 +1,25 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
   import { _ } from 'svelte-i18n';
+  import { $fetch as omf } from 'ohmyfetch';
   import { goto } from '$app/navigation';
   import env from '$lib/env';
   import Codeblock from '../components/codeblock.svelte';
+
+  interface TotalResponse {
+    message: string;
+  }
+
+  let total;
+
+  onMount(async () => {
+    const totalJokes = async (): Promise<string> => {
+      const response = await omf<TotalResponse>(`${env.API_ENDPOINT}/total`);
+      return response.message;
+    };
+
+    total = await totalJokes();
+  });
 </script>
 
 <svelte:head>
@@ -19,7 +36,7 @@
 <section>
   <div class="flex flex-col lg:flex-row items-center py-8">
     <div class="flex-1">
-      <h1 class="text-5xl md:text-6xl font-bold py-2">{$_('meta.tagline')}</h1>
+      <h1 class="text-5xl md:text-6xl font-bold py-2">{$_('meta.tagline-total', { values: { total } })}</h1>
       <p class="text-base py-4 md:w-2/3">{$_('meta.explanation')}</p>
     </div>
     <div class="flex-1 md:px-6 w-full">

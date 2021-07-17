@@ -2,6 +2,7 @@
   "meta": {
     "title": "Jokesbapak2",
     "tagline": "Largest collection of Indonesian dad jokes",
+    "tagline-total": "Largest collection ({total}!) of Indonesian dad jokes",
     "explanation": "Instead of returning a joke in JSON format like others normally would, we return it on images!"
   },
   "error": {
