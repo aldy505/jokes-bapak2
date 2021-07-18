@@ -84,7 +84,7 @@
       },
       "id": {
         "title": "Get joke by ID",
-        "body": "You'll get consistent joke for every call with the same ID."
+        "body": "You'll get consistent joke for every call with the same ID. Where ID is a number ranging from 1 to {total}."
       },
       "total": {
         "title": "Get total number of jokes",

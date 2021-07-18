@@ -84,7 +84,7 @@
       },
       "id": {
         "title": "Dapatkan joke berdasarkan ID",
-        "body": "Bapak akan dapat hasil yang konsisten pada setiap request dengan ID yang sama."
+        "body": "Bapak akan dapat hasil yang konsisten pada setiap request dengan ID yang sama. Dimana ID adalah angka diantara 1 hingga {total}."
       },
       "total": {
         "title": "Dapatkan total jumlah jokes",

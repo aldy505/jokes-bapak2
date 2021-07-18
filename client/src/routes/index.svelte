@@ -36,7 +36,7 @@
 <section>
   <div class="flex flex-col lg:flex-row items-center py-8">
     <div class="flex-1">
-      <h1 class="text-5xl md:text-6xl font-bold py-2">{$_('meta.tagline-total', { values: { total } })}</h1>
+      <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold py-2">{$_('meta.tagline-total', { values: { total } })}</h1>
       <p class="text-base py-4 md:w-2/3">{$_('meta.explanation')}</p>
     </div>
     <div class="flex-1 md:px-6 w-full">

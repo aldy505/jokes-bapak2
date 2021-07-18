@@ -24,19 +24,33 @@
       <slot />
     </main>
 
-    <footer class="font-body py-8">
-      <p class="text-sm opacity-50 hover:opacity-90 transition duration-300 ease-in-out inline-block">
-        {$_('footer.made')} <span class="text-red-500">&#10084;</span>
-        {$_('footer.indonesia')}.
-        {$_('footer.available')}
-        <a href="https://www.github.com/aldy505/jokes-bapak2-api" class="hover:underline">{$_('footer.github')}</a>.
-      </p>
-      <p class="text-sm opacity-50 inline-block">&nbsp;|&nbsp;</p>
-      <p class="text-sm opacity-50 hover:opacity-90 transition duration-300 ease-in-out inline-block">
-        {$_('footer.language')}
-        <a href="?lang=en" target="_top" class="hover:underline">{$_('footer.english')}</a>
-        <a href="?lang=id" target="_top" class="hover:underline">{$_('footer.indonesian')}</a>
-      </p>
+    <footer class="font-body py-8 w-full md:w-1/2 lg:w-2/5">
+      <div class="flex flex-col md:flex-row flex-wrap">
+        <div class="flex-initial pr-3">
+          <p class="text-sm opacity-50 hover:opacity-90 transition duration-300 ease-in-out inline-block">
+            {$_('footer.made')} <span class="text-red-500">&#10084;</span>
+            {$_('footer.indonesia')}.
+          </p>
+        </div>
+        <div class="flex-initial pr-3">
+          <p class="text-sm opacity-50 hover:opacity-90 transition duration-300 ease-in-out inline-block">
+            {$_('footer.available')}
+            <a href="https://www.github.com/aldy505/jokes-bapak2-api" class="hover:underline">{$_('footer.github')}</a>.
+          </p>
+        </div>
+        <div class="flex-initial pr-3">
+          <p class="text-sm opacity-50 hover:opacity-90 transition duration-300 ease-in-out inline-block">
+            {$_('footer.language')}
+            <a href="?lang=en" target="_top" class="hover:underline">{$_('footer.english')}</a>
+            <a href="?lang=id" target="_top" class="hover:underline">{$_('footer.indonesian')}</a>.
+          </p>
+        </div>
+        <div class="flex-initial pr-3">
+          <p class="text-sm opacity-50 hover:opacity-90 transition duration-300 ease-in-out inline-block">
+            <a href="https://jokesbapak2-analytics.herokuapp.com/share/1xYuVSyl/Jokes%20Bapak2" class="hover:underline">Analytics</a>.
+          </p>
+        </div>
+      </div>
     </footer>
   </div>
 </div>
