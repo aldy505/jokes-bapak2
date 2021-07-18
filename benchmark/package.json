@@ -1,0 +1,24 @@
+{
+  "name": "benchmark",
+  "version": "1.0.0",
+  "description": "Benchmarking for Jokes Bapak2 API",
+  "repository": "https://github.com/aldy505/jokes-bapak2-api/tree/master/benchmark",
+  "contributors": [
+    {
+      "name": "Reinaldy Rafli",
+      "email": "aldy505@tutanota.com",
+      "url": "https://github.com/aldy505"
+    }
+  ],
+  "license": "GPL-3.0",
+  "type": "module",
+  "scripts": {
+    "start": "yarn run b:random && yarn run b:today && yarn run b:byid",
+    "b:random": "autocannon --title \"GET /v1/ - Random Jokes\" --method GET --amount 100 --bailout 3 --headers user-agent=benchmark https://jokesbapak2.herokuapp.com/v1/",
+    "b:today": "autocannon --title \"GET /v1/today - Today's Jokes\" --method GET --amount 100 --bailout 3 --headers user-agent=benchmark https://jokesbapak2.herokuapp.com/v1/today",
+    "b:byid": "autocannon --title \"GET /v1/id/5 - Joke by ID\" --method GET --amount 100 --bailout 3 --headers user-agent=benchmark https://jokesbapak2.herokuapp.com/v1/id/5"
+  },
+  "dependencies": {
+    "autocannon": "^7.4.0"
+  }
+}
