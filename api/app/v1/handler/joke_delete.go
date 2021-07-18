@@ -2,17 +2,20 @@ package handler
 
 import (
 	"context"
+	"strconv"
 
 	"jokes-bapak2-api/app/v1/core"
 	"jokes-bapak2-api/app/v1/models"
 
 	"github.com/Masterminds/squirrel"
 	"github.com/gofiber/fiber/v2"
-	"github.com/patrickmn/go-cache"
 )
 
 func DeleteJoke(c *fiber.Ctx) error {
-	id := c.Params("id")
+	id, err := strconv.Atoi(c.Params("id"))
+	if err != nil {
+		return err
+	}
 
 	// Check if the joke exists
 	sql, args, err := psql.Select("id").From("jokesbapak2").Where(squirrel.Eq{"id": id}).ToSql()
@@ -20,7 +23,7 @@ func DeleteJoke(c *fiber.Ctx) error {
 		return err
 	}
 
-	var jokeID string
+	var jokeID int
 	err = db.QueryRow(context.Background(), sql, args...).Scan(&jokeID)
 	if err != nil {
 		return err
@@ -41,7 +44,10 @@ func DeleteJoke(c *fiber.Ctx) error {
 		if err != nil {
 			return err
 		}
-		memory.Set("jokes", jokes, cache.NoExpiration)
+		err = memory.Set("jokes", jokes)
+		if err != nil {
+			return err
+		}
 
 		return c.Status(fiber.StatusOK).JSON(models.ResponseJoke{
 			Message: "specified joke id has been deleted",

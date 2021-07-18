@@ -1,35 +1,43 @@
 package handler
 
 import (
-	"encoding/json"
 	"jokes-bapak2-api/app/v1/core"
 	"jokes-bapak2-api/app/v1/models"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/patrickmn/go-cache"
+	"github.com/pquerna/ffjson/ffjson"
 )
 
 func TotalJokes(c *fiber.Ctx) error {
-	checkCache := core.CheckJokesCache(memory)
+	checkCache, err := core.CheckJokesCache(memory)
+	if err != nil {
+		return err
+	}
 
 	if !checkCache {
 		jokes, err := core.GetAllJSONJokes(db)
 		if err != nil {
 			return err
 		}
-		memory.Set("jokes", jokes, cache.NoExpiration)
+		err = memory.Set("jokes", jokes)
+		if err != nil {
+			return err
+		}
 	}
 
-	jokes, found := memory.Get("jokes")
-	if !found {
-		return c.Status(fiber.StatusInternalServerError).JSON(models.Error{
-			Error: "no data found",
-		})
+	jokes, err := memory.Get("jokes")
+	if err != nil {
+		if err.Error() == "Entry not found" {
+			return c.Status(fiber.StatusInternalServerError).JSON(models.Error{
+				Error: "no data found",
+			})
+		}
+		return err
 	}
 
 	var data []models.Joke
-	err := json.Unmarshal(jokes.([]byte), &data)
+	err = ffjson.Unmarshal(jokes, &data)
 	if err != nil {
 		return err
 	}

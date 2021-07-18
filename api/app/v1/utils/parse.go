@@ -1,8 +1,9 @@
 package utils
 
 import (
-	"encoding/json"
 	"strconv"
+
+	"github.com/pquerna/ffjson/ffjson"
 )
 
 // ParseToFormBody converts a body to form data type
@@ -25,7 +26,7 @@ func ParseToFormBody(body map[string]interface{}) ([]byte, error) {
 
 // ParseToJSONBody converts a body to json data type
 func ParseToJSONBody(body map[string]interface{}) ([]byte, error) {
-	b, err := json.Marshal(body)
+	b, err := ffjson.Marshal(body)
 	if err != nil {
 		return nil, err
 	}

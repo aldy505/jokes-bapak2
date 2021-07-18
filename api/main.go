@@ -7,12 +7,8 @@ import (
 	"time"
 
 	v1 "jokes-bapak2-api/app/v1"
-	"jokes-bapak2-api/app/v1/platform/database"
 
-	"github.com/getsentry/sentry-go"
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/cors"
-	"github.com/gofiber/fiber/v2/middleware/etag"
 	"github.com/gofiber/fiber/v2/middleware/favicon"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
 	_ "github.com/joho/godotenv/autoload"
@@ -20,37 +16,17 @@ import (
 
 func main() {
 	timeoutDefault, _ := time.ParseDuration("1m")
-	err := sentry.Init(sentry.ClientOptions{
-		Dsn: os.Getenv("SENTRY_DSN"),
-
-		// Enable printing of SDK debug messages.
-		// Useful when getting started or trying to figure something out.
-		Debug: true,
-	})
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	defer sentry.Flush(2 * time.Second)
-
-	err = database.Setup()
-	if err != nil {
-		sentry.CaptureException(err)
-		log.Fatal(err)
-	}
 
 	app := fiber.New(fiber.Config{
 		ReadTimeout:  timeoutDefault,
 		WriteTimeout: timeoutDefault,
-		ErrorHandler: errorHandler,
 	})
-	app.Use(cors.New())
+
 	app.Use(limiter.New(limiter.Config{
 		Max:          15,
 		Expiration:   1 * time.Minute,
 		LimitReached: limitHandler,
 	}))
-	app.Use(etag.New())
 	app.Use(favicon.New(favicon.Config{
 		File: "./favicon.png",
 	}))
@@ -63,14 +39,6 @@ func main() {
 	} else {
 		StartServerWithGracefulShutdown(app)
 	}
-}
-
-func errorHandler(c *fiber.Ctx, err error) error {
-	log.Println(err)
-	sentry.CaptureException(err)
-	return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-		"error": "Something went wrong on our end",
-	})
 }
 
 func limitHandler(c *fiber.Ctx) error {

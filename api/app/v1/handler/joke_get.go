@@ -11,7 +11,6 @@ import (
 	"jokes-bapak2-api/app/v1/utils"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/patrickmn/go-cache"
 )
 
 func TodayJoke(c *fiber.Ctx) error {
@@ -67,14 +66,20 @@ func TodayJoke(c *fiber.Ctx) error {
 }
 
 func SingleJoke(c *fiber.Ctx) error {
-	checkCache := core.CheckJokesCache(memory)
+	checkCache, err := core.CheckJokesCache(memory)
+	if err != nil {
+		return err
+	}
 
 	if !checkCache {
 		jokes, err := core.GetAllJSONJokes(db)
 		if err != nil {
 			return err
 		}
-		memory.Set("jokes", jokes, cache.NoExpiration)
+		err = memory.Set("jokes", jokes)
+		if err != nil {
+			return err
+		}
 	}
 
 	link, err := core.GetRandomJokeFromCache(memory)
@@ -99,14 +104,17 @@ func SingleJoke(c *fiber.Ctx) error {
 }
 
 func JokeByID(c *fiber.Ctx) error {
-	checkCache := core.CheckJokesCache(memory)
+	checkCache, err := core.CheckJokesCache(memory)
+	if err != nil {
+		return err
+	}
 
 	if !checkCache {
 		jokes, err := core.GetAllJSONJokes(db)
 		if err != nil {
 			return err
 		}
-		memory.Set("jokes", jokes, cache.NoExpiration)
+		err = memory.Set("jokes", jokes)
 		if err != nil {
 			return err
 		}

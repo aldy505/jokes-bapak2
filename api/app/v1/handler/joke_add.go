@@ -7,7 +7,6 @@ import (
 	"jokes-bapak2-api/app/v1/models"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/patrickmn/go-cache"
 )
 
 func AddNewJoke(c *fiber.Ctx) error {
@@ -32,7 +31,10 @@ func AddNewJoke(c *fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-	memory.Set("jokes", jokes, cache.NoExpiration)
+	err = memory.Set("jokes", jokes)
+	if err != nil {
+		return err
+	}
 
 	return c.Status(fiber.StatusCreated).JSON(models.ResponseJoke{
 		Link: body.Link,

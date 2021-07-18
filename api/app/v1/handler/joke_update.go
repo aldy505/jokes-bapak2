@@ -8,7 +8,6 @@ import (
 
 	"github.com/Masterminds/squirrel"
 	"github.com/gofiber/fiber/v2"
-	"github.com/patrickmn/go-cache"
 )
 
 func UpdateJoke(c *fiber.Ctx) error {
@@ -46,7 +45,11 @@ func UpdateJoke(c *fiber.Ctx) error {
 		if err != nil {
 			return err
 		}
-		memory.Set("jokes", jokes, cache.NoExpiration)
+
+		err = memory.Set("jokes", jokes)
+		if err != nil {
+			return err
+		}
 
 		return c.Status(fiber.StatusOK).JSON(models.ResponseJoke{
 			Message: "specified joke id has been updated",

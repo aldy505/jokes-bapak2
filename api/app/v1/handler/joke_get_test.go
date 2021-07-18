@@ -15,7 +15,7 @@ import (
 )
 
 var db = database.New()
-var jokesData = []interface{}{1, "https://loremflickr.com/320/240", 1, 2, "https://loremflickr.com/320/240", 1, 3, "https://loremflickr.com/320/240", 1}
+var jokesData = []interface{}{1, "https://picsum.photos/id/1/200/300", 1, 2, "https://picsum.photos/id/2/200/300", 1, 3, "https://picsum.photos/id/3/200/300", 1}
 
 func cleanup() {
 	_, err := db.Query(context.Background(), "DROP TABLE \"jokesbapak2\"")
@@ -34,7 +34,7 @@ func TestJokeGet(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	_, err = db.Query(context.Background(), "INSERT INTO \"administrators\" (key, token, last_used) VALUES ($1, $2, $3);", "very secure", "not the real one", time.Now().Format(time.RFC3339))
+	_, err = db.Query(context.Background(), "INSERT INTO \"administrators\" (id, key, token, last_used) VALUES ($1, $2, $3, $4);", 1, "very secure", "not the real one", time.Now().Format(time.RFC3339))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -48,7 +48,6 @@ func TestJokeGet(t *testing.T) {
 	app := v1.New()
 
 	t.Run("TodayJoke - should return 200", func(t *testing.T) {
-		t.SkipNow()
 		req, _ := http.NewRequest("GET", "/today", nil)
 		res, err := app.Test(req, -1)
 
@@ -60,7 +59,6 @@ func TestJokeGet(t *testing.T) {
 	})
 
 	t.Run("SingleJoke - should return 200", func(t *testing.T) {
-		t.SkipNow()
 		req, _ := http.NewRequest("GET", "/", nil)
 		res, err := app.Test(req, -1)
 
@@ -72,8 +70,7 @@ func TestJokeGet(t *testing.T) {
 	})
 
 	t.Run("JokeByID - should return 200", func(t *testing.T) {
-		t.SkipNow()
-		req, _ := http.NewRequest("GET", "/2", nil)
+		req, _ := http.NewRequest("GET", "/id/1", nil)
 		res, err := app.Test(req, -1)
 
 		assert.Equalf(t, false, err != nil, "joke by id")
@@ -84,8 +81,7 @@ func TestJokeGet(t *testing.T) {
 	})
 
 	t.Run("JokeByID - should return 404", func(t *testing.T) {
-		t.SkipNow()
-		req, _ := http.NewRequest("GET", "/300", nil)
+		req, _ := http.NewRequest("GET", "/id/300", nil)
 		res, err := app.Test(req, -1)
 
 		assert.Equalf(t, false, err != nil, "joke by id")

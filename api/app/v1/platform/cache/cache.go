@@ -1,12 +1,16 @@
 package cache
 
 import (
+	"log"
 	"time"
 
-	gocache "github.com/patrickmn/go-cache"
+	"github.com/allegro/bigcache/v3"
 )
 
-func InMemory() *gocache.Cache {
-	cache := gocache.New(6*time.Hour, 6*time.Hour)
+func InMemory() *bigcache.BigCache {
+	cache, err := bigcache.NewBigCache(bigcache.DefaultConfig(6 * time.Hour))
+	if err != nil {
+		log.Fatalln(err)
+	}
 	return cache
 }

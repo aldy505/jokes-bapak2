@@ -17,6 +17,8 @@ $ go run main.go
 $ go build main.go
 ```
 
+There is a placeholder data ready for you to query it manually in `/app/v1/platform/database/placeholder.sql`. Have a good time developing!
+
 ## Used packages
 
 | Name | Version | Type |

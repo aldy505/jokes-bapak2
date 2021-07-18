@@ -2,13 +2,13 @@ package core
 
 import (
 	"context"
-	"encoding/json"
 	"jokes-bapak2-api/app/v1/models"
 	"math/rand"
 
+	"github.com/allegro/bigcache/v3"
 	"github.com/georgysavva/scany/pgxscan"
 	"github.com/jackc/pgx/v4/pgxpool"
-	"github.com/patrickmn/go-cache"
+	"github.com/pquerna/ffjson/ffjson"
 )
 
 // GetAllJSONJokes fetch the database for all the jokes then output it as a JSON []byte.
@@ -25,7 +25,7 @@ func GetAllJSONJokes(db *pgxpool.Pool) ([]byte, error) {
 		return nil, err
 	}
 
-	data, err := json.Marshal(jokes)
+	data, err := ffjson.Marshal(jokes)
 	if err != nil {
 		return nil, err
 	}
@@ -34,18 +34,22 @@ func GetAllJSONJokes(db *pgxpool.Pool) ([]byte, error) {
 }
 
 // GetRandomJokeFromCache returns a link string of a random joke from cache.
-func GetRandomJokeFromCache(memory *cache.Cache) (string, error) {
-	jokes, found := memory.Get("jokes")
-	if !found {
-		return "", models.ErrNotFound
+func GetRandomJokeFromCache(memory *bigcache.BigCache) (string, error) {
+	jokes, err := memory.Get("jokes")
+	if err != nil {
+		if err.Error() == "Entry not found" {
+			return "", models.ErrNotFound
+		}
+		return "", err
 	}
 
 	var data []models.Joke
-	err := json.Unmarshal(jokes.([]byte), &data)
+	err = ffjson.Unmarshal(jokes, &data)
 	if err != nil {
 		return "", nil
 	}
 
+	// Return an error if the database is empty
 	dataLength := len(data)
 	if dataLength == 0 {
 		return "", models.ErrEmpty
@@ -58,20 +62,30 @@ func GetRandomJokeFromCache(memory *cache.Cache) (string, error) {
 }
 
 // CheckJokesCache checks if there is some value inside jokes cache.
-func CheckJokesCache(memory *cache.Cache) bool {
-	_, found := memory.Get("jokes")
-	return found
+func CheckJokesCache(memory *bigcache.BigCache) (bool, error) {
+	_, err := memory.Get("jokes")
+	if err != nil {
+		if err.Error() == "Entry not found" {
+			return false, nil
+		}
+		return false, err
+	}
+
+	return true, nil
 }
 
 // GetCachedJokeByID returns a link string of a certain ID from cache.
-func GetCachedJokeByID(memory *cache.Cache, id int) (string, error) {
-	jokes, found := memory.Get("jokes")
-	if !found {
-		return "", models.ErrNotFound
+func GetCachedJokeByID(memory *bigcache.BigCache, id int) (string, error) {
+	jokes, err := memory.Get("jokes")
+	if err != nil {
+		if err.Error() == "Entry not found" {
+			return "", models.ErrNotFound
+		}
+		return "", err
 	}
 
 	var data []models.Joke
-	err := json.Unmarshal(jokes.([]byte), &data)
+	err = ffjson.Unmarshal(jokes, &data)
 	if err != nil {
 		return "", nil
 	}
