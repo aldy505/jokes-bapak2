@@ -23,7 +23,7 @@ func main() {
 	})
 
 	app.Use(limiter.New(limiter.Config{
-		Max:          15,
+		Max:          30,
 		Expiration:   1 * time.Minute,
 		LimitReached: limitHandler,
 	}))
