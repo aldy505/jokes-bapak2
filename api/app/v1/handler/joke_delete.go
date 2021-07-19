@@ -40,11 +40,11 @@ func DeleteJoke(c *fiber.Ctx) error {
 			return err
 		}
 
-		jokes, err := core.GetAllJSONJokes(db)
+		err = core.SetAllJSONJoke(db, memory)
 		if err != nil {
 			return err
 		}
-		err = memory.Set("jokes", jokes)
+		err = core.SetTotalJoke(db, memory)
 		if err != nil {
 			return err
 		}

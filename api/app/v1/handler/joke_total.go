@@ -3,30 +3,27 @@ package handler
 import (
 	"jokes-bapak2-api/app/v1/core"
 	"jokes-bapak2-api/app/v1/models"
+	"log"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/pquerna/ffjson/ffjson"
 )
 
 func TotalJokes(c *fiber.Ctx) error {
-	checkCache, err := core.CheckJokesCache(memory)
+	checkTotal, err := core.CheckTotalJokesCache(memory)
 	if err != nil {
 		return err
 	}
 
-	if !checkCache {
-		jokes, err := core.GetAllJSONJokes(db)
-		if err != nil {
-			return err
-		}
-		err = memory.Set("jokes", jokes)
+	if !checkTotal {
+		err = core.SetTotalJoke(db, memory)
 		if err != nil {
 			return err
 		}
 	}
 
-	jokes, err := memory.Get("jokes")
+	total, err := memory.Get("total")
+	log.Println(err)
 	if err != nil {
 		if err.Error() == "Entry not found" {
 			return c.Status(fiber.StatusInternalServerError).JSON(models.Error{
@@ -36,14 +33,7 @@ func TotalJokes(c *fiber.Ctx) error {
 		return err
 	}
 
-	var data []models.Joke
-	err = ffjson.Unmarshal(jokes, &data)
-	if err != nil {
-		return err
-	}
-
-	dataLength := strconv.Itoa(len(data))
 	return c.Status(fiber.StatusOK).JSON(models.ResponseJoke{
-		Message: dataLength,
+		Message: strconv.Itoa(int(total[0])),
 	})
 }

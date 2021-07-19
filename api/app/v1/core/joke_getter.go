@@ -74,6 +74,19 @@ func CheckJokesCache(memory *bigcache.BigCache) (bool, error) {
 	return true, nil
 }
 
+// CheckTotalJokesCache literally does what the name is for
+func CheckTotalJokesCache(memory *bigcache.BigCache) (bool, error) {
+	_, err := memory.Get("total")
+	if err != nil {
+		if err.Error() == "Entry not found" {
+			return false, nil
+		}
+		return false, err
+	}
+
+	return true, nil
+}
+
 // GetCachedJokeByID returns a link string of a certain ID from cache.
 func GetCachedJokeByID(memory *bigcache.BigCache, id int) (string, error) {
 	jokes, err := memory.Get("jokes")
@@ -98,4 +111,17 @@ func GetCachedJokeByID(memory *bigcache.BigCache, id int) (string, error) {
 	}
 
 	return "", nil
+}
+
+// GetCachedTotalJokes
+func GetCachedTotalJokes(memory *bigcache.BigCache) (int, error) {
+	total, err := memory.Get("total")
+	if err != nil {
+		if err.Error() == "Entry not found" {
+			return 0, models.ErrNotFound
+		}
+		return 0, err
+	}
+
+	return int(total[0]), nil
 }

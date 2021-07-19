@@ -44,20 +44,13 @@ func New() *fiber.App {
 		log.Fatal(err)
 	}
 
-	checkCache, err := core.CheckJokesCache(memory)
+	err = core.SetAllJSONJoke(db, memory)
 	if err != nil {
 		log.Fatalln(err)
 	}
-
-	if !checkCache {
-		jokes, err := core.GetAllJSONJokes(db)
-		if err != nil {
-			log.Fatalln(err)
-		}
-		err = memory.Set("jokes", jokes)
-		if err != nil {
-			log.Fatalln(err)
-		}
+	err = core.SetTotalJoke(db, memory)
+	if err != nil {
+		log.Fatalln(err)
 	}
 
 	app.Use(cors.New())
