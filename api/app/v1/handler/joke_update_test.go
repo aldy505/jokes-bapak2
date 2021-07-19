@@ -14,6 +14,7 @@ import (
 )
 
 func TestUpdateJoke(t *testing.T) {
+	t.SkipNow()
 	err := database.Setup()
 	if err != nil {
 		t.Fatal(err)
@@ -33,7 +34,6 @@ func TestUpdateJoke(t *testing.T) {
 	app := v1.New()
 
 	t.Run("Update - should return 200", func(t *testing.T) {
-		t.SkipNow()
 		reqBody := strings.NewReader("{\"link\":\"https://picsum.photos/id/9/200/300\",\"key\":\"very secure\",\"token\":\"password\"}")
 		req, _ := http.NewRequest("PATCH", "/id/1", reqBody)
 		res, err := app.Test(req, -1)
@@ -47,7 +47,6 @@ func TestUpdateJoke(t *testing.T) {
 	})
 
 	t.Run("Update - id doesn't exists", func(t *testing.T) {
-		t.SkipNow()
 		reqBody := strings.NewReader("{\"link\":\"https://picsum.photos/id/9/200/300\",\"key\":\"very secure\",\"token\":\"password\"}")
 		req, _ := http.NewRequest("PATCH", "/id/100", reqBody)
 		res, err := app.Test(req, -1)

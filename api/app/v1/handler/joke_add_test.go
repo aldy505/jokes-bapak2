@@ -14,6 +14,7 @@ import (
 )
 
 func TestAddNewJoke(t *testing.T) {
+	// t.SkipNow()
 	err := database.Setup()
 	if err != nil {
 		t.Fatal(err)
@@ -28,8 +29,7 @@ func TestAddNewJoke(t *testing.T) {
 
 	app := v1.New()
 
-	t.Run("Add - should return 200", func(t *testing.T) {
-		t.SkipNow()
+	t.Run("Add - should return 201", func(t *testing.T) {
 		reqBody := strings.NewReader("{\"link\":\"https://picsum.photos/id/1/200/300\",\"key\":\"very secure\",\"token\":\"password\"}")
 		req, _ := http.NewRequest("PUT", "/", reqBody)
 		req.Header.Set("content-type", "application/json")
@@ -37,7 +37,7 @@ func TestAddNewJoke(t *testing.T) {
 		res, err := app.Test(req, -1)
 
 		assert.Equalf(t, false, err != nil, "joke add")
-		assert.Equalf(t, 200, res.StatusCode, "joke add")
+		assert.Equalf(t, 201, res.StatusCode, "joke add")
 		assert.NotEqualf(t, 0, res.ContentLength, "joke add")
 		body, err := ioutil.ReadAll(res.Body)
 		assert.Nilf(t, err, "joke add")

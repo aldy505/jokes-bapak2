@@ -9,7 +9,7 @@ import (
 
 func TestIsToday(t *testing.T) {
 	t.Run("should be able to tell if it's today", func(t *testing.T) {
-		today, err := utils.IsToday(time.Now().UTC().Format(time.RFC3339))
+		today, err := utils.IsToday(time.Now().Format(time.RFC3339))
 		if err != nil {
 			t.Error(err.Error())
 		}
