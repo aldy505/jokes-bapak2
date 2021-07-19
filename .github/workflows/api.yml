@@ -79,3 +79,7 @@ jobs:
           environment: production
           set_commits: skip
           version: ${{ github.sha }}
+
+      - uses: codecov/codecov-action@v2
+        with:
+          flags: api

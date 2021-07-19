@@ -3,7 +3,6 @@ package handler
 import (
 	"jokes-bapak2-api/app/v1/core"
 	"jokes-bapak2-api/app/v1/models"
-	"log"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
@@ -23,7 +22,7 @@ func TotalJokes(c *fiber.Ctx) error {
 	}
 
 	total, err := memory.Get("total")
-	log.Println(err)
+
 	if err != nil {
 		if err.Error() == "Entry not found" {
 			return c.Status(fiber.StatusInternalServerError).JSON(models.Error{

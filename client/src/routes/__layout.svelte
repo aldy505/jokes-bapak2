@@ -47,7 +47,9 @@
         </div>
         <div class="flex-initial pr-3">
           <p class="text-sm opacity-50 hover:opacity-90 transition duration-300 ease-in-out inline-block">
-            <a href="https://jokesbapak2-analytics.herokuapp.com/share/1xYuVSyl/Jokes%20Bapak2" class="hover:underline">Analytics</a>.
+            <a href="https://jokesbapak2-analytics.herokuapp.com/share/1xYuVSyl/Jokes%20Bapak2" class="hover:underline"
+              >Analytics</a
+            >.
           </p>
         </div>
       </div>

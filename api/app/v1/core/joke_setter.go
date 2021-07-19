@@ -28,12 +28,10 @@ func SetTotalJoke(db *pgxpool.Pool, memory *bigcache.BigCache) error {
 	}
 
 	if !check {
-		return models.ErrEmpty
-	}
-
-	err = SetAllJSONJoke(db, memory)
-	if err != nil {
-		return err
+		err = SetAllJSONJoke(db, memory)
+		if err != nil {
+			return err
+		}
 	}
 
 	jokes, err := memory.Get("jokes")
