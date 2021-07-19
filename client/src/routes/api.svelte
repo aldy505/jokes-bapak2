@@ -1,9 +1,9 @@
 <script lang="ts">
   // This page is meant to explain available API endpoints.
-  import {onMount} from 'svelte';
+  import { onMount } from 'svelte';
   import { _ } from 'svelte-i18n';
   import env from '$lib/env';
-  import {$fetch as omf} from 'ohmyfetch';
+  import { $fetch as omf } from 'ohmyfetch';
   import Codeblock from '../components/codeblock.svelte';
   import Notice from '../components/notice.svelte';
 
@@ -53,7 +53,7 @@
     GET {env.API_ENDPOINT}/today
   </Codeblock>
   <h2>{$_('api.get.id.title')}</h2>
-  <p>{$_('api.get.id.body', { values: { total }})}</p>
+  <p>{$_('api.get.id.body', { values: { total } })}</p>
   <Codeblock>
     GET {env.API_ENDPOINT}/id/&lcub;id&rcub;
   </Codeblock>
