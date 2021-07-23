@@ -16,6 +16,18 @@ func AddNewJoke(c *fiber.Ctx) error {
 		return err
 	}
 
+	// Check link validity
+	valid, err := core.CheckImageValidity(client, body.Link)
+	if err != nil {
+		return err
+	}
+
+	if !valid {
+		return c.Status(fiber.StatusBadRequest).JSON(models.Error{
+			Error: "URL provided is not a valid image",
+		})
+	}
+
 	sql, args, err := psql.Insert("jokesbapak2").Columns("link", "creator").Values(body.Link, c.Locals("userID")).ToSql()
 	if err != nil {
 		return err

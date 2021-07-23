@@ -31,12 +31,24 @@ func UpdateJoke(c *fiber.Ctx) error {
 			return err
 		}
 
+		// Check link validity
+		valid, err := core.CheckImageValidity(client, body.Link)
+		if err != nil {
+			return err
+		}
+
+		if !valid {
+			return c.Status(fiber.StatusBadRequest).JSON(models.Error{
+				Error: "URL provided is not a valid image",
+			})
+		}
+
 		sql, args, err = psql.Update("jokesbapak2").Set("link", body.Link).Set("creator", c.Locals("userID")).ToSql()
 		if err != nil {
 			return err
 		}
 
-		_, err := db.Query(context.Background(), sql, args...)
+		_, err = db.Query(context.Background(), sql, args...)
 		if err != nil {
 			return err
 		}
