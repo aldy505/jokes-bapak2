@@ -15,7 +15,7 @@ import (
 )
 
 var db = database.New()
-var jokesData = []interface{}{1, "https://picsum.photos/id/1/200/300", 1, 2, "https://picsum.photos/id/2/200/300", 1, 3, "https://picsum.photos/id/3/200/300", 1}
+var jokesData = []interface{}{1, "https://via.placeholder.com/300/06f/fff.png", 1, 2, "https://via.placeholder.com/300/07f/fff.png", 1, 3, "https://via.placeholder.com/300/08f/fff.png", 1}
 
 func cleanup() {
 	_, err := db.Query(context.Background(), "DROP TABLE \"jokesbapak2\"")

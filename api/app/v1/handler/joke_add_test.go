@@ -30,7 +30,7 @@ func TestAddNewJoke(t *testing.T) {
 	app := v1.New()
 
 	t.Run("Add - should return 201", func(t *testing.T) {
-		reqBody := strings.NewReader("{\"link\":\"https://picsum.photos/id/1/200/300\",\"key\":\"very secure\",\"token\":\"password\"}")
+		reqBody := strings.NewReader("{\"link\":\"https://via.placeholder.com/300/07f/ff0000.png\",\"key\":\"very secure\",\"token\":\"password\"}")
 		req, _ := http.NewRequest("PUT", "/", reqBody)
 		req.Header.Set("content-type", "application/json")
 		req.Header.Add("accept", "application/json")
@@ -41,7 +41,21 @@ func TestAddNewJoke(t *testing.T) {
 		assert.NotEqualf(t, 0, res.ContentLength, "joke add")
 		body, err := ioutil.ReadAll(res.Body)
 		assert.Nilf(t, err, "joke add")
-		assert.Equalf(t, "{\"link\":\"https://picsum.photos/id/1/200/300\"}", string(body), "joke add")
-
+		assert.Equalf(t, "{\"link\":\"https://via.placeholder.com/300/07f/ff0000.png\"}", string(body), "joke add")
 	})
+
+	t.Run("Add - should not be a valid image", func(t *testing.T) {
+		reqBody := strings.NewReader("{\"link\":\"https://google.com/\",\"key\":\"very secure\",\"token\":\"password\"}")
+		req, _ := http.NewRequest("PUT", "/", reqBody)
+		req.Header.Set("content-type", "application/json")
+		req.Header.Add("accept", "application/json")
+		res, err := app.Test(req, -1)
+
+		assert.Equalf(t, false, err != nil, "joke add")
+		assert.Equalf(t, 400, res.StatusCode, "joke add")
+		body, err := ioutil.ReadAll(res.Body)
+		assert.Nilf(t, err, "joke add")
+		assert.Equalf(t, "{\"error\":\"URL provided is not a valid image\"}", string(body), "joke add")
+	})
+
 }

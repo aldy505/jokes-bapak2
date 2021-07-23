@@ -20,10 +20,10 @@ func CheckImageValidity(client *httpclient.Client, link string) (bool, error) {
 			return false, err
 		}
 
-		if res.StatusCode == 200 && res.ContentLength > 0 && utils.IsIn(ValidContentType, res.Header.Get("content-type")) {
+		if res.StatusCode == 200 && utils.IsIn(ValidContentType, res.Header.Get("content-type")) {
 			return true, nil
 		}
-
+		
 		return false, nil
 	}
 	return false, errors.New("URL must use HTTPS protocol")
