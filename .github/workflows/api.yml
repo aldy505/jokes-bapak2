@@ -1,6 +1,6 @@
 name: API
 
-on: 
+on:
   push:
     branches: [ "master" ]
 

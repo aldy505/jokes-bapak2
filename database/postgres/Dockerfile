@@ -4,7 +4,7 @@ WORKDIR /var/lib/postgresql
 
 COPY . .
 
-RUN apk add openssl
+RUN apk add openssl --no-cache
 
 RUN chmod +x self-signed-ssl
 RUN ./self-signed-ssl

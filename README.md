@@ -48,6 +48,13 @@ Two ways of doing this:
 
 See [CONTRIBUTING](./CONTRIBUTING.md) or README files on each project directory for further instruction on how to run the development environment.
 
+## Thanks to
+
+* [Teknologi Umum](https://t.me/teknologi_umum)
+* [Ronny Gunawan](https://github.com/ronnygunawan) for the caching concept & ideas
+* [artileda](https://github.com/artileda) for the jokes submission
+* [elianiva](https://github.com/elianiva) for solving my SvelteKit problems
+
 ## License
 
 Jokes Bapak2 API is licensed under [GNU GENERAL PUBLIC LICENSE v3 license](./LICENSE)

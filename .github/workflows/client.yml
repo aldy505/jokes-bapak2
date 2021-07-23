@@ -1,6 +1,6 @@
 name: Client
 
-on: 
+on:
   push:
     branches: [ "master" ]
 
@@ -12,7 +12,7 @@ jobs:
     defaults:
       run:
         working-directory: ./client
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -21,7 +21,7 @@ jobs:
         uses: actions/setup-node@v2.1.5
         with:
           node-version: 14.x
-          
+
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
@@ -40,7 +40,7 @@ jobs:
 
       - name: Lint
         run: yarn lint
-      
+
       - name: Build
         run: yarn build
         env:

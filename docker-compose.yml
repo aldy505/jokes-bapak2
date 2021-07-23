@@ -11,7 +11,7 @@ services:
     # Uncomment these if you want to have it on
     # volumes:
     #   ./api:/app
-  
+
   client:
     build: ./client/
     restart: always
@@ -23,7 +23,7 @@ services:
     # Uncomment these if you want to have it on
     # volumes:
     #   ./client:/app
-  
+
   db:
     build: ./database/postgres/
     command: >
@@ -31,9 +31,9 @@ services:
       -c ssl_cert_file=/var/lib/postgresql/server.crt
       -c ssl_key_file=/var/lib/postgresql/server.key
     restart: always
-    ports: 
+    ports:
       - 5432:5432
-    environment: 
+    environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
       POSTGRES_DB: jokesbapak2
@@ -63,7 +63,7 @@ services:
     depends_on:
       - cache
 
-  db-admin:  
+  db-admin:
     image: sosedoff/pgweb:0.11.8
     restart: always
     ports:
