@@ -34,7 +34,7 @@
   <p>
     {$_('why.contribute.body.1')}
     {$_('why.contribute.body.2')}
-    <a href="https://www.github.com/aldy505/jokes-bapak2-api">{$_('why.contribute.body.3')}</a>
+    <a href="https://www.github.com/aldy505/jokes-bapak2">{$_('why.contribute.body.3')}</a>
     {$_('why.contribute.body.4')}
   </p>
 </section>

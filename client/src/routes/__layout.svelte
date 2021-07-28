@@ -35,7 +35,7 @@
         <div class="flex-initial pr-3">
           <p class="text-sm opacity-50 hover:opacity-90 transition duration-300 ease-in-out inline-block">
             {$_('footer.available')}
-            <a href="https://www.github.com/aldy505/jokes-bapak2-api" class="hover:underline">{$_('footer.github')}</a>.
+            <a href="https://www.github.com/aldy505/jokes-bapak2" class="hover:underline">{$_('footer.github')}</a>.
           </p>
         </div>
         <div class="flex-initial pr-3">
