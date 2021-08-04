@@ -3,8 +3,10 @@ package routes
 import (
 	"jokes-bapak2-api/app/v1/handler/joke"
 	"jokes-bapak2-api/app/v1/middleware"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cache"
 )
 
 func Joke(app *fiber.App) *fiber.App {
@@ -12,13 +14,13 @@ func Joke(app *fiber.App) *fiber.App {
 	app.Get("/", joke.SingleJoke)
 
 	// Today's joke
-	app.Get("/today", joke.TodayJoke)
+	app.Get("/today", cache.New(cache.Config{Expiration: 6 * time.Hour}), joke.TodayJoke)
 
 	// Joke by ID
 	app.Get("/id/:id", middleware.OnlyIntegerAsID(), joke.JokeByID)
 
 	// Count total jokes
-	app.Get("/total", joke.TotalJokes)
+	app.Get("/total", cache.New(cache.Config{Expiration: 15 * time.Minute}), joke.TotalJokes)
 
 	// Add new joke
 	app.Put("/", middleware.RequireAuth(), joke.AddNewJoke)

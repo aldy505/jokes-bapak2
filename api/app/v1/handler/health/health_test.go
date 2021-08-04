@@ -49,7 +49,7 @@ func setup() error {
 
 	defer a.Close()
 	defer j.Close()
-	
+
 	return nil
 }
 

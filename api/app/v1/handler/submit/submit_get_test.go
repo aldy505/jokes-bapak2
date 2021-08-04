@@ -32,7 +32,7 @@ func setup() error {
 	if err != nil {
 		return err
 	}
-	
+
 	s, err := db.Query(context.Background(), "INSERT INTO \"submission\" (id, link, created_at, author, status) VALUES ($1, $2, $3, $4, $5), ($6, $7, $8, $9, $10);", submissionData...)
 	if err != nil {
 		return err

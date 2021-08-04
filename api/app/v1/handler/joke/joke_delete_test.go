@@ -18,7 +18,7 @@ func TestDeleteJoke_200(t *testing.T) {
 	}
 
 	defer cleanup()
-	
+
 	reqBody := strings.NewReader("{\"key\":\"very secure\",\"token\":\"password\"}")
 	req, _ := http.NewRequest("DELETE", "/id/1", reqBody)
 	res, err := app.Test(req, -1)
