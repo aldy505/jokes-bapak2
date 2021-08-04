@@ -26,14 +26,18 @@ func TotalJokes(c *fiber.Ctx) error {
 
 	if err != nil {
 		if err.Error() == "Entry not found" {
-			return c.Status(fiber.StatusInternalServerError).JSON(models.Error{
-				Error: "no data found",
-			})
+			return c.
+				Status(fiber.StatusInternalServerError).
+				JSON(models.Error{
+					Error: "no data found",
+				})
 		}
 		return err
 	}
 
-	return c.Status(fiber.StatusOK).JSON(models.ResponseJoke{
-		Message: strconv.Itoa(int(total[0])),
-	})
+	return c.
+		Status(fiber.StatusOK).
+		JSON(models.ResponseJoke{
+			Message: strconv.Itoa(int(total[0])),
+		})
 }

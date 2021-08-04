@@ -24,12 +24,18 @@ func AddNewJoke(c *fiber.Ctx) error {
 	}
 
 	if !valid {
-		return c.Status(fiber.StatusBadRequest).JSON(models.Error{
-			Error: "URL provided is not a valid image",
-		})
+		return c.
+			Status(fiber.StatusBadRequest).
+			JSON(models.Error{
+				Error: "URL provided is not a valid image",
+			})
 	}
 
-	sql, args, err := handler.Psql.Insert("jokesbapak2").Columns("link", "creator").Values(body.Link, c.Locals("userID")).ToSql()
+	sql, args, err := handler.Psql.
+		Insert("jokesbapak2").
+		Columns("link", "creator").
+		Values(body.Link, c.Locals("userID")).
+		ToSql()
 	if err != nil {
 		return err
 	}
@@ -51,7 +57,9 @@ func AddNewJoke(c *fiber.Ctx) error {
 		return err
 	}
 
-	return c.Status(fiber.StatusCreated).JSON(models.ResponseJoke{
-		Link: body.Link,
-	})
+	return c.
+		Status(fiber.StatusCreated).
+		JSON(models.ResponseJoke{
+			Link: body.Link,
+		})
 }

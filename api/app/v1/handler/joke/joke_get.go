@@ -132,7 +132,9 @@ func JokeByID(c *fiber.Ctx) error {
 	}
 
 	if link == "" {
-		return c.Status(fiber.StatusNotFound).Send([]byte("Requested ID was not found."))
+		return c.
+			Status(fiber.StatusNotFound).
+			Send([]byte("Requested ID was not found."))
 	}
 
 	// Get image data

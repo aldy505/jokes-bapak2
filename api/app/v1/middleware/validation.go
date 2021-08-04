@@ -19,8 +19,10 @@ func OnlyIntegerAsID() fiber.Handler {
 			return c.Next()
 		}
 
-		return c.Status(fiber.StatusBadRequest).JSON(models.Error{
-			Error: "only numbers are allowed as ID",
-		})
+		return c.
+			Status(fiber.StatusBadRequest).
+			JSON(models.Error{
+				Error: "only numbers are allowed as ID",
+			})
 	}
 }

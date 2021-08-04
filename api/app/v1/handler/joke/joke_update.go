@@ -14,7 +14,11 @@ import (
 func UpdateJoke(c *fiber.Ctx) error {
 	id := c.Params("id")
 	// Check if the joke exists
-	sql, args, err := handler.Psql.Select("id").From("jokesbapak2").Where(squirrel.Eq{"id": id}).ToSql()
+	sql, args, err := handler.Psql.
+		Select("id").
+		From("jokesbapak2").
+		Where(squirrel.Eq{"id": id}).
+		ToSql()
 	if err != nil {
 		return err
 	}
@@ -39,12 +43,18 @@ func UpdateJoke(c *fiber.Ctx) error {
 		}
 
 		if !valid {
-			return c.Status(fiber.StatusBadRequest).JSON(models.Error{
-				Error: "URL provided is not a valid image",
-			})
+			return c.
+				Status(fiber.StatusBadRequest).
+				JSON(models.Error{
+					Error: "URL provided is not a valid image",
+				})
 		}
 
-		sql, args, err = handler.Psql.Update("jokesbapak2").Set("link", body.Link).Set("creator", c.Locals("userID")).ToSql()
+		sql, args, err = handler.Psql.
+			Update("jokesbapak2").
+			Set("link", body.Link).
+			Set("creator", c.Locals("userID")).
+			ToSql()
 		if err != nil {
 			return err
 		}
@@ -65,13 +75,17 @@ func UpdateJoke(c *fiber.Ctx) error {
 			return err
 		}
 
-		return c.Status(fiber.StatusOK).JSON(models.ResponseJoke{
-			Message: "specified joke id has been updated",
-			Link:    body.Link,
-		})
+		return c.
+			Status(fiber.StatusOK).
+			JSON(models.ResponseJoke{
+				Message: "specified joke id has been updated",
+				Link:    body.Link,
+			})
 	}
 
-	return c.Status(fiber.StatusNotAcceptable).JSON(models.Error{
-		Error: "specified joke id does not exists",
-	})
+	return c.
+		Status(fiber.StatusNotAcceptable).
+		JSON(models.Error{
+			Error: "specified joke id does not exists",
+		})
 }

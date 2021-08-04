@@ -19,7 +19,11 @@ func DeleteJoke(c *fiber.Ctx) error {
 	}
 
 	// Check if the joke exists
-	sql, args, err := handler.Psql.Select("id").From("jokesbapak2").Where(squirrel.Eq{"id": id}).ToSql()
+	sql, args, err := handler.Psql.
+		Select("id").
+		From("jokesbapak2").
+		Where(squirrel.Eq{"id": id}).
+		ToSql()
 	if err != nil {
 		return err
 	}
@@ -31,7 +35,10 @@ func DeleteJoke(c *fiber.Ctx) error {
 	}
 
 	if jokeID == id {
-		sql, args, err = handler.Psql.Delete("jokesbapak2").Where(squirrel.Eq{"id": id}).ToSql()
+		sql, args, err = handler.Psql.
+			Delete("jokesbapak2").
+			Where(squirrel.Eq{"id": id}).
+			ToSql()
 		if err != nil {
 			return err
 		}
@@ -52,11 +59,15 @@ func DeleteJoke(c *fiber.Ctx) error {
 			return err
 		}
 
-		return c.Status(fiber.StatusOK).JSON(models.ResponseJoke{
-			Message: "specified joke id has been deleted",
-		})
+		return c.
+			Status(fiber.StatusOK).
+			JSON(models.ResponseJoke{
+				Message: "specified joke id has been deleted",
+			})
 	}
-	return c.Status(fiber.StatusNotAcceptable).JSON(models.Error{
-		Error: "specified joke id does not exists",
-	})
+	return c.
+		Status(fiber.StatusNotAcceptable).
+		JSON(models.Error{
+			Error: "specified joke id does not exists",
+		})
 }
