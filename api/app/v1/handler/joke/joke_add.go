@@ -35,10 +35,12 @@ func AddNewJoke(c *fiber.Ctx) error {
 	}
 
 	// TODO: Implement solution if the link provided already exists.
-	_, err = handler.Db.Query(context.Background(), sql, args...)
+	r, err := handler.Db.Query(context.Background(), sql, args...)
 	if err != nil {
 		return err
 	}
+
+	defer r.Close()
 
 	err = core.SetAllJSONJoke(handler.Db, handler.Memory)
 	if err != nil {

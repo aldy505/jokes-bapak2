@@ -26,8 +26,9 @@ func New() *fiber.App {
 	})
 
 	err := sentry.Init(sentry.ClientOptions{
-		Dsn:         os.Getenv("SENTRY_DSN"),
-		Environment: os.Getenv("ENV"),
+		Dsn:              os.Getenv("SENTRY_DSN"),
+		Environment:      os.Getenv("ENV"),
+		AttachStacktrace: true,
 		// Enable printing of SDK debug messages.
 		// Useful when getting started or trying to figure something out.
 		Debug: true,
@@ -58,6 +59,7 @@ func New() *fiber.App {
 
 	routes.Health(app)
 	routes.Joke(app)
+	routes.Submit(app)
 
 	return app
 }
