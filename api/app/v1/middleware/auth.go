@@ -24,7 +24,11 @@ func RequireAuth() fiber.Handler {
 		}
 
 		// Check if key exists
-		sql, args, err := psql.Select("token").From("administrators").Where(squirrel.Eq{"key": auth.Key}).ToSql()
+		sql, args, err := psql.
+			Select("token").
+			From("administrators").
+			Where(squirrel.Eq{"key": auth.Key}).
+			ToSql()
 		if err != nil {
 			return err
 		}
@@ -33,9 +37,11 @@ func RequireAuth() fiber.Handler {
 		err = db.QueryRow(context.Background(), sql, args...).Scan(&token)
 		if err != nil {
 			if err.Error() == "no rows in result set" {
-				return c.Status(fiber.StatusForbidden).JSON(models.Error{
-					Error: "Invalid key",
-				})
+				return c.
+					Status(fiber.StatusForbidden).
+					JSON(models.Error{
+						Error: "Invalid key",
+					})
 			}
 			return err
 		}
@@ -51,7 +57,10 @@ func RequireAuth() fiber.Handler {
 		}
 
 		if verify {
-			sql, args, err = psql.Update("administrators").Set("last_used", time.Now().UTC().Format(time.RFC3339)).ToSql()
+			sql, args, err = psql.
+				Update("administrators").
+				Set("last_used", time.Now().UTC().Format(time.RFC3339)).
+				ToSql()
 			if err != nil {
 				return err
 			}
@@ -61,7 +70,11 @@ func RequireAuth() fiber.Handler {
 				return err
 			}
 
-			sql, args, err = psql.Select("id").From("administrators").Where(squirrel.Eq{"key": auth.Key}).ToSql()
+			sql, args, err = psql.
+				Select("id").
+				From("administrators").
+				Where(squirrel.Eq{"key": auth.Key}).
+				ToSql()
 			if err != nil {
 				return err
 			}
@@ -75,8 +88,10 @@ func RequireAuth() fiber.Handler {
 			return c.Next()
 		}
 
-		return c.Status(fiber.StatusForbidden).JSON(models.Error{
-			Error: "Invalid key",
-		})
+		return c.
+			Status(fiber.StatusForbidden).
+			JSON(models.Error{
+				Error: "Invalid key",
+			})
 	}
 }

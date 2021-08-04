@@ -35,7 +35,7 @@ func Setup() error {
 			log.Fatalln("17 - failed on table creation: ", err)
 			return err
 		}
-		
+
 		_, err = db.Query(context.Background(), sql)
 		if err != nil {
 			log.Fatalln("18 - failed on table creation: ", err)
@@ -73,6 +73,39 @@ func Setup() error {
 		if err != nil {
 			log.Fatalln("12 - failed on table creation: ", err)
 			return err
+		}
+	}
+
+	// Submission table
+
+	//Check if table exists
+	var tableSubmissionExists bool
+	err = db.QueryRow(context.Background(), `SELECT EXISTS (
+		SELECT FROM information_schema.tables 
+		WHERE  table_schema = 'public'
+		AND    table_name   = 'submission'
+		);`).Scan(&tableJokesExists)
+	if err != nil {
+		log.Fatalln("13 - failed on checking table: ", err)
+		return err
+	}
+
+	if !tableSubmissionExists {
+		sql, _, err := bob.
+			CreateTable("submission").
+			AddColumn(bob.ColumnDef{Name: "id", Type: "SERIAL", Extras: []string{"PRIMARY KEY"}}).
+			TextColumn("link", "UNIQUE", "NOT NULL").
+			StringColumn("created_at").
+			StringColumn("author", "NOT NULL").
+			AddColumn(bob.ColumnDef{Name: "status", Type: "SMALLINT", Extras: []string{"DEFAULT 0"}}).
+			ToSql()
+		if err != nil {
+			log.Fatalln("14 - failed on table creation: ", err)
+		}
+
+		_, err = db.Query(context.Background(), sql)
+		if err != nil {
+			log.Fatalln("15 - failed on table creation: ", err)
 		}
 	}
 

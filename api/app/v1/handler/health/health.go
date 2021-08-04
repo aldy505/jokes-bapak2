@@ -1,7 +1,8 @@
-package handler
+package health
 
 import (
 	"context"
+	"jokes-bapak2-api/app/v1/handler"
 	"jokes-bapak2-api/app/v1/models"
 
 	"github.com/gofiber/fiber/v2"
@@ -9,7 +10,7 @@ import (
 
 func Health(c *fiber.Ctx) error {
 	// Ping REDIS database
-	err := redis.Ping(context.Background()).Err()
+	err := handler.Redis.Ping(context.Background()).Err()
 	if err != nil {
 		return c.
 			Status(fiber.StatusServiceUnavailable).
@@ -18,7 +19,7 @@ func Health(c *fiber.Ctx) error {
 			})
 	}
 
-	_, err = db.Query(context.Background(), "SELECT \"id\" FROM \"jokesbapak2\" LIMIT 1")
+	_, err = handler.Db.Query(context.Background(), "SELECT \"id\" FROM \"jokesbapak2\" LIMIT 1")
 	if err != nil {
 		return c.
 			Status(fiber.StatusServiceUnavailable).

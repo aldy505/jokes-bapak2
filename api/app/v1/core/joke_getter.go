@@ -20,6 +20,8 @@ func GetAllJSONJokes(db *pgxpool.Pool) ([]byte, error) {
 		return nil, err
 	}
 
+	defer results.Close()
+
 	err = pgxscan.ScanAll(&jokes, results)
 	if err != nil {
 		return nil, err

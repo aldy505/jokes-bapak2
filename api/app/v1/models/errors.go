@@ -8,3 +8,7 @@ var ErrTxDone = errors.New("transaction has already been committed or rolled bac
 
 var ErrNotFound = errors.New("record not found")
 var ErrEmpty = errors.New("record is empty")
+
+type Error struct {
+	Error string `json:"error"`
+}
