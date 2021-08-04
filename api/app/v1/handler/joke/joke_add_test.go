@@ -10,6 +10,7 @@ import (
 )
 
 func TestAddNewJoke_201(t *testing.T) {
+	// TODO: Remove this line below, make this test works
 	t.SkipNow()
 	err := setup()
 	if err != nil {
@@ -18,7 +19,7 @@ func TestAddNewJoke_201(t *testing.T) {
 
 	defer cleanup()
 
-	reqBody := strings.NewReader("{\"link\":\"https://via.placeholder.com/300/07f/ff0000.png\",\"key\":\"very secure\",\"token\":\"password\"}")
+	reqBody := strings.NewReader("{\"link\":\"https://via.placeholder.com/300/07f/ff0000.png\",\"key\":\"test\",\"token\":\"password\"}")
 	req, _ := http.NewRequest("PUT", "/", reqBody)
 	req.Header.Set("content-type", "application/json")
 	req.Header.Add("accept", "application/json")
@@ -33,6 +34,7 @@ func TestAddNewJoke_201(t *testing.T) {
 }
 
 func TestAddNewJoke_NotValidImage(t *testing.T) {
+	// TODO: Remove this line below, make this test works
 	t.SkipNow()
 	err := setup()
 	if err != nil {
@@ -41,7 +43,7 @@ func TestAddNewJoke_NotValidImage(t *testing.T) {
 
 	defer cleanup()
 
-	reqBody := strings.NewReader("{\"link\":\"https://google.com/\",\"key\":\"very secure\",\"token\":\"password\"}")
+	reqBody := strings.NewReader("{\"link\":\"https://google.com/\",\"key\":\"test\",\"token\":\"password\"}")
 	req, _ := http.NewRequest("PUT", "/", reqBody)
 	req.Header.Set("content-type", "application/json")
 	req.Header.Add("accept", "application/json")

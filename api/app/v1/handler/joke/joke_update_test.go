@@ -17,8 +17,10 @@ func TestUpdateJoke_200(t *testing.T) {
 	}
 	defer cleanup()
 
-	reqBody := strings.NewReader("{\"link\":\"https://picsum.photos/id/9/200/300\",\"key\":\"very secure\",\"token\":\"password\"}")
+	reqBody := strings.NewReader("{\"link\":\"https://picsum.photos/id/9/200/300\",\"key\":\"test\",\"token\":\"password\"}")
 	req, _ := http.NewRequest("PATCH", "/id/1", reqBody)
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Accept", "application/json")
 	res, err := app.Test(req, -1)
 
 	assert.Equalf(t, false, err != nil, "joke update")
@@ -30,6 +32,7 @@ func TestUpdateJoke_200(t *testing.T) {
 }
 
 func TestUpdateJoke_NotExists(t *testing.T) {
+	// TODO: Remove this line below, make this test works
 	t.SkipNow()
 	err := setup()
 	if err != nil {
@@ -37,8 +40,10 @@ func TestUpdateJoke_NotExists(t *testing.T) {
 	}
 	defer cleanup()
 
-	reqBody := strings.NewReader("{\"link\":\"https://picsum.photos/id/9/200/300\",\"key\":\"very secure\",\"token\":\"password\"}")
+	reqBody := strings.NewReader("{\"link\":\"https://picsum.photos/id/9/200/300\",\"key\":\"test\",\"token\":\"password\"}")
 	req, _ := http.NewRequest("PATCH", "/id/100", reqBody)
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Accept", "application/json")
 	res, err := app.Test(req, -1)
 
 	assert.Equalf(t, false, err != nil, "joke update")

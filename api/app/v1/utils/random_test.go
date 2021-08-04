@@ -16,7 +16,7 @@ func TestRandomString_Valid(t *testing.T) {
 }
 
 func TestRandomString_Invalid(t *testing.T) {
-	random, err := utils.RandomString(10)
+	random, err := utils.RandomString(-10)
 	if err != nil {
 		t.Error(err)
 	}

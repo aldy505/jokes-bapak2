@@ -5,7 +5,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"testing"
-	"time"
 
 	v1 "jokes-bapak2-api/app/v1"
 	"jokes-bapak2-api/app/v1/platform/database"
@@ -40,9 +39,7 @@ func setup() error {
 		return err
 	}
 
-	hashedToken := "$argon2id$v=19$m=65536,t=16,p=4$48beb241490caa57fbca8e63df1e1b5fba8934baf78205ee775f96a85f45b889$e6dfca3f69adbe7653dbb353f366d741a3640313c45e33eabaca0c217c16417de80d70ac67f217c9ca46634b0abaad5f4ea2b064caa44ce218fb110b4cba9d36"
-	var args []interface{} = []interface{}{1, "very secure", hashedToken, time.Now().Format(time.RFC3339)}
-	a, err := db.Query(context.Background(), "INSERT INTO \"administrators\" (id, key, token, last_used) VALUES ($1, $2, $3, $4);", args...)
+	a, err := db.Query(context.Background(), "INSERT INTO \"administrators\" (\"id\", \"key\", \"token\", \"last_used\") VALUES	(1, 'test', '$argon2id$v=19$m=65536,t=16,p=4$3a08c79fbf2222467a623df9a9ebf75802c65a4f9be36eb1df2f5d2052d53cb7$ce434bd38f7ba1fc1f2eb773afb8a1f7f2dad49140803ac6cb9d7256ce9826fb3b4afa1e2488da511c852fc6c33a76d5657eba6298a8e49d617b9972645b7106', '');")
 	if err != nil {
 		return err
 	}
