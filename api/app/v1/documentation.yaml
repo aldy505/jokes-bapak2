@@ -2,8 +2,8 @@ openapi: 3.0.0
 info:
   title: Jokesbapak2 Image API
   description: >
-    Jokes Bapak2 is an image API that you can use for free! I've been seeing lots and lots of Indonesian dad jokes on Twitter, 
-    Facebook and Instagram on early 2020. In a month, I made a Discord bot that provides the jokes. 
+    Jokes Bapak2 is an image API that you can use for free! I've been seeing lots and lots of Indonesian dad jokes on Twitter,
+    Facebook and Instagram on early 2020. In a month, I made a Discord bot that provides the jokes.
     But I thought, why not make it as an API?
   version: 0.0.1
   contact:
@@ -169,7 +169,7 @@ paths:
   /total:
     get:
       summary: Get total amount of jokes in database
-      tags: 
+      tags:
         - Jokes
       responses:
         200:
