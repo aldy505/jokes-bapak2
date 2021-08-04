@@ -12,6 +12,20 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+var db = database.New()
+var jokesData = []interface{}{1, "https://via.placeholder.com/300/06f/fff.png", 1, 2, "https://via.placeholder.com/300/07f/fff.png", 1, 3, "https://via.placeholder.com/300/08f/fff.png", 1}
+
+func cleanup() {
+	_, err := db.Query(context.Background(), "DROP TABLE \"jokesbapak2\"")
+	if err != nil {
+		panic(err)
+	}
+	_, err = db.Query(context.Background(), "DROP TABLE \"administrators\"")
+	if err != nil {
+		panic(err)
+	}
+}
+
 func TestHealth(t *testing.T) {
 	err := database.Setup()
 	if err != nil {
