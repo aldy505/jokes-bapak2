@@ -93,7 +93,7 @@ func SubmitJoke(c *fiber.Ctx) error {
 	}
 
 	return c.
-		Status(fiber.StatusOK).
+		Status(fiber.StatusCreated).
 		JSON(models.ResponseSubmission{
 			Message: "Joke submitted. Please wait for a few days for admin to approve your submission.",
 			Data:    submission[0],

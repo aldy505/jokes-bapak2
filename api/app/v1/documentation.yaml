@@ -47,7 +47,7 @@ paths:
                 - $ref: '#/components/schemas/request.auth'
                 - $ref: '#/components/schemas/request.joke'
       responses:
-        200:
+        201:
           description: Image has been added
           content:
             application/json:
@@ -248,7 +248,7 @@ paths:
                 - image
                 - link
       responses:
-        200:
+        201:
           description: Joke successfully submitted
           content:
             application/json:
