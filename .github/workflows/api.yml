@@ -9,6 +9,7 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     container: golang:1.16.6
+    timeout-minutes: 15
     services:
       postgres:
         image: postgres:13-alpine

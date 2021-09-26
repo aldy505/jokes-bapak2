@@ -8,7 +8,7 @@ jobs:
   client-build:
     name: Client
     runs-on: ubuntu-latest
-
+    timeout-minutes: 15
     defaults:
       run:
         working-directory: ./client
@@ -63,6 +63,7 @@ jobs:
     name: API
     runs-on: ubuntu-latest
     container: golang:1.16.6
+    timeout-minutes: 15
     services:
       postgres:
         image: postgres:13-alpine
