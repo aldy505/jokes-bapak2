@@ -5,12 +5,11 @@ import (
 	"log"
 
 	"github.com/aldy505/bob"
+	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 // Setup the table connection, create table if not exists
-func Setup() error {
-	db := New()
-
+func Setup(db *pgxpool.Pool) error {
 	// administrators table
 	var tableAuthExists bool
 	err := db.QueryRow(context.Background(), `SELECT EXISTS (
@@ -27,7 +26,7 @@ func Setup() error {
 		sql, _, err := bob.
 			CreateTable("administrators").
 			AddColumn(bob.ColumnDef{Name: "id", Type: "SERIAL", Extras: []string{"PRIMARY KEY"}}).
-			StringColumn("key", "UNIQUE").
+			StringColumn("key", "NOT NULL", "UNIQUE").
 			TextColumn("token").
 			StringColumn("last_used").
 			ToSql()

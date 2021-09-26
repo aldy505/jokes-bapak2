@@ -4,17 +4,16 @@ import (
 	"context"
 
 	"jokes-bapak2-api/app/v1/core"
-	"jokes-bapak2-api/app/v1/handler"
-	"jokes-bapak2-api/app/v1/models"
 
 	"github.com/Masterminds/squirrel"
 	"github.com/gofiber/fiber/v2"
+	"github.com/jackc/pgx/v4"
 )
 
-func UpdateJoke(c *fiber.Ctx) error {
+func (d *Dependencies) UpdateJoke(c *fiber.Ctx) error {
 	id := c.Params("id")
 	// Check if the joke exists
-	sql, args, err := handler.Psql.
+	sql, args, err := d.Query.
 		Select("id").
 		From("jokesbapak2").
 		Where(squirrel.Eq{"id": id}).
@@ -24,20 +23,20 @@ func UpdateJoke(c *fiber.Ctx) error {
 	}
 
 	var jokeID string
-	err = handler.Db.QueryRow(context.Background(), sql, args...).Scan(&jokeID)
-	if err != nil && err != models.ErrNoRows {
+	err = d.DB.QueryRow(context.Background(), sql, args...).Scan(&jokeID)
+	if err != nil && err != pgx.ErrNoRows {
 		return err
 	}
 
 	if jokeID == id {
-		body := new(models.Joke)
+		body := new(core.Joke)
 		err = c.BodyParser(&body)
 		if err != nil {
 			return err
 		}
 
 		// Check link validity
-		valid, err := core.CheckImageValidity(handler.Client, body.Link)
+		valid, err := core.CheckImageValidity(d.HTTP, body.Link)
 		if err != nil {
 			return err
 		}
@@ -45,12 +44,12 @@ func UpdateJoke(c *fiber.Ctx) error {
 		if !valid {
 			return c.
 				Status(fiber.StatusBadRequest).
-				JSON(models.Error{
+				JSON(Error{
 					Error: "URL provided is not a valid image",
 				})
 		}
 
-		sql, args, err = handler.Psql.
+		sql, args, err = d.Query.
 			Update("jokesbapak2").
 			Set("link", body.Link).
 			Set("creator", c.Locals("userID")).
@@ -59,25 +58,25 @@ func UpdateJoke(c *fiber.Ctx) error {
 			return err
 		}
 
-		r, err := handler.Db.Query(context.Background(), sql, args...)
+		r, err := d.DB.Query(context.Background(), sql, args...)
 		if err != nil {
 			return err
 		}
 
 		defer r.Close()
 
-		err = core.SetAllJSONJoke(handler.Db, handler.Memory)
+		err = core.SetAllJSONJoke(d.DB, d.Memory)
 		if err != nil {
 			return err
 		}
-		err = core.SetTotalJoke(handler.Db, handler.Memory)
+		err = core.SetTotalJoke(d.DB, d.Memory)
 		if err != nil {
 			return err
 		}
 
 		return c.
 			Status(fiber.StatusOK).
-			JSON(models.ResponseJoke{
+			JSON(ResponseJoke{
 				Message: "specified joke id has been updated",
 				Link:    body.Link,
 			})
@@ -85,7 +84,7 @@ func UpdateJoke(c *fiber.Ctx) error {
 
 	return c.
 		Status(fiber.StatusNotAcceptable).
-		JSON(models.Error{
+		JSON(Error{
 			Error: "specified joke id does not exists",
 		})
 }

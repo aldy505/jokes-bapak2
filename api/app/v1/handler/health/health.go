@@ -2,28 +2,33 @@ package health
 
 import (
 	"context"
-	"jokes-bapak2-api/app/v1/handler"
-	"jokes-bapak2-api/app/v1/models"
 
+	"github.com/go-redis/redis/v8"
 	"github.com/gofiber/fiber/v2"
+	"github.com/jackc/pgx/v4/pgxpool"
 )
 
-func Health(c *fiber.Ctx) error {
+type Dependencies struct {
+	DB    *pgxpool.Pool
+	Redis *redis.Client
+}
+
+func (d *Dependencies) Health(c *fiber.Ctx) error {
 	// Ping REDIS database
-	err := handler.Redis.Ping(context.Background()).Err()
+	err := d.Redis.Ping(context.Background()).Err()
 	if err != nil {
 		return c.
 			Status(fiber.StatusServiceUnavailable).
-			JSON(models.Error{
+			JSON(Error{
 				Error: "REDIS: " + err.Error(),
 			})
 	}
 
-	_, err = handler.Db.Query(context.Background(), "SELECT \"id\" FROM \"jokesbapak2\" LIMIT 1")
+	_, err = d.DB.Query(context.Background(), "SELECT \"id\" FROM \"jokesbapak2\" LIMIT 1")
 	if err != nil {
 		return c.
 			Status(fiber.StatusServiceUnavailable).
-			JSON(models.Error{
+			JSON(Error{
 				Error: "POSTGRESQL: " + err.Error(),
 			})
 	}

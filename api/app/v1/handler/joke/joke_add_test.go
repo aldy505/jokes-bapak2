@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -23,8 +24,11 @@ func TestAddNewJoke_201(t *testing.T) {
 	req, _ := http.NewRequest("PUT", "/", reqBody)
 	req.Header.Set("content-type", "application/json")
 	req.Header.Add("accept", "application/json")
-	res, err := app.Test(req, -1)
-
+	res, err := app.Test(req, int(time.Minute * 2))
+	if err != nil {
+		t.Fatal(err)
+	}
+	
 	assert.Equalf(t, false, err != nil, "joke add")
 	assert.Equalf(t, 201, res.StatusCode, "joke add")
 	assert.NotEqualf(t, 0, res.ContentLength, "joke add")
@@ -47,11 +51,19 @@ func TestAddNewJoke_NotValidImage(t *testing.T) {
 	req, _ := http.NewRequest("PUT", "/", reqBody)
 	req.Header.Set("content-type", "application/json")
 	req.Header.Add("accept", "application/json")
-	res, err := app.Test(req, -1)
+	res, err := app.Test(req, int(time.Minute * 2))
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	assert.Equalf(t, false, err != nil, "joke add")
 	assert.Equalf(t, 400, res.StatusCode, "joke add")
 	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer res.Body.Close()
+	
 	assert.Nilf(t, err, "joke add")
 	assert.Equalf(t, "{\"error\":\"URL provided is not a valid image\"}", string(body), "joke add")
 }

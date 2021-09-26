@@ -3,8 +3,6 @@ package submit
 import (
 	"context"
 	"jokes-bapak2-api/app/v1/core"
-	"jokes-bapak2-api/app/v1/handler"
-	"jokes-bapak2-api/app/v1/models"
 	"strings"
 	"time"
 
@@ -12,8 +10,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func SubmitJoke(c *fiber.Ctx) error {
-	var body models.Submission
+func (d *Dependencies) SubmitJoke(c *fiber.Ctx) error {
+	var body Submission
 	err := c.BodyParser(&body)
 	if err != nil {
 		return err
@@ -21,21 +19,21 @@ func SubmitJoke(c *fiber.Ctx) error {
 
 	// Image and/or Link should not be empty
 	if body.Image == "" && body.Link == "" {
-		return c.Status(fiber.StatusBadRequest).JSON(models.Error{
+		return c.Status(fiber.StatusBadRequest).JSON(Error{
 			Error: "a link or an image should be supplied in a form of multipart/form-data",
 		})
 	}
 
 	// Author should be supplied
 	if body.Author == "" {
-		return c.Status(fiber.StatusBadRequest).JSON(models.Error{
+		return c.Status(fiber.StatusBadRequest).JSON(Error{
 			Error: "an author key consisting on the format \"yourname <youremail@mail>\" must be supplied",
 		})
 	} else {
 		// Validate format
 		valid := core.ValidateAuthor(body.Author)
 		if !valid {
-			return c.Status(fiber.StatusBadRequest).JSON(models.Error{
+			return c.Status(fiber.StatusBadRequest).JSON(Error{
 				Error: "please stick to the format of \"yourname <youremail@mail>\" and within 200 characters",
 			})
 		}
@@ -45,12 +43,12 @@ func SubmitJoke(c *fiber.Ctx) error {
 
 	// Check link validity if link was provided
 	if body.Link != "" {
-		valid, err := core.CheckImageValidity(handler.Client, body.Link)
+		valid, err := core.CheckImageValidity(d.HTTP, body.Link)
 		if err != nil {
 			return err
 		}
 		if !valid {
-			return c.Status(fiber.StatusBadRequest).JSON(models.Error{
+			return c.Status(fiber.StatusBadRequest).JSON(Error{
 				Error: "URL provided is not a valid image",
 			})
 		}
@@ -62,7 +60,7 @@ func SubmitJoke(c *fiber.Ctx) error {
 	if body.Image != "" {
 		image := strings.NewReader(body.Image)
 
-		url, err = core.UploadImage(handler.Client, image)
+		url, err = core.UploadImage(d.HTTP, image)
 		if err != nil {
 			return err
 		}
@@ -70,7 +68,7 @@ func SubmitJoke(c *fiber.Ctx) error {
 
 	now := time.Now().UTC().Format(time.RFC3339)
 
-	sql, args, err := handler.Psql.
+	sql, args, err := d.Query.
 		Insert("submission").
 		Columns("link", "created_at", "author").
 		Values(url, now, body.Author).
@@ -80,8 +78,8 @@ func SubmitJoke(c *fiber.Ctx) error {
 		return err
 	}
 
-	var submission []models.Submission
-	result, err := handler.Db.Query(context.Background(), sql, args...)
+	var submission []Submission
+	result, err := d.DB.Query(context.Background(), sql, args...)
 	if err != nil {
 		return err
 	}
@@ -94,7 +92,7 @@ func SubmitJoke(c *fiber.Ctx) error {
 
 	return c.
 		Status(fiber.StatusCreated).
-		JSON(models.ResponseSubmission{
+		JSON(ResponseSubmission{
 			Message: "Joke submitted. Please wait for a few days for admin to approve your submission.",
 			Data:    submission[0],
 		})

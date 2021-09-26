@@ -2,22 +2,21 @@ package middleware
 
 import (
 	"context"
+	"errors"
 	"time"
-
-	"jokes-bapak2-api/app/v1/models"
-	"jokes-bapak2-api/app/v1/platform/database"
 
 	"github.com/Masterminds/squirrel"
 	phccrypto "github.com/aldy505/phc-crypto"
 	"github.com/gofiber/fiber/v2"
+	"github.com/jackc/pgx/v4"
+	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 var psql = squirrel.StatementBuilder.PlaceholderFormat(squirrel.Dollar)
-var db = database.New()
 
-func RequireAuth() fiber.Handler {
+func RequireAuth(db *pgxpool.Pool) fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		var auth models.Auth
+		var auth Auth
 		err := c.BodyParser(&auth)
 		if err != nil {
 			return err
@@ -36,10 +35,10 @@ func RequireAuth() fiber.Handler {
 		var token string
 		err = db.QueryRow(context.Background(), sql, args...).Scan(&token)
 		if err != nil {
-			if err.Error() == "no rows in result set" {
+			if errors.Is(err, pgx.ErrNoRows) {
 				return c.
 					Status(fiber.StatusForbidden).
-					JSON(models.Error{
+					JSON(Error{
 						Error: "Invalid key",
 					})
 			}
@@ -90,7 +89,7 @@ func RequireAuth() fiber.Handler {
 
 		return c.
 			Status(fiber.StatusForbidden).
-			JSON(models.Error{
+			JSON(Error{
 				Error: "Invalid key",
 			})
 	}

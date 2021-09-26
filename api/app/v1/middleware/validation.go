@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"jokes-bapak2-api/app/v1/models"
 	"regexp"
 
 	"github.com/gofiber/fiber/v2"
@@ -21,7 +20,7 @@ func OnlyIntegerAsID() fiber.Handler {
 
 		return c.
 			Status(fiber.StatusBadRequest).
-			JSON(models.Error{
+			JSON(Error{
 				Error: "only numbers are allowed as ID",
 			})
 	}

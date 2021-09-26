@@ -1,8 +1,6 @@
 package core
 
 import (
-	"jokes-bapak2-api/app/v1/models"
-
 	"github.com/allegro/bigcache/v3"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/pquerna/ffjson/ffjson"
@@ -39,7 +37,7 @@ func SetTotalJoke(db *pgxpool.Pool, memory *bigcache.BigCache) error {
 		return err
 	}
 
-	var data []models.Joke
+	var data []Joke
 	err = ffjson.Unmarshal(jokes, &data)
 	if err != nil {
 		return err

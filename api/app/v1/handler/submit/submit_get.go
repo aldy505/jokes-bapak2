@@ -3,8 +3,6 @@ package submit
 import (
 	"bytes"
 	"context"
-	"jokes-bapak2-api/app/v1/handler"
-	"jokes-bapak2-api/app/v1/models"
 	"log"
 	"strconv"
 
@@ -13,8 +11,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func GetSubmission(c *fiber.Ctx) error {
-	query := new(models.SubmissionQuery)
+func (d *Dependencies) GetSubmission(c *fiber.Ctx) error {
+	query := new(SubmissionQuery)
 	err := c.QueryParser(query)
 	if err != nil {
 		return err
@@ -81,8 +79,8 @@ func GetSubmission(c *fiber.Ctx) error {
 
 	sql = bob.ReplacePlaceholder(sqlQuery.String(), bob.Dollar)
 
-	var submissions []models.Submission
-	results, err := handler.Db.Query(context.Background(), sql, args...)
+	var submissions []Submission
+	results, err := d.DB.Query(context.Background(), sql, args...)
 	if err != nil {
 		log.Println(err)
 		return err

@@ -9,27 +9,34 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cache"
 )
 
-func Joke(app *fiber.App) *fiber.App {
+func (d *Dependencies) Joke() *fiber.App {
+	deps := joke.Dependencies{
+		DB:     d.DB,
+		Redis:  d.Redis,
+		Memory: d.Memory,
+		HTTP:   d.HTTP,
+		Query:  d.Query,
+	}
 	// Single route
-	app.Get("/", joke.SingleJoke)
+	d.App.Get("/", deps.SingleJoke)
 
 	// Today's joke
-	app.Get("/today", cache.New(cache.Config{Expiration: 6 * time.Hour}), joke.TodayJoke)
+	d.App.Get("/today", cache.New(cache.Config{Expiration: 6 * time.Hour}), deps.TodayJoke)
 
 	// Joke by ID
-	app.Get("/id/:id", middleware.OnlyIntegerAsID(), joke.JokeByID)
+	d.App.Get("/id/:id", middleware.OnlyIntegerAsID(), deps.JokeByID)
 
 	// Count total jokes
-	app.Get("/total", cache.New(cache.Config{Expiration: 15 * time.Minute}), joke.TotalJokes)
+	d.App.Get("/total", cache.New(cache.Config{Expiration: 15 * time.Minute}), deps.TotalJokes)
 
 	// Add new joke
-	app.Put("/", middleware.RequireAuth(), joke.AddNewJoke)
+	d.App.Put("/", middleware.RequireAuth(d.DB), deps.AddNewJoke)
 
 	// Update a joke
-	app.Patch("/id/:id", middleware.RequireAuth(), middleware.OnlyIntegerAsID(), joke.UpdateJoke)
+	d.App.Patch("/id/:id", middleware.RequireAuth(d.DB), middleware.OnlyIntegerAsID(), deps.UpdateJoke)
 
 	// Delete a joke
-	app.Delete("/id/:id", middleware.RequireAuth(), middleware.OnlyIntegerAsID(), joke.DeleteJoke)
+	d.App.Delete("/id/:id", middleware.RequireAuth(d.DB), middleware.OnlyIntegerAsID(), deps.DeleteJoke)
 
-	return app
+	return d.App
 }

@@ -7,19 +7,17 @@ import (
 	"time"
 
 	"jokes-bapak2-api/app/v1/core"
-	"jokes-bapak2-api/app/v1/handler"
-	"jokes-bapak2-api/app/v1/models"
 	"jokes-bapak2-api/app/v1/utils"
 
 	"github.com/gofiber/fiber/v2"
 )
 
-func TodayJoke(c *fiber.Ctx) error {
+func (d *Dependencies) TodayJoke(c *fiber.Ctx) error {
 	// check from handler.Redis if today's joke already exists
 	// send the joke if exists
 	// get a new joke if it's not, then send it.
-	var joke models.Today
-	err := handler.Redis.MGet(context.Background(), "today:link", "today:date", "today:image", "today:contentType").Scan(&joke)
+	var joke Today
+	err := d.Redis.MGet(context.Background(), "today:link", "today:date", "today:image", "today:contentType").Scan(&joke)
 	if err != nil {
 		return err
 	}
@@ -34,12 +32,12 @@ func TodayJoke(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusOK).Send([]byte(joke.Image))
 	} else {
 		var link string
-		err := handler.Db.QueryRow(context.Background(), "SELECT link FROM jokesbapak2 ORDER BY random() LIMIT 1").Scan(&link)
+		err := d.DB.QueryRow(context.Background(), "SELECT link FROM jokesbapak2 ORDER BY random() LIMIT 1").Scan(&link)
 		if err != nil {
 			return err
 		}
 
-		response, err := handler.Client.Get(link, nil)
+		response, err := d.HTTP.Get(link, nil)
 		if err != nil {
 			return err
 		}
@@ -50,7 +48,7 @@ func TodayJoke(c *fiber.Ctx) error {
 		}
 
 		now := time.Now().UTC().Format(time.RFC3339)
-		err = handler.Redis.MSet(context.Background(), map[string]interface{}{
+		err = d.Redis.MSet(context.Background(), map[string]interface{}{
 			"today:link":        link,
 			"today:date":        now,
 			"today:image":       string(data),
@@ -66,30 +64,30 @@ func TodayJoke(c *fiber.Ctx) error {
 
 }
 
-func SingleJoke(c *fiber.Ctx) error {
-	checkCache, err := core.CheckJokesCache(handler.Memory)
+func (d *Dependencies) SingleJoke(c *fiber.Ctx) error {
+	checkCache, err := core.CheckJokesCache(d.Memory)
 	if err != nil {
 		return err
 	}
 
 	if !checkCache {
-		jokes, err := core.GetAllJSONJokes(handler.Db)
+		jokes, err := core.GetAllJSONJokes(d.DB)
 		if err != nil {
 			return err
 		}
-		err = handler.Memory.Set("jokes", jokes)
+		err = d.Memory.Set("jokes", jokes)
 		if err != nil {
 			return err
 		}
 	}
 
-	link, err := core.GetRandomJokeFromCache(handler.Memory)
+	link, err := core.GetRandomJokeFromCache(d.Memory)
 	if err != nil {
 		return err
 	}
 
 	// Get image data
-	response, err := handler.Client.Get(link, nil)
+	response, err := d.HTTP.Get(link, nil)
 	if err != nil {
 		return err
 	}
@@ -104,18 +102,18 @@ func SingleJoke(c *fiber.Ctx) error {
 
 }
 
-func JokeByID(c *fiber.Ctx) error {
-	checkCache, err := core.CheckJokesCache(handler.Memory)
+func (d *Dependencies) JokeByID(c *fiber.Ctx) error {
+	checkCache, err := core.CheckJokesCache(d.Memory)
 	if err != nil {
 		return err
 	}
 
 	if !checkCache {
-		jokes, err := core.GetAllJSONJokes(handler.Db)
+		jokes, err := core.GetAllJSONJokes(d.DB)
 		if err != nil {
 			return err
 		}
-		err = handler.Memory.Set("jokes", jokes)
+		err = d.Memory.Set("jokes", jokes)
 		if err != nil {
 			return err
 		}
@@ -126,7 +124,7 @@ func JokeByID(c *fiber.Ctx) error {
 		return err
 	}
 
-	link, err := core.GetCachedJokeByID(handler.Memory, id)
+	link, err := core.GetCachedJokeByID(d.Memory, id)
 	if err != nil {
 		return err
 	}
@@ -138,7 +136,7 @@ func JokeByID(c *fiber.Ctx) error {
 	}
 
 	// Get image data
-	response, err := handler.Client.Get(link, nil)
+	response, err := d.HTTP.Get(link, nil)
 	if err != nil {
 		return err
 	}

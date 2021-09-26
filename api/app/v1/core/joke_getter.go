@@ -2,7 +2,7 @@ package core
 
 import (
 	"context"
-	"jokes-bapak2-api/app/v1/models"
+	"errors"
 	"math/rand"
 
 	"github.com/allegro/bigcache/v3"
@@ -14,7 +14,7 @@ import (
 // GetAllJSONJokes fetch the database for all the jokes then output it as a JSON []byte.
 // Keep in mind, you will need to store it to memory yourself.
 func GetAllJSONJokes(db *pgxpool.Pool) ([]byte, error) {
-	var jokes []models.Joke
+	var jokes []Joke
 	results, err := db.Query(context.Background(), "SELECT \"id\",\"link\" FROM \"jokesbapak2\" ORDER BY \"id\"")
 	if err != nil {
 		return nil, err
@@ -39,13 +39,13 @@ func GetAllJSONJokes(db *pgxpool.Pool) ([]byte, error) {
 func GetRandomJokeFromCache(memory *bigcache.BigCache) (string, error) {
 	jokes, err := memory.Get("jokes")
 	if err != nil {
-		if err.Error() == "Entry not found" {
-			return "", models.ErrNotFound
+		if errors.Is(err, bigcache.ErrEntryNotFound) {
+			return "", ErrNotFound
 		}
 		return "", err
 	}
 
-	var data []models.Joke
+	var data []Joke
 	err = ffjson.Unmarshal(jokes, &data)
 	if err != nil {
 		return "", nil
@@ -54,7 +54,7 @@ func GetRandomJokeFromCache(memory *bigcache.BigCache) (string, error) {
 	// Return an error if the database is empty
 	dataLength := len(data)
 	if dataLength == 0 {
-		return "", models.ErrEmpty
+		return "", ErrEmpty
 	}
 
 	random := rand.Intn(dataLength)
@@ -67,7 +67,7 @@ func GetRandomJokeFromCache(memory *bigcache.BigCache) (string, error) {
 func CheckJokesCache(memory *bigcache.BigCache) (bool, error) {
 	_, err := memory.Get("jokes")
 	if err != nil {
-		if err.Error() == "Entry not found" {
+		if errors.Is(err, bigcache.ErrEntryNotFound) {
 			return false, nil
 		}
 		return false, err
@@ -80,7 +80,7 @@ func CheckJokesCache(memory *bigcache.BigCache) (bool, error) {
 func CheckTotalJokesCache(memory *bigcache.BigCache) (bool, error) {
 	_, err := memory.Get("total")
 	if err != nil {
-		if err.Error() == "Entry not found" {
+		if errors.Is(err, bigcache.ErrEntryNotFound) {
 			return false, nil
 		}
 		return false, err
@@ -93,13 +93,13 @@ func CheckTotalJokesCache(memory *bigcache.BigCache) (bool, error) {
 func GetCachedJokeByID(memory *bigcache.BigCache, id int) (string, error) {
 	jokes, err := memory.Get("jokes")
 	if err != nil {
-		if err.Error() == "Entry not found" {
-			return "", models.ErrNotFound
+		if errors.Is(err, bigcache.ErrEntryNotFound) {
+			return "", ErrNotFound
 		}
 		return "", err
 	}
 
-	var data []models.Joke
+	var data []Joke
 	err = ffjson.Unmarshal(jokes, &data)
 	if err != nil {
 		return "", nil
@@ -119,8 +119,8 @@ func GetCachedJokeByID(memory *bigcache.BigCache, id int) (string, error) {
 func GetCachedTotalJokes(memory *bigcache.BigCache) (int, error) {
 	total, err := memory.Get("total")
 	if err != nil {
-		if err.Error() == "Entry not found" {
-			return 0, models.ErrNotFound
+		if errors.Is(err, bigcache.ErrEntryNotFound) {
+			return 0, ErrNotFound
 		}
 		return 0, err
 	}

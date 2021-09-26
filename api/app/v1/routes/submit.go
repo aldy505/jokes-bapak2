@@ -8,9 +8,16 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cache"
 )
 
-func Submit(app *fiber.App) *fiber.App {
+func (d *Dependencies) Submit() *fiber.App {
+	deps := submit.Dependencies{
+		DB:     d.DB,
+		Redis:  d.Redis,
+		Memory: d.Memory,
+		HTTP:   d.HTTP,
+		Query:  d.Query,
+	}
 	// Get pending submitted joke
-	app.Get(
+	d.App.Get(
 		"/submit",
 		cache.New(cache.Config{
 			Expiration: 5 * time.Minute,
@@ -18,10 +25,10 @@ func Submit(app *fiber.App) *fiber.App {
 				return c.OriginalURL()
 			},
 		}),
-		submit.GetSubmission)
+		deps.GetSubmission)
 
 	// Add a joke
-	app.Post("/submit", submit.SubmitJoke)
+	d.App.Post("/submit", deps.SubmitJoke)
 
-	return app
+	return d.App
 }

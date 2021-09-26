@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"io"
 	"io/ioutil"
-	"jokes-bapak2-api/app/v1/models"
 	"jokes-bapak2-api/app/v1/utils"
 	"mime/multipart"
 	"net/http"
@@ -71,7 +70,7 @@ func UploadImage(client *httpclient.Client, image io.Reader) (string, error) {
 		return "", err
 	}
 
-	var data models.ImageAPI
+	var data ImageAPI
 	err = ffjson.Unmarshal(responseBody, &data)
 	if err != nil {
 		return "", err

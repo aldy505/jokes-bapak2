@@ -8,9 +8,12 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cache"
 )
 
-func Health(app *fiber.App) *fiber.App {
+func (d *Dependencies) Health() *fiber.App {
 	// Health check
-	app.Get("/health", cache.New(cache.Config{Expiration: 30 * time.Minute}), health.Health)
+	deps := health.Dependencies{
+		Redis: d.Redis,
+	}
+	d.App.Get("/health", cache.New(cache.Config{Expiration: 30 * time.Minute}), deps.Health)
 
-	return app
+	return d.App
 }

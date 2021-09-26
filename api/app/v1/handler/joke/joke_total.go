@@ -1,34 +1,34 @@
 package joke
 
 import (
+	"errors"
 	"jokes-bapak2-api/app/v1/core"
-	"jokes-bapak2-api/app/v1/handler"
-	"jokes-bapak2-api/app/v1/models"
 	"strconv"
 
+	"github.com/allegro/bigcache/v3"
 	"github.com/gofiber/fiber/v2"
 )
 
-func TotalJokes(c *fiber.Ctx) error {
-	checkTotal, err := core.CheckTotalJokesCache(handler.Memory)
+func (d *Dependencies) TotalJokes(c *fiber.Ctx) error {
+	checkTotal, err := core.CheckTotalJokesCache(d.Memory)
 	if err != nil {
 		return err
 	}
 
 	if !checkTotal {
-		err = core.SetTotalJoke(handler.Db, handler.Memory)
+		err = core.SetTotalJoke(d.DB, d.Memory)
 		if err != nil {
 			return err
 		}
 	}
 
-	total, err := handler.Memory.Get("total")
+	total, err := d.Memory.Get("total")
 
 	if err != nil {
-		if err.Error() == "Entry not found" {
+		if errors.Is(err, bigcache.ErrEntryNotFound) {
 			return c.
 				Status(fiber.StatusInternalServerError).
-				JSON(models.Error{
+				JSON(Error{
 					Error: "no data found",
 				})
 		}
@@ -37,7 +37,7 @@ func TotalJokes(c *fiber.Ctx) error {
 
 	return c.
 		Status(fiber.StatusOK).
-		JSON(models.ResponseJoke{
+		JSON(ResponseJoke{
 			Message: strconv.Itoa(int(total[0])),
 		})
 }

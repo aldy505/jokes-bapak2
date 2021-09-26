@@ -1,19 +1,14 @@
-package health_test
+package joke_test
 
 import (
 	"context"
-	"io/ioutil"
 	v1 "jokes-bapak2-api/app/v1"
+	"jokes-bapak2-api/app/v1/platform/database"
 	"log"
-	"net/http"
 	"os"
-	"testing"
-	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/jackc/pgx/v4/pgxpool"
-	_ "github.com/joho/godotenv/autoload"
-	"github.com/stretchr/testify/assert"
 )
 
 var jokesData = []interface{}{1, "https://via.placeholder.com/300/06f/fff.png", 1, 2, "https://via.placeholder.com/300/07f/fff.png", 1, 3, "https://via.placeholder.com/300/08f/fff.png", 1}
@@ -52,7 +47,7 @@ func setup() error {
 	if err != nil {
 		log.Fatalln("Unable to create pool config", err)
 	}
-	poolConfig.MaxConns = 5
+	poolConfig.MaxConns = 15
 	poolConfig.MinConns = 2
 
 	db, err = pgxpool.ConnectConfig(context.Background(), poolConfig)
@@ -60,10 +55,16 @@ func setup() error {
 		log.Fatalln("Unable to create connection", err)
 	}
 
-	a, err := db.Query(context.Background(), "INSERT INTO \"administrators\" (id, key, token, last_used) VALUES ($1, $2, $3, $4);", 1, "very secure", "not the real one", time.Now().Format(time.RFC3339))
+	err = database.Setup(db)
 	if err != nil {
 		return err
 	}
+
+	a, err := db.Query(context.Background(), "INSERT INTO \"administrators\" (\"id\", \"key\", \"token\", \"last_used\") VALUES	(1, 'test', '$argon2id$v=19$m=65536,t=16,p=4$3a08c79fbf2222467a623df9a9ebf75802c65a4f9be36eb1df2f5d2052d53cb7$ce434bd38f7ba1fc1f2eb773afb8a1f7f2dad49140803ac6cb9d7256ce9826fb3b4afa1e2488da511c852fc6c33a76d5657eba6298a8e49d617b9972645b7106', '');")
+	if err != nil {
+		return err
+	}
+
 	defer a.Close()
 
 	j, err := db.Query(context.Background(), "INSERT INTO \"jokesbapak2\" (id, link, creator) VALUES ($1, $2, $3), ($4, $5, $6), ($7, $8, $9);", jokesData...)
@@ -74,30 +75,4 @@ func setup() error {
 	defer j.Close()
 
 	return nil
-}
-
-func TestHealth(t *testing.T) {
-	err := setup()
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer cleanup()
-
-	req, _ := http.NewRequest("GET", "/health", nil)
-	res, err := app.Test(req, int(time.Minute * 2))
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	assert.Equalf(t, false, err != nil, "health")
-	assert.Equalf(t, 200, res.StatusCode, "health")
-	assert.NotEqualf(t, 0, res.ContentLength, "health")
-	_, err = ioutil.ReadAll(res.Body)
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer res.Body.Close()
-	
-	assert.Nilf(t, err, "health")
 }
