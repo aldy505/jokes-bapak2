@@ -17,9 +17,10 @@ type SubmissionQuery struct {
 }
 
 type ResponseSubmission struct {
-	ID      string     `json:"id,omitempty"`
-	Message string     `json:"message,omitempty"`
-	Data    Submission `json:"data,omitempty"`
+	ID         string     `json:"id,omitempty"`
+	Message    string     `json:"message,omitempty"`
+	Submission Submission `json:"submission,omitempty"`
+	AuthorPage string     `json:"author_page,omitempty"`
 }
 
 type Error struct {

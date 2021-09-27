@@ -3,7 +3,9 @@ package joke
 import (
 	"jokes-bapak2-api/app/core"
 
+	"github.com/Masterminds/squirrel"
 	"github.com/gofiber/fiber/v2"
+	"github.com/jackc/pgx/v4"
 )
 
 func (d *Dependencies) AddNewJoke(c *fiber.Ctx) error {
@@ -38,8 +40,29 @@ func (d *Dependencies) AddNewJoke(c *fiber.Ctx) error {
 				Error: "URL provided is not a valid image",
 			})
 	}
-
+	// Validate if link already exists
 	sql, args, err := d.Query.
+		Select("link").
+		From("jokesbapak2").
+		Where(squirrel.Eq{"link": body.Link}).
+		ToSql()
+	if err != nil {
+		return err
+	}
+
+	v, err := conn.Query(*d.Context, sql, args...)
+	if err != nil && err != pgx.ErrNoRows {
+		return err
+	}
+	defer v.Close()
+
+	if err == nil {
+		return c.Status(fiber.StatusConflict).JSON(Error{
+			Error: "Given link is already on the jokesbapak2 database",
+		})
+	}
+
+	sql, args, err = d.Query.
 		Insert("jokesbapak2").
 		Columns("link", "creator").
 		Values(body.Link, c.Locals("userID")).
@@ -48,7 +71,6 @@ func (d *Dependencies) AddNewJoke(c *fiber.Ctx) error {
 		return err
 	}
 
-	// TODO: Implement solution if the link provided already exists.
 	_, err = tx.Exec(*d.Context, sql, args...)
 	if err != nil {
 		return err

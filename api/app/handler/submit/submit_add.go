@@ -2,16 +2,25 @@ package submit
 
 import (
 	"jokes-bapak2-api/app/core"
+	"net/url"
 	"strings"
 	"time"
 
+	"github.com/Masterminds/squirrel"
 	"github.com/georgysavva/scany/pgxscan"
 	"github.com/gofiber/fiber/v2"
+	"github.com/jackc/pgx/v4"
 )
 
 func (d *Dependencies) SubmitJoke(c *fiber.Ctx) error {
+	conn, err := d.DB.Acquire(*d.Context)
+	if err != nil {
+		return err
+	}
+	defer conn.Release()
+
 	var body Submission
-	err := c.BodyParser(&body)
+	err = c.BodyParser(&body)
 	if err != nil {
 		return err
 	}
@@ -19,26 +28,26 @@ func (d *Dependencies) SubmitJoke(c *fiber.Ctx) error {
 	// Image and/or Link should not be empty
 	if body.Image == "" && body.Link == "" {
 		return c.Status(fiber.StatusBadRequest).JSON(Error{
-			Error: "a link or an image should be supplied in a form of multipart/form-data",
+			Error: "A link or an image should be supplied in a form of multipart/form-data",
 		})
 	}
 
 	// Author should be supplied
 	if body.Author == "" {
 		return c.Status(fiber.StatusBadRequest).JSON(Error{
-			Error: "an author key consisting on the format \"yourname <youremail@mail>\" must be supplied",
+			Error: "An author key consisting on the format \"yourname <youremail@mail>\" must be supplied",
 		})
 	} else {
 		// Validate format
 		valid := core.ValidateAuthor(body.Author)
 		if !valid {
 			return c.Status(fiber.StatusBadRequest).JSON(Error{
-				Error: "please stick to the format of \"yourname <youremail@mail>\" and within 200 characters",
+				Error: "Please stick to the format of \"yourname <youremail@mail>\" and within 200 characters",
 			})
 		}
 	}
 
-	var url string
+	var link string
 
 	// Check link validity if link was provided
 	if body.Link != "" {
@@ -52,25 +61,46 @@ func (d *Dependencies) SubmitJoke(c *fiber.Ctx) error {
 			})
 		}
 
-		url = body.Link
+		link = body.Link
 	}
 
 	// If image was provided
 	if body.Image != "" {
 		image := strings.NewReader(body.Image)
 
-		url, err = core.UploadImage(d.HTTP, image)
+		link, err = core.UploadImage(d.HTTP, image)
 		if err != nil {
 			return err
 		}
 	}
+	// Validate if link already exists
+	sql, args, err := d.Query.
+		Select("link").
+		From("submission").
+		Where(squirrel.Eq{"link": link}).
+		ToSql()
+	if err != nil {
+		return err
+	}
+
+	v, err := conn.Query(*d.Context, sql, args...)
+	if err != nil && err != pgx.ErrNoRows {
+		return err
+	}
+	defer v.Close()
+
+	if err == nil {
+		return c.Status(fiber.StatusConflict).JSON(Error{
+			Error: "Given link is already on the submission queue.",
+		})
+	}
 
 	now := time.Now().UTC().Format(time.RFC3339)
 
-	sql, args, err := d.Query.
+	sql, args, err = d.Query.
 		Insert("submission").
 		Columns("link", "created_at", "author").
-		Values(url, now, body.Author).
+		Values(link, now, body.Author).
 		Suffix("RETURNING id,created_at,link,author,status").
 		ToSql()
 	if err != nil {
@@ -78,7 +108,7 @@ func (d *Dependencies) SubmitJoke(c *fiber.Ctx) error {
 	}
 
 	var submission []Submission
-	result, err := d.DB.Query(*d.Context, sql, args...)
+	result, err := conn.Query(*d.Context, sql, args...)
 	if err != nil {
 		return err
 	}
@@ -92,7 +122,8 @@ func (d *Dependencies) SubmitJoke(c *fiber.Ctx) error {
 	return c.
 		Status(fiber.StatusCreated).
 		JSON(ResponseSubmission{
-			Message: "Joke submitted. Please wait for a few days for admin to approve your submission.",
-			Data:    submission[0],
+			Message:    "Joke submitted. Please wait for a few days for admin to approve your submission.",
+			Submission: submission[0],
+			AuthorPage: "/submit?author=" + url.QueryEscape(body.Author),
 		})
 }

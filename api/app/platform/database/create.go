@@ -16,15 +16,9 @@ func Setup(db *pgxpool.Pool, ctx *context.Context) error {
 	}
 	defer conn.Release()
 
-	tx, err := conn.Begin(*ctx)
-	if err != nil {
-		return err
-	}
-	defer tx.Rollback(*ctx)
-
 	// administrators table
 	var tableAuthExists bool
-	err = db.QueryRow(*ctx, `SELECT EXISTS (
+	err = conn.QueryRow(*ctx, `SELECT EXISTS (
 		SELECT FROM information_schema.tables 
 		WHERE  table_schema = 'public'
 		AND    table_name   = 'administrators'
@@ -47,7 +41,7 @@ func Setup(db *pgxpool.Pool, ctx *context.Context) error {
 			return err
 		}
 
-		_, err = tx.Exec(*ctx, sql)
+		_, err = conn.Query(*ctx, sql)
 		if err != nil {
 			log.Fatalln("18 - failed on table creation: ", err)
 			return err
@@ -58,7 +52,7 @@ func Setup(db *pgxpool.Pool, ctx *context.Context) error {
 
 	// Check if table exists
 	var tableJokesExists bool
-	err = db.QueryRow(*ctx, `SELECT EXISTS (
+	err = conn.QueryRow(*ctx, `SELECT EXISTS (
 		SELECT FROM information_schema.tables 
 		WHERE  table_schema = 'public'
 		AND    table_name   = 'jokesbapak2'
@@ -80,7 +74,7 @@ func Setup(db *pgxpool.Pool, ctx *context.Context) error {
 			return err
 		}
 
-		_, err = tx.Exec(*ctx, sql)
+		_, err = conn.Query(*ctx, sql)
 		if err != nil {
 			log.Fatalln("12 - failed on table creation: ", err)
 			return err
@@ -91,7 +85,7 @@ func Setup(db *pgxpool.Pool, ctx *context.Context) error {
 
 	//Check if table exists
 	var tableSubmissionExists bool
-	err = db.QueryRow(*ctx, `SELECT EXISTS (
+	err = conn.QueryRow(*ctx, `SELECT EXISTS (
 		SELECT FROM information_schema.tables 
 		WHERE  table_schema = 'public'
 		AND    table_name   = 'submission'
@@ -114,15 +108,10 @@ func Setup(db *pgxpool.Pool, ctx *context.Context) error {
 			log.Fatalln("14 - failed on table creation: ", err)
 		}
 
-		_, err = tx.Query(*ctx, sql)
+		_, err = conn.Query(*ctx, sql)
 		if err != nil {
 			log.Fatalln("15 - failed on table creation: ", err)
 		}
-	}
-
-	err = tx.Commit(*ctx)
-	if err != nil {
-		return err
 	}
 
 	return nil

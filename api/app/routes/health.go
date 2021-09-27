@@ -14,6 +14,7 @@ func (d *Dependencies) Health() {
 		Redis:   d.Redis,
 		Context: d.Context,
 	}
+
 	d.App.Get("/health", cache.New(cache.Config{Expiration: 30 * time.Minute}), deps.Health)
 	d.App.Get("/v1/health", cache.New(cache.Config{Expiration: 30 * time.Minute}), deps.Health)
 }

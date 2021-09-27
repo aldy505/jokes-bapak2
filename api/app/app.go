@@ -24,7 +24,7 @@ import (
 
 func New() *fiber.App {
 	// Setup Context
-	ctx, cancel := context.WithTimeout(context.Background(), time.Minute*1)
+	ctx, cancel := context.WithCancel(context.Background())
 
 	// Setup PostgreSQL
 	poolConfig, err := pgxpool.ParseConfig(os.Getenv("DATABASE_URL"))
@@ -62,15 +62,14 @@ func New() *fiber.App {
 		Debug: true,
 	})
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalln(err)
 	}
-
 	defer sentry.Flush(2 * time.Second)
 
 	err = database.Setup(db, &ctx)
 	if err != nil {
 		sentry.CaptureException(err)
-		log.Fatal(err)
+		log.Fatalln(err)
 	}
 
 	err = core.SetAllJSONJoke(db, memory, &ctx)

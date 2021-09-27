@@ -10,12 +10,14 @@ import (
 
 func (d *Dependencies) Submit() {
 	deps := submit.Dependencies{
-		DB:     d.DB,
-		Redis:  d.Redis,
-		Memory: d.Memory,
-		HTTP:   d.HTTP,
-		Query:  d.Query,
+		DB:      d.DB,
+		Redis:   d.Redis,
+		Memory:  d.Memory,
+		HTTP:    d.HTTP,
+		Query:   d.Query,
+		Context: d.Context,
 	}
+
 	// Get pending submitted joke
 	d.App.Get(
 		"/submit",

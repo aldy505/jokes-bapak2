@@ -8,14 +8,14 @@ INSERT INTO "administrators" ("id", "key", "token", "last_used") VALUES
 
 -- 10 jokes is enough right?
 
-INSERT INTO "jokesbapak2" ("id", "link", "creator") VALUES
-(1, 'https://picsum.photos/id/1000/500/500', 1),
-(2, 'https://picsum.photos/id/1001/500/500', 1),
-(3, 'https://picsum.photos/id/1002/500/500', 1),
-(4, 'https://picsum.photos/id/1003/500/500', 1),
-(5, 'https://picsum.photos/id/1004/500/500', 1),
-(6, 'https://picsum.photos/id/1005/500/500', 1),
-(7, 'https://picsum.photos/id/1006/500/500', 1),
-(8, 'https://picsum.photos/id/1010/500/500', 1),
-(9, 'https://picsum.photos/id/1008/500/500', 1),
-(10, 'https://picsum.photos/id/1009/500/500', 1);
+INSERT INTO "jokesbapak2" ("link", "creator") VALUES
+('https://picsum.photos/id/1000/500/500', 1),
+('https://picsum.photos/id/1001/500/500', 1),
+('https://picsum.photos/id/1002/500/500', 1),
+('https://picsum.photos/id/1003/500/500', 1),
+('https://picsum.photos/id/1004/500/500', 1),
+('https://picsum.photos/id/1005/500/500', 1),
+('https://picsum.photos/id/1006/500/500', 1),
+('https://picsum.photos/id/1010/500/500', 1),
+('https://picsum.photos/id/1008/500/500', 1),
+('https://picsum.photos/id/1009/500/500', 1);
