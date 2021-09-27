@@ -1,50 +1,24 @@
 package main
 
 import (
+	"jokes-bapak2-api/app"
 	"log"
 	"os"
 	"os/signal"
-	"time"
-
-	v1 "jokes-bapak2-api/app/v1"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/favicon"
-	"github.com/gofiber/fiber/v2/middleware/limiter"
 	_ "github.com/joho/godotenv/autoload"
 )
 
 func main() {
-	timeoutDefault, _ := time.ParseDuration("1m")
-
-	app := fiber.New(fiber.Config{
-		ReadTimeout:  timeoutDefault,
-		WriteTimeout: timeoutDefault,
-	})
-
-	app.Use(limiter.New(limiter.Config{
-		Max:          30,
-		Expiration:   1 * time.Minute,
-		LimitReached: limitHandler,
-	}))
-	app.Use(favicon.New(favicon.Config{
-		File: "./favicon.png",
-	}))
-
-	app.Mount("/v1", v1.New())
+	a := app.New()
 
 	// Start server (with or without graceful shutdown).
 	if os.Getenv("ENV") == "development" {
-		StartServer(app)
+		StartServer(a)
 	} else {
-		StartServerWithGracefulShutdown(app)
+		StartServerWithGracefulShutdown(a)
 	}
-}
-
-func limitHandler(c *fiber.Ctx) error {
-	return c.Status(fiber.StatusTooManyRequests).JSON(fiber.Map{
-		"message": "we only allow up to 15 request per minute",
-	})
 }
 
 // StartServerWithGracefulShutdown function for starting server with a graceful shutdown.
