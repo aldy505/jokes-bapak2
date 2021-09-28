@@ -1,6 +1,7 @@
 package submit
 
 import (
+	"context"
 	"jokes-bapak2-api/app/core"
 	"net/url"
 	"strings"
@@ -10,6 +11,7 @@ import (
 	"github.com/georgysavva/scany/pgxscan"
 	"github.com/gofiber/fiber/v2"
 	"github.com/jackc/pgx/v4"
+	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 func (d *Dependencies) SubmitJoke(c *fiber.Ctx) error {
@@ -73,23 +75,14 @@ func (d *Dependencies) SubmitJoke(c *fiber.Ctx) error {
 			return err
 		}
 	}
+
 	// Validate if link already exists
-	sql, args, err := d.Query.
-		Select("link").
-		From("submission").
-		Where(squirrel.Eq{"link": link}).
-		ToSql()
+	validateLink, err := validateIfLinkExists(conn, d.Context, d.Query, link)
 	if err != nil {
 		return err
 	}
 
-	var validateLink string
-	err = conn.QueryRow(*d.Context, sql, args...).Scan(&validateLink)
-	if err != nil && err != pgx.ErrNoRows {
-		return err
-	}
-
-	if err == nil && validateLink != "" {
+	if validateLink {
 		return c.Status(fiber.StatusConflict).JSON(Error{
 			Error: "Given link is already on the submission queue.",
 		})
@@ -97,7 +90,7 @@ func (d *Dependencies) SubmitJoke(c *fiber.Ctx) error {
 
 	now := time.Now().UTC().Format(time.RFC3339)
 
-	sql, args, err = d.Query.
+	sql, args, err := d.Query.
 		Insert("submission").
 		Columns("link", "created_at", "author").
 		Values(link, now, body.Author).
@@ -126,4 +119,27 @@ func (d *Dependencies) SubmitJoke(c *fiber.Ctx) error {
 			Submission: submission[0],
 			AuthorPage: "/submit?author=" + url.QueryEscape(body.Author),
 		})
+}
+
+func validateIfLinkExists(conn *pgxpool.Conn, ctx *context.Context, query squirrel.StatementBuilderType, link string) (bool, error) {
+	sql, args, err := query.
+		Select("link").
+		From("submission").
+		Where(squirrel.Eq{"link": link}).
+		ToSql()
+	if err != nil {
+		return false, err
+	}
+
+	var validateLink string
+	err = conn.QueryRow(*ctx, sql, args...).Scan(&validateLink)
+	if err != nil && err != pgx.ErrNoRows {
+		return false, err
+	}
+
+	if err == nil && validateLink != "" {
+		return true, nil
+	}
+
+	return false, nil
 }

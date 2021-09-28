@@ -28,43 +28,42 @@ func (d *Dependencies) TodayJoke(c *fiber.Ctx) error {
 	if eq {
 		c.Set("Content-Type", joke.ContentType)
 		return c.Status(fiber.StatusOK).Send([]byte(joke.Image))
-	} else {
-		conn, err := d.DB.Acquire(*d.Context)
-		if err != nil {
-			return err
-		}
-		defer conn.Release()
-		var link string
-		err = conn.QueryRow(*d.Context, "SELECT link FROM jokesbapak2 ORDER BY random() LIMIT 1").Scan(&link)
-		if err != nil {
-			return err
-		}
-
-		response, err := d.HTTP.Get(link, nil)
-		if err != nil {
-			return err
-		}
-
-		data, err := ioutil.ReadAll(response.Body)
-		if err != nil {
-			return err
-		}
-
-		now := time.Now().UTC().Format(time.RFC3339)
-		err = d.Redis.MSet(*d.Context, map[string]interface{}{
-			"today:link":        link,
-			"today:date":        now,
-			"today:image":       string(data),
-			"today:contentType": response.Header.Get("content-type"),
-		}).Err()
-		if err != nil {
-			return err
-		}
-
-		c.Set("Content-Type", response.Header.Get("content-type"))
-		return c.Status(fiber.StatusOK).Send(data)
 	}
 
+	conn, err := d.DB.Acquire(*d.Context)
+	if err != nil {
+		return err
+	}
+	defer conn.Release()
+	var link string
+	err = conn.QueryRow(*d.Context, "SELECT link FROM jokesbapak2 ORDER BY random() LIMIT 1").Scan(&link)
+	if err != nil {
+		return err
+	}
+
+	response, err := d.HTTP.Get(link, nil)
+	if err != nil {
+		return err
+	}
+
+	data, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		return err
+	}
+
+	now := time.Now().UTC().Format(time.RFC3339)
+	err = d.Redis.MSet(*d.Context, map[string]interface{}{
+		"today:link":        link,
+		"today:date":        now,
+		"today:image":       string(data),
+		"today:contentType": response.Header.Get("content-type"),
+	}).Err()
+	if err != nil {
+		return err
+	}
+
+	c.Set("Content-Type", response.Header.Get("content-type"))
+	return c.Status(fiber.StatusOK).Send(data)
 }
 
 func (d *Dependencies) SingleJoke(c *fiber.Ctx) error {

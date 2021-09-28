@@ -17,15 +17,46 @@ func Setup(db *pgxpool.Pool, ctx *context.Context) error {
 	}
 	defer conn.Release()
 
-	// administrators table
+	err = setupAuthTable(conn, ctx)
+	if err != nil {
+		return err
+	}
+
+	conn2, err := db.Acquire(*ctx)
+	if err != nil {
+		log.Fatalln("32 - err here")
+		return err
+	}
+	defer conn2.Release()
+
+	err = setupJokesTable(conn2, ctx)
+	if err != nil {
+		return err
+	}
+
+	conn3, err := db.Acquire(*ctx)
+	if err != nil {
+		return err
+	}
+	defer conn3.Release()
+
+	err = setupSubmissionTable(conn3, ctx)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func setupAuthTable(conn *pgxpool.Conn, ctx *context.Context) error {
+	// Check if table exists
 	var tableAuthExists bool
-	err = conn.QueryRow(*ctx, `SELECT EXISTS (
+	err := conn.QueryRow(*ctx, `SELECT EXISTS (
 		SELECT FROM information_schema.tables 
 		WHERE  table_schema = 'public'
 		AND    table_name   = 'administrators'
 		);`).Scan(&tableAuthExists)
 	if err != nil {
-		log.Fatalln("16 - failed on checking table: ", err)
 		return err
 	}
 
@@ -38,36 +69,27 @@ func Setup(db *pgxpool.Pool, ctx *context.Context) error {
 			StringColumn("last_used").
 			ToSql()
 		if err != nil {
-			log.Fatalln("17 - failed on table creation: ", err)
 			return err
 		}
 
 		q, err := conn.Query(*ctx, sql)
 		if err != nil {
-			log.Fatalln("18 - failed on table creation: ", err)
 			return err
 		}
 		defer q.Close()
 	}
+	return nil
+}
 
-	conn2, err := db.Acquire(*ctx)
-	if err != nil {
-		log.Fatalln("32 - err here")
-		return err
-	}
-	defer conn2.Release()
-
-	// Jokesbapak2 table
-
+func setupJokesTable(conn *pgxpool.Conn, ctx *context.Context) error {
 	// Check if table exists
 	var tableJokesExists bool
-	err = conn2.QueryRow(*ctx, `SELECT EXISTS (
+	err := conn.QueryRow(*ctx, `SELECT EXISTS (
 		SELECT FROM information_schema.tables 
 		WHERE  table_schema = 'public'
 		AND    table_name   = 'jokesbapak2'
 		);`).Scan(&tableJokesExists)
 	if err != nil {
-		log.Fatalln("10 - failed on checking table: ", err)
 		return err
 	}
 
@@ -79,34 +101,28 @@ func Setup(db *pgxpool.Pool, ctx *context.Context) error {
 			AddColumn(bob.ColumnDef{Name: "creator", Type: "INT", Extras: []string{"NOT NULL", "REFERENCES \"administrators\" (\"id\")"}}).
 			ToSql()
 		if err != nil {
-			log.Fatalln("11 - failed on table creation: ", err)
 			return err
 		}
 
-		q, err := conn2.Query(*ctx, sql)
+		q, err := conn.Query(*ctx, sql)
 		if err != nil {
-			log.Fatalln("12 - failed on table creation: ", err)
 			return err
 		}
 		defer q.Close()
 	}
 
-	// Submission table
-	conn3, err := db.Acquire(*ctx)
-	if err != nil {
-		return err
-	}
-	defer conn3.Release()
+	return nil
+}
 
+func setupSubmissionTable(conn *pgxpool.Conn, ctx *context.Context) error {
 	//Check if table exists
 	var tableSubmissionExists bool
-	err = conn3.QueryRow(*ctx, `SELECT EXISTS (
-		SELECT FROM information_schema.tables 
-		WHERE  table_schema = 'public'
-		AND    table_name   = 'submission'
-		);`).Scan(&tableSubmissionExists)
+	err := conn.QueryRow(*ctx, `SELECT EXISTS (
+	SELECT FROM information_schema.tables 
+	WHERE  table_schema = 'public'
+	AND    table_name   = 'submission'
+	);`).Scan(&tableSubmissionExists)
 	if err != nil {
-		log.Fatalln("13 - failed on checking table: ", err)
 		return err
 	}
 
@@ -120,15 +136,14 @@ func Setup(db *pgxpool.Pool, ctx *context.Context) error {
 			AddColumn(bob.ColumnDef{Name: "status", Type: "SMALLINT", Extras: []string{"DEFAULT 0"}}).
 			ToSql()
 		if err != nil {
-			log.Fatalln("14 - failed on table creation: ", err)
+			return err
 		}
 
-		q, err := conn3.Query(*ctx, sql)
+		q, err := conn.Query(*ctx, sql)
 		if err != nil {
-			log.Fatalln("15 - failed on table creation: ", err)
+			return err
 		}
 		defer q.Close()
 	}
-
 	return nil
 }

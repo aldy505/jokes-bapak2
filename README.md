@@ -24,10 +24,10 @@ This is some kind of [icanhazdadjokes](https://icanhazdadjoke.com/) but it's Ind
 
 You can consume this API via a website (linked in the front facing web) with a few endpoints:
 
- * `/v1/` - Random jokes bapak2
- * `/v1/id/{number}` - Jokes bapak2 based on ID
- * `/v1/today` - Jokes bapak2 of the day
- * `/v1/total` - Total available jokes bapak2
+ * `/` - Random jokes bapak2
+ * `/id/{number}` - Jokes bapak2 based on ID
+ * `/today` - Jokes bapak2 of the day
+ * `/total` - Total available jokes bapak2
 
 Currently I'm (still) searching for an alternative for AWS S3 that I can use for free.
 
