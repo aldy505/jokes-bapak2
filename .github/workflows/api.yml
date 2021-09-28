@@ -8,7 +8,7 @@ jobs:
   api-build:
     name: Build
     runs-on: ubuntu-latest
-    container: golang:1.16.6
+    container: golang:1.17
     timeout-minutes: 15
     services:
       postgres:
