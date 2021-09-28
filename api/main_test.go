@@ -27,9 +27,6 @@ func TestMain(m *testing.M) {
 	}
 	log.Println("---- Preparation complete")
 	log.Print("\n")
-
-	code := m.Run()
-	os.Exit(code)
 }
 
 func setup() error {
