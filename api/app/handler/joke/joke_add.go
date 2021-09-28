@@ -54,7 +54,7 @@ func (d *Dependencies) AddNewJoke(c *fiber.Ctx) error {
 	if err != nil && err != pgx.ErrNoRows {
 		return err
 	}
-	
+
 	if err == nil && validateLink != "" {
 		return c.Status(fiber.StatusConflict).JSON(Error{
 			Error: "Given link is already on the jokesbapak2 database",

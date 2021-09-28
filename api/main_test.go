@@ -44,20 +44,19 @@ func setup() error {
 	}
 	defer db.Close()
 
+	dj, err := db.Query(ctx, "DROP TABLE \"jokesbapak2\"")
+	if err != nil {
+		log.Println("busy here - 57")
+		return err
+	}
+	defer dj.Close()
 
-	 dj, err := db.Query(ctx, "DROP TABLE \"jokesbapak2\"")
-	 if err != nil {
-	 	log.Println("busy here - 57")
-	 	return err
-	 }
-	 defer dj.Close()
-
-	 ds, err := db.Query(ctx, "DROP TABLE \"submission\"")
-	 if err != nil {
-	 	log.Println("busy here - 67")
-	 	return err
-	 }
-	 defer ds.Close()
+	ds, err := db.Query(ctx, "DROP TABLE \"submission\"")
+	if err != nil {
+		log.Println("busy here - 67")
+		return err
+	}
+	defer ds.Close()
 
 	da, err := db.Query(ctx, "DROP TABLE \"administrators\"")
 	if err != nil {
