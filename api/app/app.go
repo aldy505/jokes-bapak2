@@ -29,14 +29,16 @@ func New() *fiber.App {
 	// Setup PostgreSQL
 	poolConfig, err := pgxpool.ParseConfig(os.Getenv("DATABASE_URL"))
 	if err != nil {
-		log.Fatalln("Unable to create pool config", err)
+		log.Panicln("Unable to create pool config", err)
 	}
+	poolConfig.MaxConnIdleTime = time.Minute * 3
+	poolConfig.MaxConnLifetime = time.Minute * 5
 	poolConfig.MaxConns = 15
-	poolConfig.MinConns = 2
+	poolConfig.MinConns = 4
 
 	db, err := pgxpool.ConnectConfig(ctx, poolConfig)
 	if err != nil {
-		log.Fatalln("Unable to create connection", err)
+		log.Panicln("Unable to create connection", err)
 	}
 
 	// Setup Redis
@@ -49,7 +51,7 @@ func New() *fiber.App {
 	// Setup In Memory
 	memory, err := bigcache.NewBigCache(bigcache.DefaultConfig(6 * time.Hour))
 	if err != nil {
-		log.Fatalln(err)
+		log.Panicln(err)
 	}
 
 	// Setup Sentry
@@ -62,23 +64,23 @@ func New() *fiber.App {
 		Debug: true,
 	})
 	if err != nil {
-		log.Fatalln(err)
+		log.Panicln(err)
 	}
 	defer sentry.Flush(2 * time.Second)
 
 	err = database.Setup(db, &ctx)
 	if err != nil {
 		sentry.CaptureException(err)
-		log.Fatalln(err)
+		log.Panicln(err)
 	}
 
 	err = core.SetAllJSONJoke(db, memory, &ctx)
 	if err != nil {
-		log.Fatalln(err)
+		log.Panicln(err)
 	}
 	err = core.SetTotalJoke(db, memory, &ctx)
 	if err != nil {
-		log.Fatalln(err)
+		log.Panicln(err)
 	}
 
 	timeoutDefault := time.Minute * 1

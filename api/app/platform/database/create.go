@@ -12,6 +12,7 @@ import (
 func Setup(db *pgxpool.Pool, ctx *context.Context) error {
 	conn, err := db.Acquire(*ctx)
 	if err != nil {
+		log.Fatalln("30 - err here")
 		return err
 	}
 	defer conn.Release()
@@ -41,18 +42,26 @@ func Setup(db *pgxpool.Pool, ctx *context.Context) error {
 			return err
 		}
 
-		_, err = conn.Query(*ctx, sql)
+		q, err := conn.Query(*ctx, sql)
 		if err != nil {
 			log.Fatalln("18 - failed on table creation: ", err)
 			return err
 		}
+		defer q.Close()
 	}
+
+	conn2, err := db.Acquire(*ctx)
+	if err != nil {
+		log.Fatalln("32 - err here")
+		return err
+	}
+	defer conn2.Release()
 
 	// Jokesbapak2 table
 
 	// Check if table exists
 	var tableJokesExists bool
-	err = conn.QueryRow(*ctx, `SELECT EXISTS (
+	err = conn2.QueryRow(*ctx, `SELECT EXISTS (
 		SELECT FROM information_schema.tables 
 		WHERE  table_schema = 'public'
 		AND    table_name   = 'jokesbapak2'
@@ -74,22 +83,28 @@ func Setup(db *pgxpool.Pool, ctx *context.Context) error {
 			return err
 		}
 
-		_, err = conn.Query(*ctx, sql)
+		q, err := conn2.Query(*ctx, sql)
 		if err != nil {
 			log.Fatalln("12 - failed on table creation: ", err)
 			return err
 		}
+		defer q.Close()
 	}
 
 	// Submission table
+	conn3, err := db.Acquire(*ctx)
+	if err != nil {
+		return err
+	}
+	defer conn3.Release()
 
 	//Check if table exists
 	var tableSubmissionExists bool
-	err = conn.QueryRow(*ctx, `SELECT EXISTS (
+	err = conn3.QueryRow(*ctx, `SELECT EXISTS (
 		SELECT FROM information_schema.tables 
 		WHERE  table_schema = 'public'
 		AND    table_name   = 'submission'
-		);`).Scan(&tableJokesExists)
+		);`).Scan(&tableSubmissionExists)
 	if err != nil {
 		log.Fatalln("13 - failed on checking table: ", err)
 		return err
@@ -108,10 +123,11 @@ func Setup(db *pgxpool.Pool, ctx *context.Context) error {
 			log.Fatalln("14 - failed on table creation: ", err)
 		}
 
-		_, err = conn.Query(*ctx, sql)
+		q, err := conn3.Query(*ctx, sql)
 		if err != nil {
 			log.Fatalln("15 - failed on table creation: ", err)
 		}
+		defer q.Close()
 	}
 
 	return nil

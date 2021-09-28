@@ -2,6 +2,7 @@ package joke
 
 import (
 	"jokes-bapak2-api/app/core"
+	"strconv"
 
 	"github.com/Masterminds/squirrel"
 	"github.com/gofiber/fiber/v2"
@@ -26,13 +27,13 @@ func (d *Dependencies) UpdateJoke(c *fiber.Ctx) error {
 		return err
 	}
 
-	var jokeID string
+	var jokeID int
 	err = conn.QueryRow(*d.Context, sql, args...).Scan(&jokeID)
 	if err != nil && err != pgx.ErrNoRows {
 		return err
 	}
 
-	if jokeID == id {
+	if strconv.Itoa(jokeID) == id {
 		body := new(core.Joke)
 		err = c.BodyParser(&body)
 		if err != nil {

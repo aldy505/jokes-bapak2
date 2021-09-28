@@ -83,13 +83,13 @@ func (d *Dependencies) SubmitJoke(c *fiber.Ctx) error {
 		return err
 	}
 
-	v, err := conn.Query(*d.Context, sql, args...)
+	var validateLink string
+	err = conn.QueryRow(*d.Context, sql, args...).Scan(&validateLink)
 	if err != nil && err != pgx.ErrNoRows {
 		return err
 	}
-	defer v.Close()
 
-	if err == nil {
+	if err == nil && validateLink != "" {
 		return c.Status(fiber.StatusConflict).JSON(Error{
 			Error: "Given link is already on the submission queue.",
 		})

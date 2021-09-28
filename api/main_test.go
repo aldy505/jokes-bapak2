@@ -23,7 +23,7 @@ func TestMain(m *testing.M) {
 	log.Println("---- Preparing for integration test")
 	err := setup()
 	if err != nil {
-		log.Fatalln(err)
+		log.Panicln(err)
 	}
 	log.Println("---- Preparation complete")
 	log.Print("\n")
@@ -37,8 +37,6 @@ func setup() error {
 	if err != nil {
 		return errors.New("Unable to create pool config: " + err.Error())
 	}
-	poolConfig.MaxConns = 15
-	poolConfig.MinConns = 2
 
 	db, err := pgxpool.ConnectConfig(ctx, poolConfig)
 	if err != nil {
@@ -46,32 +44,27 @@ func setup() error {
 	}
 	defer db.Close()
 
-	conn, err := db.Acquire(ctx)
+
+	 dj, err := db.Query(ctx, "DROP TABLE \"jokesbapak2\"")
+	 if err != nil {
+	 	log.Println("busy here - 57")
+	 	return err
+	 }
+	 defer dj.Close()
+
+	 ds, err := db.Query(ctx, "DROP TABLE \"submission\"")
+	 if err != nil {
+	 	log.Println("busy here - 67")
+	 	return err
+	 }
+	 defer ds.Close()
+
+	da, err := db.Query(ctx, "DROP TABLE \"administrators\"")
 	if err != nil {
+		log.Println("busy here - 62")
 		return err
 	}
-	defer conn.Release()
-
-	// dj, err := conn.Query(ctx, "DROP TABLE \"jokesbapak2\"")
-	// if err != nil {
-	// 	log.Println("busy here - 57")
-	// 	return err
-	// }
-	// defer dj.Close()
-
-	// ds, err := conn.Query(ctx, "DROP TABLE \"submission\"")
-	// if err != nil {
-	// 	log.Println("busy here - 67")
-	// 	return err
-	// }
-	// defer ds.Close()
-
-	// da, err := conn.Query(ctx, "DROP TABLE \"administrators\"")
-	// if err != nil {
-	// 	log.Println("busy here - 62")
-	// 	return err
-	// }
-	// defer da.Close()
+	defer da.Close()
 
 	err = database.Setup(db, &ctx)
 	if err != nil {
@@ -79,19 +72,19 @@ func setup() error {
 		return err
 	}
 
-	ia, err := conn.Query(ctx, "INSERT INTO \"administrators\" (id, key, token, last_used) VALUES ($1, $2, $3, $4), ($5, $6, $7, $8);", administratorsData...)
+	ia, err := db.Query(ctx, "INSERT INTO \"administrators\" (id, key, token, last_used) VALUES ($1, $2, $3, $4), ($5, $6, $7, $8);", administratorsData...)
 	if err != nil {
 		return err
 	}
 	defer ia.Close()
 
-	ij, err := conn.Query(ctx, "INSERT INTO \"jokesbapak2\" (id, link, creator) VALUES ($1, $2, $3), ($4, $5, $6), ($7, $8, $9);", jokesData...)
+	ij, err := db.Query(ctx, "INSERT INTO \"jokesbapak2\" (id, link, creator) VALUES ($1, $2, $3), ($4, $5, $6), ($7, $8, $9);", jokesData...)
 	if err != nil {
 		return err
 	}
 	defer ij.Close()
 
-	is, err := conn.Query(ctx, "INSERT INTO \"submission\" (id, link, created_at, author, status) VALUES ($1, $2, $3, $4, $5), ($6, $7, $8, $9, $10);", submissionData...)
+	is, err := db.Query(ctx, "INSERT INTO \"submission\" (id, link, created_at, author, status) VALUES ($1, $2, $3, $4, $5), ($6, $7, $8, $9, $10);", submissionData...)
 	if err != nil {
 		return err
 	}

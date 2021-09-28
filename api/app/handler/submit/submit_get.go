@@ -2,7 +2,7 @@ package submit
 
 import (
 	"bytes"
-	"log"
+	"net/url"
 	"strconv"
 
 	"github.com/aldy505/bob"
@@ -58,7 +58,11 @@ func (d *Dependencies) GetSubmission(c *fiber.Ctx) error {
 
 	if query.Author != "" {
 		sqlQuery.WriteString(" AND author = ?")
-		args = append(args, query.Author)
+		escapedAuthor, err := url.QueryUnescape(query.Author)
+		if err != nil {
+			return err
+		}
+		args = append(args, escapedAuthor)
 	}
 
 	if query.Approved != "" {
@@ -81,7 +85,6 @@ func (d *Dependencies) GetSubmission(c *fiber.Ctx) error {
 	var submissions []Submission
 	results, err := d.DB.Query(*d.Context, sql, args...)
 	if err != nil {
-		log.Println(err)
 		return err
 	}
 
