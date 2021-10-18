@@ -1,8 +1,6 @@
 package routes
 
 import (
-	"context"
-
 	"github.com/Masterminds/squirrel"
 	"github.com/allegro/bigcache/v3"
 	"github.com/go-redis/redis/v8"
@@ -12,12 +10,10 @@ import (
 )
 
 type Dependencies struct {
-	DB      *pgxpool.Pool
-	Redis   *redis.Client
-	Memory  *bigcache.BigCache
-	HTTP    *httpclient.Client
-	Query   squirrel.StatementBuilderType
-	App     *fiber.App
-	Context *context.Context
-	Cancel  *context.CancelFunc
+	DB     *pgxpool.Pool
+	Redis  *redis.Client
+	Memory *bigcache.BigCache
+	HTTP   *httpclient.Client
+	Query  squirrel.StatementBuilderType
+	App    *fiber.App
 }

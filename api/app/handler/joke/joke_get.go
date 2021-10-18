@@ -1,8 +1,10 @@
 package joke
 
 import (
+	"errors"
 	"io/ioutil"
-	"jokes-bapak2-api/app/core"
+	core "jokes-bapak2-api/app/core/joke"
+	"jokes-bapak2-api/app/core/schema"
 	"jokes-bapak2-api/app/utils"
 	"strconv"
 	"time"
@@ -15,7 +17,7 @@ func (d *Dependencies) TodayJoke(c *fiber.Ctx) error {
 	// send the joke if exists
 	// get a new joke if it's not, then send it.
 	var joke Today
-	err := d.Redis.MGet(*d.Context, "today:link", "today:date", "today:image", "today:contentType").Scan(&joke)
+	err := d.Redis.MGet(c.Context(), "today:link", "today:date", "today:image", "today:contentType").Scan(&joke)
 	if err != nil {
 		return err
 	}
@@ -30,13 +32,7 @@ func (d *Dependencies) TodayJoke(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusOK).Send([]byte(joke.Image))
 	}
 
-	conn, err := d.DB.Acquire(*d.Context)
-	if err != nil {
-		return err
-	}
-	defer conn.Release()
-	var link string
-	err = conn.QueryRow(*d.Context, "SELECT link FROM jokesbapak2 ORDER BY random() LIMIT 1").Scan(&link)
+	link, err := core.GetRandomJokeFromDB(d.DB, c.Context())
 	if err != nil {
 		return err
 	}
@@ -52,7 +48,7 @@ func (d *Dependencies) TodayJoke(c *fiber.Ctx) error {
 	}
 
 	now := time.Now().UTC().Format(time.RFC3339)
-	err = d.Redis.MSet(*d.Context, map[string]interface{}{
+	err = d.Redis.MSet(c.Context(), map[string]interface{}{
 		"today:link":        link,
 		"today:date":        now,
 		"today:image":       string(data),
@@ -73,10 +69,11 @@ func (d *Dependencies) SingleJoke(c *fiber.Ctx) error {
 	}
 
 	if !checkCache {
-		jokes, err := core.GetAllJSONJokes(d.DB, d.Context)
+		jokes, err := core.GetAllJSONJokes(d.DB, c.Context())
 		if err != nil {
 			return err
 		}
+
 		err = d.Memory.Set("jokes", jokes)
 		if err != nil {
 			return err
@@ -84,7 +81,7 @@ func (d *Dependencies) SingleJoke(c *fiber.Ctx) error {
 	}
 
 	link, err := core.GetRandomJokeFromCache(d.Memory)
-	if err != nil {
+	if err != nil && !errors.Is(err, schema.ErrEmpty) {
 		return err
 	}
 
@@ -111,10 +108,11 @@ func (d *Dependencies) JokeByID(c *fiber.Ctx) error {
 	}
 
 	if !checkCache {
-		jokes, err := core.GetAllJSONJokes(d.DB, d.Context)
+		jokes, err := core.GetAllJSONJokes(d.DB, c.Context())
 		if err != nil {
 			return err
 		}
+
 		err = d.Memory.Set("jokes", jokes)
 		if err != nil {
 			return err

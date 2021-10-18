@@ -83,7 +83,7 @@ func (d *Dependencies) GetSubmission(c *fiber.Ctx) error {
 	sql = bob.ReplacePlaceholder(sqlQuery.String(), bob.Dollar)
 
 	var submissions []Submission
-	results, err := d.DB.Query(*d.Context, sql, args...)
+	results, err := d.DB.Query(c.Context(), sql, args...)
 	if err != nil {
 		return err
 	}

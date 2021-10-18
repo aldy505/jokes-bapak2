@@ -2,7 +2,8 @@ package submit
 
 import (
 	"context"
-	"jokes-bapak2-api/app/core"
+	core "jokes-bapak2-api/app/core/submit"
+	"jokes-bapak2-api/app/core/validator"
 	"net/url"
 	"strings"
 	"time"
@@ -15,7 +16,7 @@ import (
 )
 
 func (d *Dependencies) SubmitJoke(c *fiber.Ctx) error {
-	conn, err := d.DB.Acquire(*d.Context)
+	conn, err := d.DB.Acquire(c.Context())
 	if err != nil {
 		return err
 	}
@@ -41,7 +42,7 @@ func (d *Dependencies) SubmitJoke(c *fiber.Ctx) error {
 		})
 	} else {
 		// Validate format
-		valid := core.ValidateAuthor(body.Author)
+		valid := validator.ValidateAuthor(body.Author)
 		if !valid {
 			return c.Status(fiber.StatusBadRequest).JSON(Error{
 				Error: "Please stick to the format of \"yourname <youremail@mail>\" and within 200 characters",
@@ -53,7 +54,7 @@ func (d *Dependencies) SubmitJoke(c *fiber.Ctx) error {
 
 	// Check link validity if link was provided
 	if body.Link != "" {
-		valid, err := core.CheckImageValidity(d.HTTP, body.Link)
+		valid, err := validator.CheckImageValidity(d.HTTP, body.Link)
 		if err != nil {
 			return err
 		}
@@ -77,7 +78,7 @@ func (d *Dependencies) SubmitJoke(c *fiber.Ctx) error {
 	}
 
 	// Validate if link already exists
-	validateLink, err := validateIfLinkExists(conn, d.Context, d.Query, link)
+	validateLink, err := validateIfLinkExists(d.DB, c.Context(), d.Query, link)
 	if err != nil {
 		return err
 	}
@@ -101,7 +102,7 @@ func (d *Dependencies) SubmitJoke(c *fiber.Ctx) error {
 	}
 
 	var submission []Submission
-	result, err := conn.Query(*d.Context, sql, args...)
+	result, err := conn.Query(c.Context(), sql, args...)
 	if err != nil {
 		return err
 	}
@@ -121,7 +122,13 @@ func (d *Dependencies) SubmitJoke(c *fiber.Ctx) error {
 		})
 }
 
-func validateIfLinkExists(conn *pgxpool.Conn, ctx *context.Context, query squirrel.StatementBuilderType, link string) (bool, error) {
+func validateIfLinkExists(db *pgxpool.Pool, ctx context.Context, query squirrel.StatementBuilderType, link string) (bool, error) {
+	conn, err := db.Acquire(ctx)
+	if err != nil {
+		return false, err
+	}
+	defer conn.Release()
+
 	sql, args, err := query.
 		Select("link").
 		From("submission").
@@ -132,7 +139,7 @@ func validateIfLinkExists(conn *pgxpool.Conn, ctx *context.Context, query squirr
 	}
 
 	var validateLink string
-	err = conn.QueryRow(*ctx, sql, args...).Scan(&validateLink)
+	err = conn.QueryRow(context.Background(), sql, args...).Scan(&validateLink)
 	if err != nil && err != pgx.ErrNoRows {
 		return false, err
 	}

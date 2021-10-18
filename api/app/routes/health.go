@@ -10,9 +10,8 @@ import (
 func (d *Dependencies) Health() {
 	// Health check
 	deps := health.Dependencies{
-		DB:      d.DB,
-		Redis:   d.Redis,
-		Context: d.Context,
+		DB:    d.DB,
+		Redis: d.Redis,
 	}
 
 	d.App.Get("/health", cache.New(cache.Config{Expiration: 30 * time.Minute}), deps.Health)

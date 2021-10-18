@@ -10,12 +10,11 @@ import (
 
 func (d *Dependencies) Joke() {
 	deps := joke.Dependencies{
-		DB:      d.DB,
-		Redis:   d.Redis,
-		Memory:  d.Memory,
-		HTTP:    d.HTTP,
-		Query:   d.Query,
-		Context: d.Context,
+		DB:     d.DB,
+		Redis:  d.Redis,
+		Memory: d.Memory,
+		HTTP:   d.HTTP,
+		Query:  d.Query,
 	}
 	// Single route
 	d.App.Get("/", deps.SingleJoke)
@@ -34,11 +33,11 @@ func (d *Dependencies) Joke() {
 	d.App.Get("/v1/total", cache.New(cache.Config{Expiration: 15 * time.Minute}), deps.TotalJokes)
 
 	// Add new joke
-	d.App.Put("/", middleware.RequireAuth(d.DB, d.Context), deps.AddNewJoke)
+	d.App.Put("/", middleware.RequireAuth(d.DB), deps.AddNewJoke)
 
 	// Update a joke
-	d.App.Patch("/id/:id", middleware.RequireAuth(d.DB, d.Context), middleware.OnlyIntegerAsID(), deps.UpdateJoke)
+	d.App.Patch("/id/:id", middleware.RequireAuth(d.DB), middleware.OnlyIntegerAsID(), deps.UpdateJoke)
 
 	// Delete a joke
-	d.App.Delete("/id/:id", middleware.RequireAuth(d.DB, d.Context), middleware.OnlyIntegerAsID(), deps.DeleteJoke)
+	d.App.Delete("/id/:id", middleware.RequireAuth(d.DB), middleware.OnlyIntegerAsID(), deps.DeleteJoke)
 }

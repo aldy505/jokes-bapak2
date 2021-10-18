@@ -1,38 +1,25 @@
 package joke
 
 import (
-	"jokes-bapak2-api/app/core"
+	core "jokes-bapak2-api/app/core/joke"
+	"jokes-bapak2-api/app/core/schema"
+	"jokes-bapak2-api/app/core/validator"
 
-	"github.com/Masterminds/squirrel"
 	"github.com/gofiber/fiber/v2"
-	"github.com/jackc/pgx/v4"
 )
 
 func (d *Dependencies) AddNewJoke(c *fiber.Ctx) error {
-	conn, err := d.DB.Acquire(*d.Context)
-	if err != nil {
-		return err
-	}
-	defer conn.Release()
-
-	tx, err := conn.Begin(*d.Context)
-	if err != nil {
-		return err
-	}
-	defer tx.Rollback(*d.Context)
-
-	var body core.Joke
-	err = c.BodyParser(&body)
+	var body schema.Joke
+	err := c.BodyParser(&body)
 	if err != nil {
 		return err
 	}
 
 	// Check link validity
-	valid, err := core.CheckImageValidity(d.HTTP, body.Link)
+	valid, err := validator.CheckImageValidity(d.HTTP, body.Link)
 	if err != nil {
 		return err
 	}
-
 	if !valid {
 		return c.
 			Status(fiber.StatusBadRequest).
@@ -40,51 +27,36 @@ func (d *Dependencies) AddNewJoke(c *fiber.Ctx) error {
 				Error: "URL provided is not a valid image",
 			})
 	}
-	// Validate if link already exists
-	sql, args, err := d.Query.
-		Select("link").
-		From("jokesbapak2").
-		Where(squirrel.Eq{"link": body.Link}).
-		ToSql()
+
+	validateLink, err := validator.LinkAlreadyExists(d.DB, c.Context(), body.Link)
 	if err != nil {
 		return err
 	}
-	var validateLink string
-	err = conn.QueryRow(*d.Context, sql, args...).Scan(&validateLink)
-	if err != nil && err != pgx.ErrNoRows {
-		return err
-	}
 
-	if err == nil && validateLink != "" {
+	if !validateLink {
 		return c.Status(fiber.StatusConflict).JSON(Error{
 			Error: "Given link is already on the jokesbapak2 database",
 		})
 	}
 
-	sql, args, err = d.Query.
-		Insert("jokesbapak2").
-		Columns("link", "creator").
-		Values(body.Link, c.Locals("userID")).
-		ToSql()
+	err = core.InsertJokeIntoDB(
+		d.DB,
+		c.Context(),
+		schema.Joke{
+			Link:    body.Link,
+			Creator: c.Locals("userID").(int),
+		},
+	)
 	if err != nil {
 		return err
 	}
 
-	_, err = tx.Exec(*d.Context, sql, args...)
+	err = core.SetAllJSONJoke(d.DB, c.Context(), d.Memory)
 	if err != nil {
 		return err
 	}
 
-	err = tx.Commit(*d.Context)
-	if err != nil {
-		return err
-	}
-
-	err = core.SetAllJSONJoke(d.DB, d.Memory, d.Context)
-	if err != nil {
-		return err
-	}
-	err = core.SetTotalJoke(d.DB, d.Memory, d.Context)
+	err = core.SetTotalJoke(d.DB, c.Context(), d.Memory)
 	if err != nil {
 		return err
 	}

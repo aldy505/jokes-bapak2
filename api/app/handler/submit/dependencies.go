@@ -1,8 +1,6 @@
 package submit
 
 import (
-	"context"
-
 	"github.com/Masterminds/squirrel"
 	"github.com/allegro/bigcache/v3"
 	"github.com/go-redis/redis/v8"
@@ -11,10 +9,9 @@ import (
 )
 
 type Dependencies struct {
-	DB      *pgxpool.Pool
-	Redis   *redis.Client
-	Memory  *bigcache.BigCache
-	HTTP    *httpclient.Client
-	Query   squirrel.StatementBuilderType
-	Context *context.Context
+	DB     *pgxpool.Pool
+	Redis  *redis.Client
+	Memory *bigcache.BigCache
+	HTTP   *httpclient.Client
+	Query  squirrel.StatementBuilderType
 }

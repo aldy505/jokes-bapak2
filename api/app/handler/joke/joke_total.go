@@ -2,7 +2,7 @@ package joke
 
 import (
 	"errors"
-	"jokes-bapak2-api/app/core"
+	core "jokes-bapak2-api/app/core/joke"
 	"strconv"
 
 	"github.com/allegro/bigcache/v3"
@@ -16,7 +16,7 @@ func (d *Dependencies) TotalJokes(c *fiber.Ctx) error {
 	}
 
 	if !checkTotal {
-		err = core.SetTotalJoke(d.DB, d.Memory, d.Context)
+		err = core.SetTotalJoke(d.DB, c.Context(), d.Memory)
 		if err != nil {
 			return err
 		}

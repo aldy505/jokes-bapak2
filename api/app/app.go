@@ -2,7 +2,7 @@ package app
 
 import (
 	"context"
-	"jokes-bapak2-api/app/core"
+	"jokes-bapak2-api/app/core/joke"
 	"jokes-bapak2-api/app/platform/database"
 	"jokes-bapak2-api/app/routes"
 	"log"
@@ -23,8 +23,6 @@ import (
 )
 
 func New() *fiber.App {
-	// Setup Context
-	ctx, cancel := context.WithCancel(context.Background())
 
 	// Setup PostgreSQL
 	poolConfig, err := pgxpool.ParseConfig(os.Getenv("DATABASE_URL"))
@@ -36,7 +34,7 @@ func New() *fiber.App {
 	poolConfig.MaxConns = 15
 	poolConfig.MinConns = 4
 
-	db, err := pgxpool.ConnectConfig(ctx, poolConfig)
+	db, err := pgxpool.ConnectConfig(context.Background(), poolConfig)
 	if err != nil {
 		log.Panicln("Unable to create connection", err)
 	}
@@ -68,17 +66,18 @@ func New() *fiber.App {
 	}
 	defer sentry.Flush(2 * time.Second)
 
-	err = database.Setup(db, &ctx)
+	// TODO: These sequence below might be better wrapped as a Populate() function.
+	err = database.Setup(db)
 	if err != nil {
 		sentry.CaptureException(err)
 		log.Panicln(err)
 	}
 
-	err = core.SetAllJSONJoke(db, memory, &ctx)
+	err = joke.SetAllJSONJoke(db, context.Background(), memory)
 	if err != nil {
 		log.Panicln(err)
 	}
-	err = core.SetTotalJoke(db, memory, &ctx)
+	err = joke.SetTotalJoke(db, context.Background(), memory)
 	if err != nil {
 		log.Panicln(err)
 	}
@@ -103,14 +102,12 @@ func New() *fiber.App {
 	app.Use(etag.New())
 
 	route := routes.Dependencies{
-		DB:      db,
-		Redis:   rdb,
-		Memory:  memory,
-		HTTP:    httpclient.NewClient(httpclient.WithHTTPTimeout(10 * time.Second)),
-		Query:   squirrel.StatementBuilder.PlaceholderFormat(squirrel.Dollar),
-		App:     app,
-		Context: &ctx,
-		Cancel:  &cancel,
+		DB:     db,
+		Redis:  rdb,
+		Memory: memory,
+		HTTP:   httpclient.NewClient(httpclient.WithHTTPTimeout(10 * time.Second)),
+		Query:  squirrel.StatementBuilder.PlaceholderFormat(squirrel.Dollar),
+		App:    app,
 	}
 	route.Health()
 	route.Joke()
