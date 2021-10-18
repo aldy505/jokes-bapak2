@@ -54,13 +54,14 @@ jobs:
       - name: Build
         run: go build main.go
 
-      - name: Run test & coverage
-        run: go test -v -race -coverprofile=coverage.out -covermode=atomic ./...
-        env:
-          ENV: development
-          PORT: 5000
-          DATABASE_URL: postgres://postgres:password@postgres:5432/jokesbapak2
-          REDIS_URL: redis://@redis:6379
+      # Remove test for now
+      # - name: Run test & coverage
+      #   run: go test -v -race -coverprofile=coverage.out -covermode=atomic ./...
+      #   env:
+      #     ENV: development
+      #     PORT: 5000
+      #     DATABASE_URL: postgres://postgres:password@postgres:5432/jokesbapak2
+      #     REDIS_URL: redis://@redis:6379
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v1
