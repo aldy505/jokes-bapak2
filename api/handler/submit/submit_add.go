@@ -1,18 +1,13 @@
 package submit
 
 import (
-	"context"
+	"jokes-bapak2-api/core/schema"
 	core "jokes-bapak2-api/core/submit"
 	"jokes-bapak2-api/core/validator"
 	"net/url"
 	"strings"
-	"time"
 
-	"github.com/Masterminds/squirrel"
-	"github.com/georgysavva/scany/pgxscan"
 	"github.com/gofiber/fiber/v2"
-	"github.com/jackc/pgx/v4"
-	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 func (d *Dependencies) SubmitJoke(c *fiber.Ctx) error {
@@ -22,7 +17,7 @@ func (d *Dependencies) SubmitJoke(c *fiber.Ctx) error {
 	}
 	defer conn.Release()
 
-	var body Submission
+	var body schema.Submission
 	err = c.BodyParser(&body)
 	if err != nil {
 		return err
@@ -30,21 +25,21 @@ func (d *Dependencies) SubmitJoke(c *fiber.Ctx) error {
 
 	// Image and/or Link should not be empty
 	if body.Image == "" && body.Link == "" {
-		return c.Status(fiber.StatusBadRequest).JSON(Error{
+		return c.Status(fiber.StatusBadRequest).JSON(schema.Error{
 			Error: "A link or an image should be supplied in a form of multipart/form-data",
 		})
 	}
 
 	// Author should be supplied
 	if body.Author == "" {
-		return c.Status(fiber.StatusBadRequest).JSON(Error{
+		return c.Status(fiber.StatusBadRequest).JSON(schema.Error{
 			Error: "An author key consisting on the format \"yourname <youremail@mail>\" must be supplied",
 		})
 	} else {
 		// Validate format
 		valid := validator.ValidateAuthor(body.Author)
 		if !valid {
-			return c.Status(fiber.StatusBadRequest).JSON(Error{
+			return c.Status(fiber.StatusBadRequest).JSON(schema.Error{
 				Error: "Please stick to the format of \"yourname <youremail@mail>\" and within 200 characters",
 			})
 		}
@@ -59,7 +54,7 @@ func (d *Dependencies) SubmitJoke(c *fiber.Ctx) error {
 			return err
 		}
 		if !valid {
-			return c.Status(fiber.StatusBadRequest).JSON(Error{
+			return c.Status(fiber.StatusBadRequest).JSON(schema.Error{
 				Error: "URL provided is not a valid image",
 			})
 		}
@@ -78,75 +73,27 @@ func (d *Dependencies) SubmitJoke(c *fiber.Ctx) error {
 	}
 
 	// Validate if link already exists
-	validateLink, err := validateIfLinkExists(d.DB, c.Context(), d.Query, link)
+	validateLink, err := validator.SubmitLinkExists(d.DB, c.Context(), d.Query, link)
 	if err != nil {
 		return err
 	}
 
 	if validateLink {
-		return c.Status(fiber.StatusConflict).JSON(Error{
+		return c.Status(fiber.StatusConflict).JSON(schema.Error{
 			Error: "Given link is already on the submission queue.",
 		})
 	}
 
-	now := time.Now().UTC().Format(time.RFC3339)
-
-	sql, args, err := d.Query.
-		Insert("submission").
-		Columns("link", "created_at", "author").
-		Values(link, now, body.Author).
-		Suffix("RETURNING id,created_at,link,author,status").
-		ToSql()
-	if err != nil {
-		return err
-	}
-
-	var submission []Submission
-	result, err := conn.Query(c.Context(), sql, args...)
-	if err != nil {
-		return err
-	}
-	defer result.Close()
-
-	err = pgxscan.ScanAll(&submission, result)
+	submission, err := core.SubmitJoke(d.DB, c.Context(), body, link)
 	if err != nil {
 		return err
 	}
 
 	return c.
 		Status(fiber.StatusCreated).
-		JSON(ResponseSubmission{
+		JSON(schema.ResponseSubmission{
 			Message:    "Joke submitted. Please wait for a few days for admin to approve your submission.",
-			Submission: submission[0],
+			Submission: submission,
 			AuthorPage: "/submit?author=" + url.QueryEscape(body.Author),
 		})
-}
-
-func validateIfLinkExists(db *pgxpool.Pool, ctx context.Context, query squirrel.StatementBuilderType, link string) (bool, error) {
-	conn, err := db.Acquire(ctx)
-	if err != nil {
-		return false, err
-	}
-	defer conn.Release()
-
-	sql, args, err := query.
-		Select("link").
-		From("submission").
-		Where(squirrel.Eq{"link": link}).
-		ToSql()
-	if err != nil {
-		return false, err
-	}
-
-	var validateLink string
-	err = conn.QueryRow(context.Background(), sql, args...).Scan(&validateLink)
-	if err != nil && err != pgx.ErrNoRows {
-		return false, err
-	}
-
-	if err == nil && validateLink != "" {
-		return true, nil
-	}
-
-	return false, nil
 }

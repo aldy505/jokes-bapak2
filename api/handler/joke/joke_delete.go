@@ -14,7 +14,7 @@ func (d *Dependencies) DeleteJoke(c *fiber.Ctx) error {
 		return err
 	}
 
-	validate, err := validator.IDAlreadyExists(d.DB, c.Context(), id)
+	validate, err := validator.JokeIDExists(d.DB, c.Context(), id)
 	if err != nil {
 		return err
 	}

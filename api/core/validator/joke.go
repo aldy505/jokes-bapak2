@@ -10,13 +10,14 @@ import (
 )
 
 // Validate if link already exists
-func LinkAlreadyExists(db *pgxpool.Pool, ctx context.Context, link string) (bool, error) {
+func JokeLinkExists(db *pgxpool.Pool, ctx context.Context, link string) (bool, error) {
 	conn, err := db.Acquire(ctx)
 	if err != nil {
 		return false, err
 	}
-	var query = squirrel.StatementBuilder.PlaceholderFormat(squirrel.Dollar)
 	defer conn.Release()
+
+	var query = squirrel.StatementBuilder.PlaceholderFormat(squirrel.Dollar)
 
 	sql, args, err := query.
 		Select("link").
@@ -28,7 +29,7 @@ func LinkAlreadyExists(db *pgxpool.Pool, ctx context.Context, link string) (bool
 	}
 
 	var validateLink string
-	err = conn.QueryRow(context.Background(), sql, args...).Scan(&validateLink)
+	err = conn.QueryRow(ctx, sql, args...).Scan(&validateLink)
 	if err != nil && err != pgx.ErrNoRows {
 		return false, err
 	}
@@ -37,7 +38,7 @@ func LinkAlreadyExists(db *pgxpool.Pool, ctx context.Context, link string) (bool
 }
 
 // Check if the joke exists
-func IDAlreadyExists(db *pgxpool.Pool, ctx context.Context, id int) (bool, error) {
+func JokeIDExists(db *pgxpool.Pool, ctx context.Context, id int) (bool, error) {
 	conn, err := db.Acquire(ctx)
 	if err != nil {
 		return false, err
@@ -55,7 +56,7 @@ func IDAlreadyExists(db *pgxpool.Pool, ctx context.Context, id int) (bool, error
 	}
 
 	var jokeID int
-	err = conn.QueryRow(context.Background(), sql, args...).Scan(&jokeID)
+	err = conn.QueryRow(ctx, sql, args...).Scan(&jokeID)
 	if err != nil && !errors.Is(err, pgx.ErrNoRows) {
 		return false, err
 	}

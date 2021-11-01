@@ -28,7 +28,7 @@ func (d *Dependencies) AddNewJoke(c *fiber.Ctx) error {
 			})
 	}
 
-	validateLink, err := validator.LinkAlreadyExists(d.DB, c.Context(), body.Link)
+	validateLink, err := validator.JokeLinkExists(d.DB, c.Context(), body.Link)
 	if err != nil {
 		return err
 	}

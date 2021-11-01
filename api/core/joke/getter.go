@@ -25,7 +25,7 @@ func GetAllJSONJokes(db *pgxpool.Pool, ctx context.Context) ([]byte, error) {
 	defer conn.Release()
 
 	var jokes []schema.Joke
-	results, err := conn.Query(context.Background(), "SELECT \"id\",\"link\" FROM \"jokesbapak2\" ORDER BY \"id\"")
+	results, err := conn.Query(ctx, "SELECT \"id\",\"link\" FROM \"jokesbapak2\" ORDER BY \"id\"")
 	if err != nil {
 		return nil, err
 	}
@@ -52,7 +52,7 @@ func GetRandomJokeFromDB(db *pgxpool.Pool, ctx context.Context) (string, error) 
 	}
 
 	var link string
-	err = conn.QueryRow(context.Background(), "SELECT link FROM jokesbapak2 ORDER BY random() LIMIT 1").Scan(&link)
+	err = conn.QueryRow(ctx, "SELECT link FROM jokesbapak2 ORDER BY random() LIMIT 1").Scan(&link)
 	if err != nil {
 		return "", err
 	}
@@ -172,7 +172,7 @@ func CheckJokeExists(db *pgxpool.Pool, ctx context.Context, id string) (bool, er
 	}
 
 	var jokeID int
-	err = conn.QueryRow(context.Background(), sql, args...).Scan(&jokeID)
+	err = conn.QueryRow(ctx, sql, args...).Scan(&jokeID)
 	if err != nil && err != pgx.ErrNoRows {
 		return false, err
 	}

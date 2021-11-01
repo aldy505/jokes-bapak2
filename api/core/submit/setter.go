@@ -2,6 +2,7 @@ package submit
 
 import (
 	"bytes"
+	"context"
 	"io"
 	"io/ioutil"
 	"jokes-bapak2-api/core/schema"
@@ -10,8 +11,12 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"time"
 
+	"github.com/Masterminds/squirrel"
+	"github.com/georgysavva/scany/pgxscan"
 	"github.com/gojek/heimdall/v7/httpclient"
+	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/pquerna/ffjson/ffjson"
 )
 
@@ -78,4 +83,40 @@ func UploadImage(client *httpclient.Client, image io.Reader) (string, error) {
 	}
 
 	return data.Data.URL, nil
+}
+
+func SubmitJoke(db *pgxpool.Pool, ctx context.Context, s schema.Submission, link string) (schema.Submission, error) {
+	var query = squirrel.StatementBuilder.PlaceholderFormat(squirrel.Dollar)
+
+	conn, err := db.Acquire(ctx)
+	if err != nil {
+		return schema.Submission{}, err
+	}
+	defer conn.Release()
+
+	now := time.Now().UTC().Format(time.RFC3339)
+
+	sql, args, err := query.
+		Insert("submission").
+		Columns("link", "created_at", "author").
+		Values(link, now, s.Author).
+		Suffix("RETURNING id,created_at,link,author,status").
+		ToSql()
+	if err != nil {
+		return schema.Submission{}, err
+	}
+
+	var submission schema.Submission
+	result, err := conn.Query(ctx, sql, args...)
+	if err != nil {
+		return schema.Submission{}, err
+	}
+	defer result.Close()
+
+	err = pgxscan.ScanOne(&submission, result)
+	if err != nil {
+		return schema.Submission{}, err
+	}
+
+	return submission, nil
 }

@@ -72,18 +72,20 @@ func main() {
 	}
 	defer sentry.Flush(2 * time.Second)
 
-	// TODO: These sequence below might be better wrapped as a Populate() function.
-	err = database.Setup(db)
+	setupCtx, setupCancel := context.WithDeadline(context.Background(), time.Now().Add(time.Minute*4))
+	defer setupCancel()
+
+	err = database.Populate(db, setupCtx)
 	if err != nil {
 		sentry.CaptureException(err)
 		log.Panicln(err)
 	}
 
-	err = joke.SetAllJSONJoke(db, context.Background(), memory)
+	err = joke.SetAllJSONJoke(db, setupCtx, memory)
 	if err != nil {
 		log.Panicln(err)
 	}
-	err = joke.SetTotalJoke(db, context.Background(), memory)
+	err = joke.SetTotalJoke(db, setupCtx, memory)
 	if err != nil {
 		log.Panicln(err)
 	}

@@ -1,4 +1,4 @@
-package submit
+package schema
 
 type Submission struct {
 	ID        int    `json:"id,omitempty" db:"id"`
@@ -21,8 +21,4 @@ type ResponseSubmission struct {
 	Message    string     `json:"message,omitempty"`
 	Submission Submission `json:"submission,omitempty"`
 	AuthorPage string     `json:"author_page,omitempty"`
-}
-
-type Error struct {
-	Error string `json:"error"`
 }

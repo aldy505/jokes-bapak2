@@ -29,7 +29,7 @@ func CheckKeyExists(db *pgxpool.Pool, ctx context.Context, key string) (string, 
 	}
 
 	var token string
-	err = conn.QueryRow(context.Background(), sql, args...).Scan(&token)
+	err = conn.QueryRow(ctx, sql, args...).Scan(&token)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return "", nil

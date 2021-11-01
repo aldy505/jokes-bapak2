@@ -8,18 +8,18 @@ import (
 )
 
 // Setup the table connection, create table if not exists
-func Setup(db *pgxpool.Pool) error {
-	err := setupAuthTable(db)
+func Populate(db *pgxpool.Pool, ctx context.Context) error {
+	err := setupAuthTable(db, ctx)
 	if err != nil {
 		return err
 	}
 
-	err = setupJokesTable(db)
+	err = setupJokesTable(db, ctx)
 	if err != nil {
 		return err
 	}
 
-	err = setupSubmissionTable(db)
+	err = setupSubmissionTable(db, ctx)
 	if err != nil {
 		return err
 	}
@@ -27,8 +27,8 @@ func Setup(db *pgxpool.Pool) error {
 	return nil
 }
 
-func setupAuthTable(db *pgxpool.Pool) error {
-	conn, err := db.Acquire(context.Background())
+func setupAuthTable(db *pgxpool.Pool, ctx context.Context) error {
+	conn, err := db.Acquire(ctx)
 	if err != nil {
 		return err
 	}
@@ -36,7 +36,7 @@ func setupAuthTable(db *pgxpool.Pool) error {
 
 	// Check if table exists
 	var tableAuthExists bool
-	err = conn.QueryRow(context.Background(), `SELECT EXISTS (
+	err = conn.QueryRow(ctx, `SELECT EXISTS (
 		SELECT FROM information_schema.tables 
 		WHERE  table_schema = 'public'
 		AND    table_name   = 'administrators'
@@ -57,7 +57,7 @@ func setupAuthTable(db *pgxpool.Pool) error {
 			return err
 		}
 
-		_, err = conn.Exec(context.Background(), sql)
+		_, err = conn.Exec(ctx, sql)
 		if err != nil {
 			return err
 		}
@@ -65,8 +65,8 @@ func setupAuthTable(db *pgxpool.Pool) error {
 	return nil
 }
 
-func setupJokesTable(db *pgxpool.Pool) error {
-	conn, err := db.Acquire(context.Background())
+func setupJokesTable(db *pgxpool.Pool, ctx context.Context) error {
+	conn, err := db.Acquire(ctx)
 	if err != nil {
 		return err
 	}
@@ -74,7 +74,7 @@ func setupJokesTable(db *pgxpool.Pool) error {
 
 	// Check if table exists
 	var tableJokesExists bool
-	err = conn.QueryRow(context.Background(), `SELECT EXISTS (
+	err = conn.QueryRow(ctx, `SELECT EXISTS (
 		SELECT FROM information_schema.tables 
 		WHERE  table_schema = 'public'
 		AND    table_name   = 'jokesbapak2'
@@ -94,7 +94,7 @@ func setupJokesTable(db *pgxpool.Pool) error {
 			return err
 		}
 
-		_, err = conn.Exec(context.Background(), sql)
+		_, err = conn.Exec(ctx, sql)
 		if err != nil {
 			return err
 		}
@@ -103,8 +103,8 @@ func setupJokesTable(db *pgxpool.Pool) error {
 	return nil
 }
 
-func setupSubmissionTable(db *pgxpool.Pool) error {
-	conn, err := db.Acquire(context.Background())
+func setupSubmissionTable(db *pgxpool.Pool, ctx context.Context) error {
+	conn, err := db.Acquire(ctx)
 	if err != nil {
 		return err
 	}
@@ -112,7 +112,7 @@ func setupSubmissionTable(db *pgxpool.Pool) error {
 
 	//Check if table exists
 	var tableSubmissionExists bool
-	err = conn.QueryRow(context.Background(), `SELECT EXISTS (
+	err = conn.QueryRow(ctx, `SELECT EXISTS (
 	SELECT FROM information_schema.tables 
 	WHERE  table_schema = 'public'
 	AND    table_name   = 'submission'
@@ -134,7 +134,7 @@ func setupSubmissionTable(db *pgxpool.Pool) error {
 			return err
 		}
 
-		_, err = conn.Exec(context.Background(), sql)
+		_, err = conn.Exec(ctx, sql)
 		if err != nil {
 			return err
 		}

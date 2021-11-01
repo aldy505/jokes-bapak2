@@ -73,7 +73,7 @@ func InsertJokeIntoDB(db *pgxpool.Pool, ctx context.Context, joke schema.Joke) e
 		return err
 	}
 
-	r, err := conn.Query(context.Background(), sql, args...)
+	r, err := conn.Query(ctx, sql, args...)
 	if err != nil {
 		return err
 	}
@@ -97,7 +97,7 @@ func DeleteSingleJoke(db *pgxpool.Pool, ctx context.Context, id int) error {
 		return err
 	}
 
-	r, err := conn.Query(context.Background(), sql, args...)
+	r, err := conn.Query(ctx, sql, args...)
 	if err != nil {
 		return err
 	}
@@ -123,7 +123,7 @@ func UpdateJoke(db *pgxpool.Pool, ctx context.Context, link, creator string) err
 		return err
 	}
 
-	r, err := conn.Query(context.Background(), sql, args...)
+	r, err := conn.Query(ctx, sql, args...)
 	if err != nil {
 		return err
 	}

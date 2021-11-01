@@ -25,7 +25,7 @@ func GetUserID(db *pgxpool.Pool, ctx context.Context, key string) (int, error) {
 		return 0, err
 	}
 
-	r, err := c.Query(context.Background(), sql, args...)
+	r, err := c.Query(ctx, sql, args...)
 	if err != nil {
 		return 0, err
 	}
@@ -41,7 +41,7 @@ func GetUserID(db *pgxpool.Pool, ctx context.Context, key string) (int, error) {
 	}
 
 	var id int
-	err = c.QueryRow(context.Background(), sql, args...).Scan(&id)
+	err = c.QueryRow(ctx, sql, args...).Scan(&id)
 	if err != nil {
 		return 0, err
 	}
