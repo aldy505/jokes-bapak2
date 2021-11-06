@@ -106,7 +106,7 @@ func DeleteSingleJoke(db *pgxpool.Pool, ctx context.Context, id int) error {
 	return nil
 }
 
-func UpdateJoke(db *pgxpool.Pool, ctx context.Context, link, creator string) error {
+func UpdateJoke(db *pgxpool.Pool, ctx context.Context, newJoke schema.Joke) error {
 	conn, err := db.Acquire(ctx)
 	if err != nil {
 		return err
@@ -116,8 +116,9 @@ func UpdateJoke(db *pgxpool.Pool, ctx context.Context, link, creator string) err
 	var query = squirrel.StatementBuilder.PlaceholderFormat(squirrel.Dollar)
 	sql, args, err := query.
 		Update("jokesbapak2").
-		Set("link", link).
-		Set("creator", creator).
+		Set("link", newJoke.Link).
+		Set("creator", newJoke.Creator).
+		Where(squirrel.Eq{"id": newJoke.ID}).
 		ToSql()
 	if err != nil {
 		return err

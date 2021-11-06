@@ -4,6 +4,7 @@ import (
 	core "jokes-bapak2-api/core/joke"
 	"jokes-bapak2-api/core/schema"
 	"jokes-bapak2-api/core/validator"
+	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -45,7 +46,23 @@ func (d *Dependencies) UpdateJoke(c *fiber.Ctx) error {
 			})
 	}
 
-	err = core.UpdateJoke(d.DB, c.Context(), body.Link, c.Locals("userID").(string))
+	newID, err := strconv.Atoi(id)
+	if err != nil {
+		return err
+	}
+
+	newCreator, err := strconv.Atoi(c.Locals("userID").(string))
+	if err != nil {
+		return err
+	}
+
+	updatedJoke := schema.Joke{
+		Link:    body.Link,
+		Creator: newCreator,
+		ID:      newID,
+	}
+
+	err = core.UpdateJoke(d.DB, c.Context(), updatedJoke)
 	if err != nil {
 		return err
 	}

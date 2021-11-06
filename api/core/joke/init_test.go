@@ -8,7 +8,6 @@ import (
 
 	"github.com/allegro/bigcache/v3"
 	"github.com/go-redis/redis/v8"
-	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 
@@ -65,42 +64,50 @@ func Setup() {
 	}
 	defer conn.Release()
 
-	err = conn.BeginFunc(context.Background(), func(tx pgx.Tx) error {
-		_, err := tx.Exec(
-			context.Background(),
-			`CREATE TABLE IF NOT EXISTS administrators (
-				id SERIAL PRIMARY KEY,
-				key VARCHAR(255) NOT NULL UNIQUE,
-				token TEXT,
-				last_used VARCHAR(255)
-			);`,
-		)
-		if err != nil {
-			return err
-		}
-		_, err = tx.Exec(
-			context.Background(),
-			`CREATE TABLE IF NOT EXISTS jokesbapak2 (
-				id SERIAL PRIMARY KEY,
-				link TEXT UNIQUE,
-				creator INT NOT NULL REFERENCES "administrators" ("id")
-			);`,
-		)
-		if err != nil {
-			return err
-		}
-		_, err = tx.Exec(
-			context.Background(),
-			`CREATE TABLE IF NOT EXISTS submission (
-				id SERIAL PRIMARY KEY,
-				link UNIQUE NOT NULL,
-				created_at VARCHAR(255),
-				author VARCHAR(255) NOT NULL,
-				status SMALLINT DEFAULT 0
-			);`,
-		)
-		return err
-	})
+	tx, err := conn.Begin(context.Background())
+	if err != nil {
+		panic(err)
+	}
+	defer tx.Rollback(context.Background())
+
+	_, err = tx.Exec(
+		context.Background(),
+		`CREATE TABLE IF NOT EXISTS administrators (
+			id SERIAL PRIMARY KEY,
+			key VARCHAR(255) NOT NULL UNIQUE,
+			token TEXT,
+			last_used VARCHAR(255)
+		);`,
+	)
+	if err != nil {
+		panic(err)
+	}
+	_, err = tx.Exec(
+		context.Background(),
+		`CREATE TABLE IF NOT EXISTS jokesbapak2 (
+			id SERIAL PRIMARY KEY,
+			link TEXT UNIQUE,
+			creator INT NOT NULL REFERENCES "administrators" ("id")
+		);`,
+	)
+	if err != nil {
+		panic(err)
+	}
+	_, err = tx.Exec(
+		context.Background(),
+		`CREATE TABLE IF NOT EXISTS submission (
+			id SERIAL PRIMARY KEY,
+			link UNIQUE NOT NULL,
+			created_at VARCHAR(255),
+			author VARCHAR(255) NOT NULL,
+			status SMALLINT DEFAULT 0
+		);`,
+	)
+	if err != nil {
+		panic(err)
+	}
+
+	err = tx.Commit(context.Background())
 	if err != nil {
 		panic(err)
 	}
@@ -123,18 +130,26 @@ func TruncateTable(db *pgxpool.Pool, cache *redis.Client, memory *bigcache.BigCa
 	}
 	defer conn.Release()
 
-	err = conn.BeginFunc(context.Background(), func(tx pgx.Tx) error {
-		_, err := tx.Exec(context.Background(), "TRUNCATE TABLE submission;")
-		if err != nil {
-			return err
-		}
-		_, err = tx.Exec(context.Background(), "TRUNCATE TABLE jokesbapak2;")
-		if err != nil {
-			return err
-		}
-		_, err = tx.Exec(context.Background(), "TRUNCATE TABLE administrators;")
+	tx, err := conn.Begin(context.Background())
+	if err != nil {
 		return err
-	})
+	}
+	defer tx.Rollback(context.Background())
+
+	_, err = tx.Exec(context.Background(), "TRUNCATE TABLE submission;")
+	if err != nil {
+		return err
+	}
+	_, err = tx.Exec(context.Background(), "TRUNCATE TABLE jokesbapak2;")
+	if err != nil {
+		return err
+	}
+	_, err = tx.Exec(context.Background(), "TRUNCATE TABLE administrators;")
+	if err != nil {
+		return err
+	}
+
+	err = tx.Commit(context.Background())
 	if err != nil {
 		return err
 	}
