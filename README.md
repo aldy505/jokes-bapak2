@@ -24,10 +24,10 @@ This is some kind of [icanhazdadjokes](https://icanhazdadjoke.com/) but it's Ind
 
 You can consume this API via a website (linked in the front facing web) with a few endpoints:
 
- * `/v1/` - Random jokes bapak2
- * `/v1/id/{number}` - Jokes bapak2 based on ID
- * `/v1/today` - Jokes bapak2 of the day
- * `/v1/total` - Total available jokes bapak2
+ * `/` - Random jokes bapak2
+ * `/id/{number}` - Jokes bapak2 based on ID
+ * `/today` - Jokes bapak2 of the day
+ * `/total` - Total available jokes bapak2
 
 Currently I'm (still) searching for an alternative for AWS S3 that I can use for free.
 
@@ -54,25 +54,26 @@ See [CONTRIBUTING](./CONTRIBUTING.md) or README files on each project directory 
 * [Ronny Gunawan](https://github.com/ronnygunawan) for the caching concept & ideas
 * [artileda](https://github.com/artileda) for the jokes submission
 * [elianiva](https://github.com/elianiva) for solving my SvelteKit problems
+* [kokizzu](https://github.com/kokizzu) for the dependency injection concept & ideas
 
 ## License
 
 Jokes Bapak2 API is licensed under [GNU GENERAL PUBLIC LICENSE v3 license](./LICENSE)
 
 ```
-    Jokes Bapak2 API is a free-to-use image API of Indonesian dad jokes.
-    Copyright (C) 2021-present  Jokes Bapak2 Contributors
+Jokes Bapak2 API is a free-to-use image API of Indonesian dad jokes.
+Copyright (C) 2021-present  Jokes Bapak2 Contributors
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ```
