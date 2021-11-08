@@ -249,8 +249,8 @@ func TestGetCachedJokeByID(t *testing.T) {
 	}
 
 	k, err := joke.GetCachedJokeByID(memory, 4)
-	if err == nil {
-		t.Error("an error was not thrown, k:", k)
+	if err != nil {
+		t.Error("an error was thrown:", err)
 	}
 
 	if k != "" {
