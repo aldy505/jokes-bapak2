@@ -8,7 +8,7 @@ jobs:
   client-build:
     name: Client
     runs-on: ubuntu-latest
-
+    timeout-minutes: 15
     defaults:
       run:
         working-directory: ./client
@@ -62,7 +62,8 @@ jobs:
   api-build:
     name: API
     runs-on: ubuntu-latest
-    container: golang:1.16.6
+    container: golang:1.17
+    timeout-minutes: 15
     services:
       postgres:
         image: postgres:13-alpine
@@ -108,7 +109,7 @@ jobs:
         run: go build main.go
 
       - name: Run test & coverage
-        run: go test -v -race -coverprofile=coverage.out -covermode=atomic ./...
+        run: go test -v -coverprofile=coverage.out -covermode=atomic ./...
         env:
           ENV: development
           PORT: 5000

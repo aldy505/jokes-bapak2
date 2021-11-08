@@ -1,0 +1,322 @@
+openapi: 3.0.0
+info:
+  title: Jokesbapak2 Image API
+  description: >
+    Jokes Bapak2 is an image API that you can use for free! I've been seeing lots and lots of Indonesian dad jokes on Twitter,
+    Facebook and Instagram on early 2020. In a month, I made a Discord bot that provides the jokes.
+    But I thought, why not make it as an API?
+  version: 0.0.1
+  contact:
+    name: Reinaldy Rafli
+    url: https://github.com/aldy505
+    email: aldy505@tutanota.com
+  license:
+    name: GNU General Public License v3.0
+    url: https://github.com/aldy505/jokes-bapak2/blob/master/LICENSE
+servers:
+  - url: "https://jokesbapak2.herokuapp.com/v1"
+    description: Production
+  - url: "https://jokesbapak2.herokuapp.com"
+    description: Production
+  - url: "http://localhost:5000"
+    description: Development
+paths:
+  /:
+    get:
+      tags:
+        - Jokes
+      summary: Get random Jokes Bapak2 image
+      description: Returns a different image (PNG, JPG, or GIF) for every call.
+      responses:
+        200:
+          description: Image data
+          content:
+            'image/gif': {}
+            'image/png': {}
+            'image/jpeg': {}
+    put:
+      summary: Add a new joke into database
+      description: asd
+      tags:
+        - Jokes
+      requestBody:
+        description: asds
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/request.auth'
+                - $ref: '#/components/schemas/request.joke'
+      responses:
+        201:
+          description: Image has been added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/request.joke'
+              example:
+                link: https://link.to/image.jpg
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.error'
+              example:
+                error: URL provided is not a valid image
+        403:
+          description: Must be authenticated to submit a joke
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.error'
+  /id/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: number
+        required: true
+        description: A number that represents image's ID
+    get:
+      summary: Get random Jokes Bapak2 image by ID
+      description: Returns consistent image for every call.
+      tags:
+        - Jokes
+      responses:
+        200:
+          description: Image data
+          content:
+            'image/jpeg': {}
+            'image/png': {}
+            'image/gif': {}
+        404:
+          description: Provided image ID was not found
+          content:
+            text/plain:
+              schema:
+                type: string
+              example:
+                Requested ID was not found.
+    patch:
+      summary: Update a Joke with certain image ID
+      description: Returns consistent image for every call.
+      tags:
+        - Jokes
+      responses:
+        200:
+          description: Sucessfully updated an image item
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/response.confirmation'
+                  - $ref: '#/components/schemas/request.joke'
+        400:
+          description: Link provided is not a valid image
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.error'
+        403:
+          description: Must be authenticated to submit a joke
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.error'
+        406:
+          description: If the Joke ID does not exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.error'
+    delete:
+      summary: Delete a Joke with certain image ID
+      description: hi
+      tags:
+        - Jokes
+      responses:
+        200:
+          description: Sucessfully deleted an image item
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.confirmation'
+        403:
+          description: Must be authenticated to submit a joke
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.error'
+        406:
+          description: If the Joke ID does not exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.error'
+  /today:
+    get:
+      summary: Get the joke of the day
+      description: A joke a day makes more of a dad out of you.
+      tags:
+        - Jokes
+      responses:
+        200:
+          description: Image data
+          content:
+            'image/jpeg': {}
+            'image/png': {}
+            'image/gif': {}
+  /total:
+    get:
+      summary: Get total amount of jokes in database
+      tags:
+        - Jokes
+      responses:
+        200:
+          description: Total jokes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.confirmation'
+              example:
+                message: "154"
+  /submit:
+    get:
+      summary: Get submitted Jokes
+      tags:
+        - Submission
+      parameters:
+        - name: author
+          in: query
+          required: false
+          description: Author to be queried
+          schema:
+            type: string
+        - name: approved
+          in: query
+          required: false
+          description: Whether query just approved jokes or not
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: number
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: number
+      responses:
+        200:
+          description: asd
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: number
+                  jokes:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/response.submission'
+    post:
+      summary: Submit a joke
+      description: >
+        Must be in multipart/form-data format.
+        Author must be in the format of "Name &lt;email&gt;".
+      tags:
+        - Submission
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                link:
+                  description: Image link
+                  type: string
+                image:
+                  description: Image data
+                  type: string
+                author:
+                  description: Person who submitted this
+                  type: string
+              required:
+                - author
+                - image
+                - link
+      responses:
+        201:
+          description: Joke successfully submitted
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/response.confirmation'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/response.submission'
+        400:
+          description: Invalid data was sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.error'
+  /health:
+    get:
+      summary: Health check
+      description: Ping the databases to make sure everything's alright
+      tags:
+        - Health
+      responses:
+        200:
+          description: Everything is okay
+        403:
+          description: Something is not okay
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response.error'
+
+components:
+  schemas:
+    request.auth:
+      type: object
+      properties:
+        key:
+          type: string
+        token:
+          type: string
+    request.joke:
+      type: object
+      properties:
+        link:
+          type: string
+    response.confirmation:
+      type: object
+      properties:
+        message:
+          type: string
+    response.error:
+      type: object
+      properties:
+        error:
+          type: string
+    response.submission:
+      type: object
+      properties:
+        id:
+          type: number
+        link:
+          type: string
+        created_at:
+          type: string
+        author:
+          type: string
+        status:
+          type: number
