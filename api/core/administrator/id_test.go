@@ -4,19 +4,23 @@ import (
 	"context"
 	"jokes-bapak2-api/core/administrator"
 	"testing"
+	"time"
 )
 
 func TestGetUserID_Success(t *testing.T) {
-	t.Cleanup(func() { Flush() })
+	ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(30*time.Second))
+	defer cancel()
+	
+	defer Flush()
 
-	c, err := db.Acquire(context.Background())
+	c, err := db.Acquire(ctx)
 	if err != nil {
 		t.Error("an error was thrown:", err)
 	}
 	defer c.Release()
 
 	_, err = c.Exec(
-		context.Background(),
+		ctx,
 		`INSERT INTO administrators (id, key, token, last_used) VALUES ($1, $2, $3, $4)`,
 		administratorsData...,
 	)
@@ -24,7 +28,7 @@ func TestGetUserID_Success(t *testing.T) {
 		t.Error("an error was thrown:", err)
 	}
 
-	id, err := administrator.GetUserID(db, context.Background(), "very secure")
+	id, err := administrator.GetUserID(db, ctx, "very secure")
 	if err != nil {
 		t.Error("an error was thrown:", err)
 	}
@@ -35,15 +39,18 @@ func TestGetUserID_Success(t *testing.T) {
 }
 
 func TestGetUserID_Failed(t *testing.T) {
-	t.Cleanup(func() { Flush() })
+	ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(30*time.Second))
+	defer cancel()
 
-	c, err := db.Acquire(context.Background())
+	defer Flush()
+
+	c, err := db.Acquire(ctx)
 	if err != nil {
 		t.Error("an error was thrown:", err)
 	}
 	defer c.Release()
 
-	id, err := administrator.GetUserID(db, context.Background(), "very secure")
+	id, err := administrator.GetUserID(db, ctx, "very secure")
 	if err == nil {
 		t.Error("an error was expected, got:", id)
 	}

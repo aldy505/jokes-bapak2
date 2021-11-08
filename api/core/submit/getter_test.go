@@ -5,23 +5,27 @@ import (
 	"jokes-bapak2-api/core/schema"
 	"jokes-bapak2-api/core/submit"
 	"testing"
+	"time"
 )
 
 func TestGetSubmittedItems(t *testing.T) {
+	ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(30*time.Second))
+	defer cancel()
+	
 	defer Flush()
 
-	c, err := db.Acquire(context.Background())
+	c, err := db.Acquire(ctx)
 	if err != nil {
 		t.Error("an error was thrown:", err)
 	}
 	defer c.Release()
 
-	_, err = c.Exec(context.Background(), "INSERT INTO submission (id, link, created_at, author, status) VALUES ($1, $2, $3, $4, $5), ($6, $7, $8, $9, $10)", submissionData...)
+	_, err = c.Exec(ctx, "INSERT INTO submission (id, link, created_at, author, status) VALUES ($1, $2, $3, $4, $5), ($6, $7, $8, $9, $10)", submissionData...)
 	if err != nil {
 		t.Error("an error was thrown:", err)
 	}
 
-	items, err := submit.GetSubmittedItems(db, context.Background(), schema.SubmissionQuery{})
+	items, err := submit.GetSubmittedItems(db, ctx, schema.SubmissionQuery{})
 	if err != nil {
 		t.Error("an error was thrown:", err)
 	}
@@ -58,7 +62,7 @@ func TestGetterQueryBuilder(t *testing.T) {
 		t.Error("expected first arg to be Test <example@test.com>, got:", i[0].(string))
 	}
 
-	if i[1].(int) != 1 {
+	if i[1].(int) != 2 {
 		t.Error("expected second arg to be 1, got:", i[1].(int))
 	}
 }

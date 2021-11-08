@@ -50,6 +50,7 @@ func GetRandomJokeFromDB(db *pgxpool.Pool, ctx context.Context) (string, error) 
 	if err != nil {
 		return "", err
 	}
+	defer conn.Release()
 
 	var link string
 	err = conn.QueryRow(ctx, "SELECT link FROM jokesbapak2 ORDER BY random() LIMIT 1").Scan(&link)

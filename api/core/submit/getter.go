@@ -66,14 +66,12 @@ func GetSubmittedItems(db *pgxpool.Pool, ctx context.Context, queries schema.Sub
 	results, err := conn.Query(ctx, sql, args...)
 	if err != nil {
 		return []schema.Submission{}, err
-
 	}
 	defer results.Close()
 
 	err = pgxscan.ScanAll(&submissions, results)
 	if err != nil {
 		return []schema.Submission{}, err
-
 	}
 
 	return submissions, nil

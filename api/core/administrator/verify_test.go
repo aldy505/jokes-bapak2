@@ -4,21 +4,23 @@ import (
 	"context"
 	"jokes-bapak2-api/core/administrator"
 	"testing"
+	"time"
 )
 
 func TestCheckKeyExists_Success(t *testing.T) {
-	t.Cleanup(func() {
-		Flush()
-	})
+	ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(30*time.Second))
+	defer cancel()
 
-	c, err := db.Acquire(context.Background())
+	defer Flush()
+
+	c, err := db.Acquire(ctx)
 	if err != nil {
 		t.Error("an error was thrown:", err)
 	}
 	defer c.Release()
 
 	_, err = c.Exec(
-		context.Background(),
+		ctx,
 		"INSERT INTO administrators (id, key, token, last_used) VALUES ($1, $2, $3, $4)",
 		administratorsData...,
 	)
@@ -26,7 +28,7 @@ func TestCheckKeyExists_Success(t *testing.T) {
 		t.Error("an error was thrown:", err)
 	}
 
-	key, err := administrator.CheckKeyExists(db, context.Background(), "very secure")
+	key, err := administrator.CheckKeyExists(db, ctx, "very secure")
 	if err != nil {
 		t.Error("an error was thrown:", err)
 	}
@@ -37,18 +39,19 @@ func TestCheckKeyExists_Success(t *testing.T) {
 }
 
 func TestCheckKeyExists_Failing(t *testing.T) {
-	t.Cleanup(func() {
-		Flush()
-	})
+	ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(30*time.Second))
+	defer cancel()
+	
+	defer Flush()
 
-	c, err := db.Acquire(context.Background())
+	c, err := db.Acquire(ctx)
 	if err != nil {
 		t.Error("an error was thrown:", err)
 	}
 	defer c.Release()
 
 	_, err = c.Exec(
-		context.Background(),
+		ctx,
 		"INSERT INTO administrators (id, key, token, last_used) VALUES ($1, $2, $3, $4)",
 		administratorsData...,
 	)
@@ -56,7 +59,7 @@ func TestCheckKeyExists_Failing(t *testing.T) {
 		t.Error("an error was thrown:", err)
 	}
 
-	key, err := administrator.CheckKeyExists(db, context.Background(), "others")
+	key, err := administrator.CheckKeyExists(db, ctx, "others")
 	if err != nil {
 		t.Error("an error was thrown:", err)
 	}

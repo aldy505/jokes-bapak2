@@ -23,43 +23,32 @@ func TestMain(m *testing.M) {
 }
 
 func Setup() {
+	ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(1*time.Minute))
+	defer cancel()
+
 	poolConfig, err := pgxpool.ParseConfig(os.Getenv("DATABASE_URL"))
 	if err != nil {
 		panic(err)
 	}
 
-	db, err = pgxpool.ConnectConfig(context.Background(), poolConfig)
+	db, err = pgxpool.ConnectConfig(ctx, poolConfig)
 	if err != nil {
 		panic(err)
 	}
 
-	conn, err := db.Acquire(context.Background())
+	conn, err := db.Acquire(ctx)
 	if err != nil {
 		panic(err)
 	}
 	defer conn.Release()
-
-	tx, err := conn.Begin(context.Background())
+	tx, err := conn.Begin(ctx)
 	if err != nil {
 		panic(err)
 	}
-	defer tx.Rollback(context.Background())
-
-	_, err = tx.Exec(context.Background(), "DROP TABLE IF EXISTS submission")
-	if err != nil {
-		panic(err)
-	}
-	_, err = tx.Exec(context.Background(), "DROP TABLE IF EXISTS jokesbapak2")
-	if err != nil {
-		panic(err)
-	}
-	_, err = tx.Exec(context.Background(), "DROP TABLE IF EXISTS administrators")
-	if err != nil {
-		panic(err)
-	}
+	defer tx.Rollback(ctx)
 
 	_, err = tx.Exec(
-		context.Background(),
+		ctx,
 		`CREATE TABLE IF NOT EXISTS administrators (
 			id SERIAL PRIMARY KEY,
 			key VARCHAR(255) NOT NULL UNIQUE,
@@ -71,49 +60,62 @@ func Setup() {
 		panic(err)
 	}
 
-	err = tx.Commit(context.Background())
+	err = tx.Commit(ctx)
 	if err != nil {
 		panic(err)
 	}
 }
 
 func Teardown() (err error) {
-	tx, err := db.Begin(context.Background())
-	if err != nil {
-		return err
-	}
-	defer tx.Rollback(context.Background())
+	ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(1*time.Minute))
+	defer cancel()
 
-	_, err = tx.Exec(context.Background(), "DROP TABLE IF EXISTS submission")
+	defer db.Close()
+	
+	c, err := db.Acquire(ctx)
 	if err != nil {
 		return err
 	}
-	_, err = tx.Exec(context.Background(), "DROP TABLE IF EXISTS jokesbapak2")
+	defer c.Release()
+
+	tx, err := c.Begin(ctx)
 	if err != nil {
 		return err
 	}
-	_, err = tx.Exec(context.Background(), "DROP TABLE IF EXISTS administrators")
+	defer tx.Rollback(ctx)
+
+	_, err = tx.Exec(ctx, "TRUNCATE TABLE submission RESTART IDENTITY CASCADE")
+	if err != nil {
+		return err
+	}
+	_, err = tx.Exec(ctx, "TRUNCATE TABLE jokesbapak2 RESTART IDENTITY CASCADE")
+	if err != nil {
+		return err
+	}
+	_, err = tx.Exec(ctx, "TRUNCATE TABLE administrators RESTART IDENTITY CASCADE")
 	if err != nil {
 		return err
 	}
 
-	err = tx.Commit(context.Background())
+	err = tx.Commit(ctx)
 	if err != nil {
 		return err
 	}
 
-	db.Close()
 	return
 }
 
 func Flush() error {
-	conn, err := db.Acquire(context.Background())
+	ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(30*time.Second))
+	defer cancel()
+
+	conn, err := db.Acquire(ctx)
 	if err != nil {
 		return err
 	}
 	defer conn.Release()
 
-	_, err = conn.Exec(context.Background(), "TRUNCATE TABLE administrators")
+	_, err = conn.Exec(ctx, "TRUNCATE TABLE administrators RESTART IDENTITY CASCADE")
 	if err != nil {
 		return err
 	}

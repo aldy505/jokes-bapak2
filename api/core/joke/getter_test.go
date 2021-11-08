@@ -6,40 +6,44 @@ import (
 	"jokes-bapak2-api/core/joke"
 	"jokes-bapak2-api/core/schema"
 	"testing"
+	"time"
 
 	"github.com/jackc/pgx/v4"
 )
 
 func TestGetAllJSONJokes(t *testing.T) {
-	t.Cleanup(func() { Flush() })
+	ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(30*time.Second))
+	defer cancel()
+	
+	defer Flush()
 
-	conn, err := db.Acquire(context.Background())
+	conn, err := db.Acquire(ctx)
 	if err != nil {
 		t.Error("an error was thrown:", err)
 	}
 	defer conn.Release()
 
-	err = conn.BeginFunc(context.Background(), func(t pgx.Tx) error {
+	err = conn.BeginFunc(ctx, func(t pgx.Tx) error {
 		_, err := t.Exec(
-			context.Background(),
+			ctx,
 			`INSERT INTO "administrators"
 				(id, key, token, last_used)
 				VALUES
 				($1, $2, $3, $4),
-				($5, $6, $7, $8);`,
+				($5, $6, $7, $8)`,
 			administratorsData...,
 		)
 		if err != nil {
 			return err
 		}
 		_, err = t.Exec(
-			context.Background(),
+			ctx,
 			`INSERT INTO "jokesbapak2" 
 				(id, link, creator)
 				VALUES
 				($1, $2, $3),
 				($4, $5, $6),
-				($7, $8, $9);`,
+				($7, $8, $9)`,
 			jokesData...,
 		)
 		if err != nil {
@@ -52,7 +56,7 @@ func TestGetAllJSONJokes(t *testing.T) {
 		t.Error("an error was thrown:", err)
 	}
 
-	j, err := joke.GetAllJSONJokes(db, context.Background())
+	j, err := joke.GetAllJSONJokes(db, ctx)
 	if err != nil {
 		t.Error("an error was thrown:", err)
 	}
@@ -63,35 +67,38 @@ func TestGetAllJSONJokes(t *testing.T) {
 }
 
 func TestGetRandomJokeFromDB(t *testing.T) {
-	t.Cleanup(func() { Flush() })
+	ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(30*time.Second))
+	defer cancel()
+	
+	defer Flush()
 
-	conn, err := db.Acquire(context.Background())
+	conn, err := db.Acquire(ctx)
 	if err != nil {
 		t.Error("an error was thrown:", err)
 	}
 	defer conn.Release()
 
-	err = conn.BeginFunc(context.Background(), func(t pgx.Tx) error {
+	err = conn.BeginFunc(ctx, func(t pgx.Tx) error {
 		_, err := t.Exec(
-			context.Background(),
+			ctx,
 			`INSERT INTO "administrators"
 				(id, key, token, last_used)
 				VALUES
 				($1, $2, $3, $4),
-				($5, $6, $7, $8);`,
+				($5, $6, $7, $8)`,
 			administratorsData...,
 		)
 		if err != nil {
 			return err
 		}
 		_, err = t.Exec(
-			context.Background(),
+			ctx,
 			`INSERT INTO "jokesbapak2" 
 				(id, link, creator)
 				VALUES
 				($1, $2, $3),
 				($4, $5, $6),
-				($7, $8, $9);`,
+				($7, $8, $9)`,
 			jokesData...,
 		)
 		if err != nil {
@@ -104,7 +111,7 @@ func TestGetRandomJokeFromDB(t *testing.T) {
 		t.Error("an error was thrown:", err)
 	}
 
-	j, err := joke.GetRandomJokeFromDB(db, context.Background())
+	j, err := joke.GetRandomJokeFromDB(db, ctx)
 	if err != nil {
 		t.Error("an error was thrown:", err)
 	}
@@ -114,8 +121,8 @@ func TestGetRandomJokeFromDB(t *testing.T) {
 	}
 }
 
-func TestGetRandomJokeFromCache(t *testing.T) {
-	t.Cleanup(func() { Flush() })
+func TestGetRandomJokeFromCache(t *testing.T) {	
+	defer Flush()
 
 	jokes := []schema.Joke{
 		{ID: 1, Link: "link1", Creator: 1},
@@ -143,7 +150,7 @@ func TestGetRandomJokeFromCache(t *testing.T) {
 }
 
 func TestCheckJokesCache_True(t *testing.T) {
-	t.Cleanup(func() { Flush() })
+	defer Flush()
 
 	jokes := []schema.Joke{
 		{ID: 1, Link: "link1", Creator: 1},
@@ -171,7 +178,7 @@ func TestCheckJokesCache_True(t *testing.T) {
 }
 
 func TestCheckJokesCache_False(t *testing.T) {
-	t.Cleanup(func() { Flush() })
+	defer Flush()
 
 	j, err := joke.CheckJokesCache(memory)
 	if err != nil {
@@ -184,7 +191,7 @@ func TestCheckJokesCache_False(t *testing.T) {
 }
 
 func TestCheckTotalJokesCache_True(t *testing.T) {
-	t.Cleanup(func() { Flush() })
+	defer Flush()
 
 	err := memory.Set("total", []byte("10"))
 	if err != nil {
@@ -202,7 +209,7 @@ func TestCheckTotalJokesCache_True(t *testing.T) {
 }
 
 func TestCheckTotalJokesCache_False(t *testing.T) {
-	t.Cleanup(func() { Flush() })
+	defer Flush()
 
 	j, err := joke.CheckTotalJokesCache(memory)
 	if err != nil {
@@ -215,7 +222,7 @@ func TestCheckTotalJokesCache_False(t *testing.T) {
 }
 
 func TestGetCachedJokeByID(t *testing.T) {
-	t.Cleanup(func() { Flush() })
+	defer Flush()
 
 	jokes := []schema.Joke{
 		{ID: 1, Link: "link1", Creator: 1},
@@ -243,7 +250,7 @@ func TestGetCachedJokeByID(t *testing.T) {
 
 	k, err := joke.GetCachedJokeByID(memory, 4)
 	if err == nil {
-		t.Error("an error was not thrown")
+		t.Error("an error was not thrown, k:", k)
 	}
 
 	if k != "" {
@@ -252,7 +259,7 @@ func TestGetCachedJokeByID(t *testing.T) {
 }
 
 func TestGetCachedTotalJokes(t *testing.T) {
-	t.Cleanup(func() { Flush() })
+	defer Flush()
 
 	err := memory.Set("total", []byte("10"))
 	if err != nil {
@@ -270,35 +277,38 @@ func TestGetCachedTotalJokes(t *testing.T) {
 }
 
 func TestCheckJokeExists(t *testing.T) {
-	t.Cleanup(func() { Flush() })
+	ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(30*time.Second))
+	defer cancel()
+	
+	defer Flush()
 
-	conn, err := db.Acquire(context.Background())
+	conn, err := db.Acquire(ctx)
 	if err != nil {
 		t.Error("an error was thrown:", err)
 	}
 	defer conn.Release()
 
-	err = conn.BeginFunc(context.Background(), func(t pgx.Tx) error {
+	err = conn.BeginFunc(ctx, func(t pgx.Tx) error {
 		_, err := t.Exec(
-			context.Background(),
+			ctx,
 			`INSERT INTO "administrators"
 				(id, key, token, last_used)
 				VALUES
 				($1, $2, $3, $4),
-				($5, $6, $7, $8);`,
+				($5, $6, $7, $8)`,
 			administratorsData...,
 		)
 		if err != nil {
 			return err
 		}
 		_, err = t.Exec(
-			context.Background(),
+			ctx,
 			`INSERT INTO "jokesbapak2" 
 				(id, link, creator)
 				VALUES
 				($1, $2, $3),
 				($4, $5, $6),
-				($7, $8, $9);`,
+				($7, $8, $9)`,
 			jokesData...,
 		)
 		if err != nil {
@@ -311,7 +321,7 @@ func TestCheckJokeExists(t *testing.T) {
 		t.Error("an error was thrown:", err)
 	}
 
-	j, err := joke.CheckJokeExists(db, context.Background(), "1")
+	j, err := joke.CheckJokeExists(db, ctx, "1")
 	if err != nil {
 		t.Error("an error was thrown:", err)
 	}
@@ -320,7 +330,7 @@ func TestCheckJokeExists(t *testing.T) {
 		t.Error("j should not be false")
 	}
 
-	k, err := joke.CheckJokeExists(db, context.Background(), "4")
+	k, err := joke.CheckJokeExists(db, ctx, "4")
 	if err != nil {
 		t.Error("an error was thrown:", err)
 	}
