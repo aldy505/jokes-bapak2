@@ -35,7 +35,7 @@ func TestMain(m *testing.M) {
 func Setup() {
 	ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(1*time.Minute))
 	defer cancel()
-	
+
 	poolConfig, err := pgxpool.ParseConfig(os.Getenv("DATABASE_URL"))
 	if err != nil {
 		panic(err)
@@ -117,7 +117,7 @@ func Setup() {
 func Teardown() (err error) {
 	ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(30*time.Second))
 	defer cancel()
-	
+
 	defer db.Close()
 
 	conn, err := db.Acquire(ctx)

@@ -112,7 +112,7 @@ func Teardown() (err error) {
 func Flush() error {
 	ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(30*time.Second))
 	defer cancel()
-	
+
 	conn, err := db.Acquire(ctx)
 	if err != nil {
 		return err

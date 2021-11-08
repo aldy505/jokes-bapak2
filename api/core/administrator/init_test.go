@@ -71,7 +71,7 @@ func Teardown() (err error) {
 	defer cancel()
 
 	defer db.Close()
-	
+
 	c, err := db.Acquire(ctx)
 	if err != nil {
 		return err

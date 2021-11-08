@@ -128,7 +128,7 @@ func GetCachedJokeByID(memory *bigcache.BigCache, id int) (string, error) {
 	var data []schema.Joke
 	err = ffjson.Unmarshal(jokes, &data)
 	if err != nil {
-		return "", nil
+		return "", err
 	}
 
 	// This is a simple solution, might convert it to goroutines and channels sometime soon.
@@ -150,8 +150,12 @@ func GetCachedTotalJokes(memory *bigcache.BigCache) (int, error) {
 		}
 		return 0, err
 	}
+	i, err := strconv.Atoi(string(total))
+	if err != nil {
+		return 0, err
+	}
 
-	return int(total[0]), nil
+	return i, nil
 }
 
 func CheckJokeExists(db *pgxpool.Pool, ctx context.Context, id string) (bool, error) {
@@ -174,7 +178,7 @@ func CheckJokeExists(db *pgxpool.Pool, ctx context.Context, id string) (bool, er
 
 	var jokeID int
 	err = conn.QueryRow(ctx, sql, args...).Scan(&jokeID)
-	if err != nil && err != pgx.ErrNoRows {
+	if err != nil && errors.Is(err, pgx.ErrNoRows) {
 		return false, err
 	}
 

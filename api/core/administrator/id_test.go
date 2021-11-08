@@ -10,7 +10,7 @@ import (
 func TestGetUserID_Success(t *testing.T) {
 	ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(30*time.Second))
 	defer cancel()
-	
+
 	defer Flush()
 
 	c, err := db.Acquire(ctx)

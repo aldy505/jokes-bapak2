@@ -14,7 +14,7 @@ import (
 func TestGetAllJSONJokes(t *testing.T) {
 	ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(30*time.Second))
 	defer cancel()
-	
+
 	defer Flush()
 
 	conn, err := db.Acquire(ctx)
@@ -69,7 +69,7 @@ func TestGetAllJSONJokes(t *testing.T) {
 func TestGetRandomJokeFromDB(t *testing.T) {
 	ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(30*time.Second))
 	defer cancel()
-	
+
 	defer Flush()
 
 	conn, err := db.Acquire(ctx)
@@ -121,7 +121,7 @@ func TestGetRandomJokeFromDB(t *testing.T) {
 	}
 }
 
-func TestGetRandomJokeFromCache(t *testing.T) {	
+func TestGetRandomJokeFromCache(t *testing.T) {
 	defer Flush()
 
 	jokes := []schema.Joke{
@@ -279,7 +279,7 @@ func TestGetCachedTotalJokes(t *testing.T) {
 func TestCheckJokeExists(t *testing.T) {
 	ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(30*time.Second))
 	defer cancel()
-	
+
 	defer Flush()
 
 	conn, err := db.Acquire(ctx)

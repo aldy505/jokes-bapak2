@@ -11,7 +11,7 @@ import (
 func TestSubmitJoke(t *testing.T) {
 	ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(30*time.Second))
 	defer cancel()
-	
+
 	defer Flush()
 
 	s, err := submit.SubmitJoke(db, ctx, schema.Submission{Author: "Test <example@test.com>"}, "https://example.net/img.png")

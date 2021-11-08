@@ -64,7 +64,7 @@ func TestSetAllJSONJoke(t *testing.T) {
 func TestSetTotalJoke(t *testing.T) {
 	ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(30*time.Second))
 	defer cancel()
-	
+
 	defer Flush()
 
 	conn, err := db.Acquire(ctx)
@@ -115,7 +115,7 @@ func TestSetTotalJoke(t *testing.T) {
 func TestInsertJokeIntoDB(t *testing.T) {
 	ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(30*time.Second))
 	defer cancel()
-	
+
 	defer Flush()
 
 	data := schema.Joke{
@@ -132,7 +132,7 @@ func TestInsertJokeIntoDB(t *testing.T) {
 func TestDeleteSingleJoke(t *testing.T) {
 	ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(30*time.Second))
 	defer cancel()
-	
+
 	defer Flush()
 
 	conn, err := db.Acquire(ctx)
@@ -183,7 +183,7 @@ func TestDeleteSingleJoke(t *testing.T) {
 func TestUpdateJoke(t *testing.T) {
 	ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(30*time.Second))
 	defer cancel()
-	
+
 	defer Flush()
 
 	conn, err := db.Acquire(ctx)
