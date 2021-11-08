@@ -165,15 +165,15 @@ func Flush() error {
 	}
 	defer conn.Release()
 
-	_, err = conn.Exec(context.Background(), "TRUNCATE TABLE submission;")
+	_, err = conn.Exec(context.Background(), "TRUNCATE TABLE submission")
 	if err != nil {
 		return err
 	}
-	_, err = conn.Exec(context.Background(), "TRUNCATE TABLE jokesbapak2;")
+	_, err = conn.Exec(context.Background(), "TRUNCATE TABLE jokesbapak2")
 	if err != nil {
 		return err
 	}
-	_, err = conn.Exec(context.Background(), "TRUNCATE TABLE administrators;")
+	_, err = conn.Exec(context.Background(), "TRUNCATE TABLE administrators")
 	if err != nil {
 		return err
 	}

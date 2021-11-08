@@ -113,7 +113,7 @@ func Flush() error {
 	}
 	defer conn.Release()
 
-	_, err = conn.Exec(context.Background(), "TRUNCATE TABLE administrators;")
+	_, err = conn.Exec(context.Background(), "TRUNCATE TABLE administrators")
 	if err != nil {
 		return err
 	}
