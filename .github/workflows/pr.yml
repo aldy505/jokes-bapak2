@@ -8,6 +8,7 @@ jobs:
   client-build:
     name: Client
     runs-on: ubuntu-latest
+    container: node:14-buster
     timeout-minutes: 15
     defaults:
       run:
@@ -17,26 +18,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Setup Node
-        uses: actions/setup-node@v2.1.5
-        with:
-          node-version: 14.x
-
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-
-      - name: cache node_modules
-        uses: actions/cache@v2
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
+      - name: Setup Yarn
+        run: npm install -g yarn
 
       - name: Installling dependencies
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: yarn
+        run: yarn install
 
       - name: Lint
         run: npx eslint --ext .svelte,.js,.ts --ignore-path .gitignore .
@@ -62,7 +48,7 @@ jobs:
   api-build:
     name: API
     runs-on: ubuntu-latest
-    container: golang:1.17
+    container: golang:1.17-buster
     timeout-minutes: 15
     services:
       postgres:
@@ -82,7 +68,7 @@ jobs:
         ports:
           - 5432:5432
       redis:
-        image: redis:6.2-alpine
+        image: redis:6-alpine
         ports:
           - 6379:6379
     defaults:
@@ -93,17 +79,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: cache go modules
-        uses: actions/cache@v2
-        with:
-          path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-
-
       - name: Installling dependencies
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: go mod vendor
+        run: go mod download
 
       - name: Build
         run: go build main.go

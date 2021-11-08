@@ -20,7 +20,25 @@ func TestGetSubmittedItems(t *testing.T) {
 	}
 	defer c.Release()
 
-	_, err = c.Exec(ctx, "INSERT INTO submission (id, link, created_at, author, status) VALUES ($1, $2, $3, $4, $5), ($6, $7, $8, $9, $10)", submissionData...)
+	tx, err := c.Begin(ctx)
+	if err != nil {
+		t.Error("an error was thrown:", err)
+	}
+	defer tx.Rollback(ctx)
+
+	_, err = tx.Exec(
+		ctx,
+		`INSERT INTO submission 
+			(id, link, created_at, author, status)
+			VALUES
+			($1, $2, $3, $4, $5),
+			($6, $7, $8, $9, $10)`,
+		submissionData...)
+	if err != nil {
+		t.Error("an error was thrown:", err)
+	}
+
+	err = tx.Commit(ctx)
 	if err != nil {
 		t.Error("an error was thrown:", err)
 	}
@@ -55,7 +73,12 @@ func TestGetterQueryBuilder(t *testing.T) {
 	}
 
 	if s != "SELECT * FROM submission WHERE TRUE AND author = $1 AND status = $2 LIMIT 15 OFFSET 10" {
-		t.Error("expected query to be", "SELECT * FROM submission WHERE TRUE AND author = $1 AND status = $2 LIMIT 15 OFFSET 15", "got:", s)
+		t.Error(
+			"expected query to be",
+			"SELECT * FROM submission WHERE TRUE AND author = $1 AND status = $2 LIMIT 15 OFFSET 15",
+			"got:",
+			s,
+		)
 	}
 
 	if i[0].(string) != "Test <example@test.com>" {

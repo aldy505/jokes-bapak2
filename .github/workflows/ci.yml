@@ -1,4 +1,4 @@
-name: API
+name: CI
 
 on:
   push:
@@ -6,9 +6,9 @@ on:
 
 jobs:
   api-build:
-    name: Build
+    name: API
     runs-on: ubuntu-latest
-    container: golang:1.17
+    container: golang:1.17-buster
     timeout-minutes: 15
     services:
       postgres:
@@ -28,7 +28,7 @@ jobs:
         ports:
           - 5432:5432
       redis:
-        image: redis:6.2-alpine
+        image: redis:6-alpine
         ports:
           - 6379:6379
     defaults:
@@ -39,17 +39,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: cache go modules
-        uses: actions/cache@v2
-        with:
-          path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-
-
       - name: Installling dependencies
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: go mod vendor
+        run: go mod download
 
       - name: Build
         run: go build main.go
@@ -84,3 +75,51 @@ jobs:
       - uses: codecov/codecov-action@v2
         with:
           flags: api
+
+  client-build:
+    name: Client
+    runs-on: ubuntu-latest
+    container: node:14-buster
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: ./client
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Yarn
+        run: npm install -g yarn
+
+      - name: Installling dependencies
+        run: yarn install
+
+      - name: Lint
+        run: yarn lint
+
+      - name: Build
+        run: yarn build
+        env:
+          VITE_SENTRY_DSN: https://examplePublicKey@o0.ingest.sentry.io/0
+          VITE_NODE_ENV: development
+          VITE_API_ENDPOINT: https://jokesbapak2.herokuapp.com/v1
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v1
+        with:
+          languages: javascript
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v1
+
+      - name: Create Sentry release
+        uses: getsentry/action-release@v1
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT_CLIENT }}
+        with:
+          environment: production
+          set_commits: skip
+          version: ${{ github.sha }}
