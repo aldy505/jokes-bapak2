@@ -89,9 +89,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Setup Yarn
-        run: npm install -g yarn
-
       - name: Installling dependencies
         run: yarn install
 
