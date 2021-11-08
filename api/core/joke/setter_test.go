@@ -10,7 +10,7 @@ import (
 )
 
 func TestSetAllJSONJoke(t *testing.T) {
-	defer Teardown()
+	t.Cleanup(func() { Flush() })
 
 	conn, err := db.Acquire(context.Background())
 	if err != nil {
@@ -58,7 +58,7 @@ func TestSetAllJSONJoke(t *testing.T) {
 }
 
 func TestSetTotalJoke(t *testing.T) {
-	defer Teardown()
+	t.Cleanup(func() { Flush() })
 
 	conn, err := db.Acquire(context.Background())
 	if err != nil {
@@ -106,7 +106,7 @@ func TestSetTotalJoke(t *testing.T) {
 }
 
 func TestInsertJokeIntoDB(t *testing.T) {
-	defer Teardown()
+	t.Cleanup(func() { Flush() })
 
 	data := schema.Joke{
 		ID:      1,
@@ -120,7 +120,7 @@ func TestInsertJokeIntoDB(t *testing.T) {
 }
 
 func TestDeleteSingleJoke(t *testing.T) {
-	defer Teardown()
+	t.Cleanup(func() { Flush() })
 
 	conn, err := db.Acquire(context.Background())
 	if err != nil {
@@ -168,7 +168,7 @@ func TestDeleteSingleJoke(t *testing.T) {
 }
 
 func TestUpdateJoke(t *testing.T) {
-	defer Teardown()
+	t.Cleanup(func() { Flush() })
 
 	conn, err := db.Acquire(context.Background())
 	if err != nil {

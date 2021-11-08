@@ -11,7 +11,7 @@ import (
 )
 
 func TestGetAllJSONJokes(t *testing.T) {
-	defer Teardown()
+	t.Cleanup(func() { Flush() })
 
 	conn, err := db.Acquire(context.Background())
 	if err != nil {
@@ -63,7 +63,8 @@ func TestGetAllJSONJokes(t *testing.T) {
 }
 
 func TestGetRandomJokeFromDB(t *testing.T) {
-	defer Teardown()
+	t.Cleanup(func() { Flush() })
+
 	conn, err := db.Acquire(context.Background())
 	if err != nil {
 		t.Error("an error was thrown:", err)
@@ -114,7 +115,8 @@ func TestGetRandomJokeFromDB(t *testing.T) {
 }
 
 func TestGetRandomJokeFromCache(t *testing.T) {
-	defer Teardown()
+	t.Cleanup(func() { Flush() })
+
 	jokes := []schema.Joke{
 		{ID: 1, Link: "link1", Creator: 1},
 		{ID: 2, Link: "link2", Creator: 1},
@@ -141,7 +143,7 @@ func TestGetRandomJokeFromCache(t *testing.T) {
 }
 
 func TestCheckJokesCache_True(t *testing.T) {
-	defer Teardown()
+	t.Cleanup(func() { Flush() })
 
 	jokes := []schema.Joke{
 		{ID: 1, Link: "link1", Creator: 1},
@@ -169,7 +171,8 @@ func TestCheckJokesCache_True(t *testing.T) {
 }
 
 func TestCheckJokesCache_False(t *testing.T) {
-	defer Teardown()
+	t.Cleanup(func() { Flush() })
+
 	j, err := joke.CheckJokesCache(memory)
 	if err != nil {
 		t.Error("an error was thrown:", err)
@@ -181,7 +184,7 @@ func TestCheckJokesCache_False(t *testing.T) {
 }
 
 func TestCheckTotalJokesCache_True(t *testing.T) {
-	defer Teardown()
+	t.Cleanup(func() { Flush() })
 
 	err := memory.Set("total", []byte("10"))
 	if err != nil {
@@ -199,7 +202,8 @@ func TestCheckTotalJokesCache_True(t *testing.T) {
 }
 
 func TestCheckTotalJokesCache_False(t *testing.T) {
-	defer Teardown()
+	t.Cleanup(func() { Flush() })
+
 	j, err := joke.CheckTotalJokesCache(memory)
 	if err != nil {
 		t.Error("an error was thrown:", err)
@@ -211,7 +215,7 @@ func TestCheckTotalJokesCache_False(t *testing.T) {
 }
 
 func TestGetCachedJokeByID(t *testing.T) {
-	defer Teardown()
+	t.Cleanup(func() { Flush() })
 
 	jokes := []schema.Joke{
 		{ID: 1, Link: "link1", Creator: 1},
@@ -248,7 +252,7 @@ func TestGetCachedJokeByID(t *testing.T) {
 }
 
 func TestGetCachedTotalJokes(t *testing.T) {
-	defer Teardown()
+	t.Cleanup(func() { Flush() })
 
 	err := memory.Set("total", []byte("10"))
 	if err != nil {
@@ -266,7 +270,8 @@ func TestGetCachedTotalJokes(t *testing.T) {
 }
 
 func TestCheckJokeExists(t *testing.T) {
-	defer Teardown()
+	t.Cleanup(func() { Flush() })
+
 	conn, err := db.Acquire(context.Background())
 	if err != nil {
 		t.Error("an error was thrown:", err)

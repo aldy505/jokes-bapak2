@@ -1,11 +1,11 @@
 package submit
 
 import (
-	"bytes"
 	"context"
 	"jokes-bapak2-api/core/schema"
 	"net/url"
 	"strconv"
+	"strings"
 
 	"github.com/aldy505/bob"
 	"github.com/georgysavva/scany/pgxscan"
@@ -82,7 +82,8 @@ func GetSubmittedItems(db *pgxpool.Pool, ctx context.Context, queries schema.Sub
 func GetterQueryBuilder(queries schema.SubmissionQuery, status, limit, offset int) (string, []interface{}, error) {
 	var sql string
 	var args []interface{}
-	var sqlQuery *bytes.Buffer = &bytes.Buffer{}
+	var sqlQuery strings.Builder
+
 	sqlQuery.WriteString("SELECT * FROM submission WHERE TRUE")
 
 	if queries.Author != "" {

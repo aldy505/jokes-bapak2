@@ -17,6 +17,12 @@ func GetUserID(db *pgxpool.Pool, ctx context.Context, key string) (int, error) {
 	}
 	defer c.Release()
 
+	tx, err := c.Begin(ctx)
+	if err != nil {
+		return 0, err
+	}
+	defer tx.Rollback(ctx)
+
 	sql, args, err := query.
 		Update("administrators").
 		Set("last_used", time.Now().UTC().Format(time.RFC3339)).
@@ -25,11 +31,10 @@ func GetUserID(db *pgxpool.Pool, ctx context.Context, key string) (int, error) {
 		return 0, err
 	}
 
-	r, err := c.Query(ctx, sql, args...)
+	_, err = tx.Exec(ctx, sql, args...)
 	if err != nil {
 		return 0, err
 	}
-	defer r.Close()
 
 	sql, args, err = query.
 		Select("id").
@@ -41,7 +46,12 @@ func GetUserID(db *pgxpool.Pool, ctx context.Context, key string) (int, error) {
 	}
 
 	var id int
-	err = c.QueryRow(ctx, sql, args...).Scan(&id)
+	err = tx.QueryRow(ctx, sql, args...).Scan(&id)
+	if err != nil {
+		return 0, err
+	}
+
+	err = tx.Commit(ctx)
 	if err != nil {
 		return 0, err
 	}
