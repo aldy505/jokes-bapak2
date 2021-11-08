@@ -40,7 +40,7 @@
   </Notice>
 </section>
 
-<section>
+<section class="api_page">
   <h1>{$_('api.get.title')}</h1>
   <h2>{$_('api.get.random.title')}</h2>
   <p>{$_('api.get.random.body')}</p>
@@ -64,14 +64,21 @@
   </Codeblock>
 </section>
 
-<style>
+<style lang="scss">
   h1 {
-    @apply text-4xl font-bold py-4;
+    @apply text-4xl;
+    @apply font-bold;
+    @apply py-4;
   }
   h2 {
-    @apply text-2xl font-bold pt-6 pb-1;
+    @apply text-2xl;
+    @apply font-bold;
+    @apply pt-6;
+    @apply pb-1;
   }
-  p {
-    @apply text-base opacity-80 py-2;
+  p { 
+    @apply text-base;
+    @apply opacity-80;
+    @apply py-2;
   }
 </style>

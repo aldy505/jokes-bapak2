@@ -43,17 +43,11 @@
       <div class="max-w-xs mx-auto">
         <img src={env.API_ENDPOINT + `/today`} alt="Sample joke" class="py-6 shadow-2xl" />
       </div>
-      <Codeblock>$ curl -XGET 'https://jokesbapak2.herokuapp.com/v1/'</Codeblock>
+      <Codeblock>$ curl -XGET 'https://jokesbapak2.herokuapp.com/'</Codeblock>
       <p class="text-sm text-center py-4 opacity-70 hover:opacity-100 transition duration-300 ease-in-out">
-        {$_('home.more.1')} <span on:click={() => goto('/guide')}>{$_('navigation.guide')}</span>
-        {$_('home.more.2')} <span on:click={() => goto('/api')}>{$_('navigation.api')}</span>
+        {$_('home.more.1')} <span class="hover:underline cursor-pointer" on:click={() => goto('/guide')}>{$_('navigation.guide')}</span>
+        {$_('home.more.2')} <span class="hover:underline cursor-pointer" on:click={() => goto('/api')}>{$_('navigation.api')}</span>
       </p>
     </div>
   </div>
 </section>
-
-<style>
-  span {
-    @apply 'hover:underline' cursor-pointer;
-  }
-</style>

@@ -15,7 +15,7 @@
   <meta property="og:description" content="Largest collection of Indonesian dad jokes as a consumable API" />
 </svelte:head>
 
-<section>
+<section class="guide_page">
   <h1>{$_('navigation.guide')}</h1>
   <p>
     {$_('guide.introduction.1')}
@@ -23,18 +23,18 @@
   </p>
 </section>
 
-<section>
+<section class="guide_page">
   <h2>{$_('guide.direct.1')} <code>&lt;img&gt;</code> {$_('guide.direct.2')}</h2>
-  <Codeblock>&lt;img src="https://jokesbapak2.herokuapp.com/v1/" /&gt;</Codeblock>
+  <Codeblock>&lt;img src="https://jokesbapak2.herokuapp.com/" /&gt;</Codeblock>
 </section>
 
-<section>
+<section class="guide_page">
   <h2>{$_('guide.fetch.1')}</h2>
   <p>{$_('guide.fetch.2')}</p>
   <Codeblock>
-    fetch("https://jokesbapak2.herokuapp.com/v1/")<br />
-    &nbsp;&nbsp;.then(response => response.text())<br />
-    &nbsp;&nbsp;.then(data => console.log(data))<br />
+    fetch("https://jokesbapak2.herokuapp.com/")<br />
+    &nbsp;&nbsp;.then(response =&gt; response.text())<br />
+    &nbsp;&nbsp;.then(data =&gt; console.log(data))<br />
     <br />
     // {$_('guide.fetch.3')}<br />
     <br />
@@ -42,21 +42,31 @@
   </Codeblock>
 </section>
 
-<style>
+<style lang="scss">
   p {
-    @apply text-base py-2 'lg:w-2/3';
+    @apply text-base;
+    @apply py-2;
+    @apply lg\:w-2\/3;
   }
+
   h1 {
-    @apply text-4xl font-bold py-2;
+    @apply text-4xl;
+    @apply font-bold;
+    @apply py-2;
   }
-  h2 {
-    @apply text-2xl font-bold py-2;
+
+  h2 { 
+    @apply text-2xl;
+    @apply font-bold;
+    @apply py-2;
   }
-  a {
-    /* This would probably be an error if you installed WindiCSS extension on VSCode */
-    @apply 'hover:underline' 'dark:text-dodger-200' text-dodger-700;
+
+  a { 
+    @apply hover\:underline;
+    @apply dark\:text-dodger-200;
+    @apply text-dodger-700;
   }
   section {
-    @apply pt-6;
+    @apply pt-6
   }
 </style>

@@ -21,15 +21,15 @@ $ yarn build
 
 | Name | Version | Type |
 | --- | --- | --- |
-| @sveltejs/kit | `1.0.0-next.129` | Framework |
-| svelte | `3.38.3` | Framework |
-| typescript | `4.3.5` | Static type language |
-| svelte-i18n | `3.3.9` | i18n Library |
-| svelte-windicss-preprocess | `4.0.12` | CSS Library |
+| @sveltejs/kit | `1.0.0-next.195` | Framework |
+| svelte | `3.44.1` | Framework |
+| typescript | `4.4.4` | Static type language |
+| svelte-i18n | `3.3.13` | i18n Library |
+| svelte-windicss-preprocess | `4.1.5` | CSS Library |
 | @fontsource/fira-mono | `4.5.0` | Webfont |
 | @fontsource/rubik | `4.5.0` | Webfont |
 | dotenv | `10.0.0` | Utils |
-| @sentry/browser | `6.9.0` | Logging |
+| @sentry/browser | `6.14.1` | Logging |
 
 ## Directory structure
 
