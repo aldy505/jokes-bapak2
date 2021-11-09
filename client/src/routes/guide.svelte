@@ -42,7 +42,7 @@
   </Codeblock>
 </section>
 
-<style lang="scss">
+<style>
   p {
     @apply text-base;
     @apply py-2;
@@ -55,18 +55,18 @@
     @apply py-2;
   }
 
-  h2 { 
+  h2 {
     @apply text-2xl;
     @apply font-bold;
     @apply py-2;
   }
 
-  a { 
+  a {
     @apply hover\:underline;
     @apply dark\:text-dodger-200;
     @apply text-dodger-700;
   }
   section {
-    @apply pt-6
+    @apply pt-6;
   }
 </style>

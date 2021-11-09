@@ -46,25 +46,26 @@
   </p>
 </section>
 
-<style lang="scss">
-.why_page {
+<style>
   p {
     @apply text-base;
     @apply py-2;
     @apply lg\:w-2\/3;
-    }
+  }
+
   h1 {
     @apply text-3xl;
     @apply font-bold;
     @apply py-2;
   }
+
   a {
     @apply hover\:underline;
     @apply dark\:text-dodger-200;
     @apply text-dodger-700;
   }
+
   section {
     @apply pt-6;
   }
-}
 </style>

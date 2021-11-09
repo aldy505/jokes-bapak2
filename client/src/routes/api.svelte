@@ -64,7 +64,7 @@
   </Codeblock>
 </section>
 
-<style lang="scss">
+<style>
   h1 {
     @apply text-4xl;
     @apply font-bold;
@@ -76,7 +76,7 @@
     @apply pt-6;
     @apply pb-1;
   }
-  p { 
+  p {
     @apply text-base;
     @apply opacity-80;
     @apply py-2;
