@@ -33,7 +33,7 @@ func (d *Dependencies) AddNewJoke(c *fiber.Ctx) error {
 		return err
 	}
 
-	if !validateLink {
+	if validateLink {
 		return c.Status(fiber.StatusConflict).JSON(Error{
 			Error: "Given link is already on the jokesbapak2 database",
 		})
