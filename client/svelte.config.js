@@ -8,7 +8,8 @@ const config = {
   // for more information about preprocessors
   preprocess: [
     windi({
-      configPath: './windi.config.js',
+      configPath: './windi.config.ts',
+      preflights: false,
     }),
     preprocess({ postcss: false }),
   ],

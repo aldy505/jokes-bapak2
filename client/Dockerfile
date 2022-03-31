@@ -1,14 +1,11 @@
-FROM node:14.17.3-buster
+FROM node:16.13-bullseye
 
 WORKDIR /app
 
 COPY . .
 
-RUN npm install -g yarn
-RUN yarn install
-RUN yarn build
-RUN yarn cache clean
+RUN npm install && npm run build
 
 EXPOSE ${PORT}
 
-CMD ["yarn", "preview"]
+CMD ["npm", "run", "preview"]
