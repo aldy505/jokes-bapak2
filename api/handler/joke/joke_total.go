@@ -38,6 +38,6 @@ func (d *Dependencies) TotalJokes(c *fiber.Ctx) error {
 	return c.
 		Status(fiber.StatusOK).
 		JSON(ResponseJoke{
-			Message: strconv.Itoa(int(total[0])),
+			Message: string(total),
 		})
 }
