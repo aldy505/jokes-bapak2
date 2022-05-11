@@ -3,7 +3,6 @@ package joke
 import (
 	"errors"
 	core "jokes-bapak2-api/core/joke"
-	"strconv"
 
 	"github.com/allegro/bigcache/v3"
 	"github.com/gofiber/fiber/v2"
