@@ -2,6 +2,7 @@ package joke
 
 import (
 	"context"
+	"strconv"
 	"jokes-bapak2-api/core/schema"
 
 	"github.com/Masterminds/squirrel"
@@ -47,7 +48,7 @@ func SetTotalJoke(db *pgxpool.Pool, ctx context.Context, memory *bigcache.BigCac
 		return err
 	}
 
-	var total = []byte{byte(len(data))}
+	var total = []byte(strconv.Itoa(len(data)))
 	err = memory.Set("total", total)
 	if err != nil {
 		return err
