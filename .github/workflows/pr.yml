@@ -69,12 +69,6 @@ jobs:
         image: redis:6-bullseye
         ports:
           - 6379:6379
-        options: >-
-          --health-cmd "redis-cli -a foobared ping | grep PONG"
-          --health-interval 15s
-          --health-timeout 10s
-          --health-retries 10
-          --health-start-period 60s
     defaults:
       run:
         working-directory: ./api
