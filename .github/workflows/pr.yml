@@ -2,13 +2,13 @@ name: PR
 
 on:
   pull_request:
-    branches: [ "*" ]
+    branches: ["*"]
 
 jobs:
   client-build:
     name: Client
     runs-on: ubuntu-latest
-    container: node:14-buster
+    container: node:18-bullseye
     timeout-minutes: 15
     defaults:
       run:
@@ -45,29 +45,36 @@ jobs:
   api-build:
     name: API
     runs-on: ubuntu-latest
-    container: golang:1.17-buster
+    container: golang:1.19-bullseye
     timeout-minutes: 15
     services:
-      postgres:
-        image: postgres:13-alpine
+      bucket:
+        image: minio/minio:edge-cicd
         env:
-          PGDATABASE: jokesbapak2
-          POSTGRES_DB: jokesbapak2
-          PGUSER: postgres
-          POSTGRES_USER: postgres
-          PGPASSWORD: password
-          POSTGRES_PASSWORD: password
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+          MINIO_ROOT_USER: root
+          MINIO_ROOT_PASSWORD: verysecurepassword
+          MINIO_ACCESS_KEY: minio_access_key
+          MINIO_SECRET_KEY: minio_access_key
         ports:
-          - 5432:5432
+          - 9000:9000
+        options: >-
+          --health-cmd "curl -f http://bucket:9000/minio/health/live"
+          --health-interval 45s
+          --health-timeout 30s
+          --health-retries 10
+          --health-start-period 120s
+        volumes:
+          - minio-data:/data
       redis:
         image: redis:6-alpine
         ports:
           - 6379:6379
+        options: >-
+          --health-cmd "redis-cli -a foobared ping | grep PONG"
+          --health-interval 15s
+          --health-timeout 10s
+          --health-retries 10
+          --health-start-period 60s
     defaults:
       run:
         working-directory: ./api
@@ -87,7 +94,9 @@ jobs:
         env:
           ENV: development
           PORT: 5000
-          DATABASE_URL: postgres://postgres:password@postgres:5432/jokesbapak2
+          MINIO_HOST: minio:9000
+          MINIO_ACCESS_ID: minio
+          MINIO_SECRET_KEY: password
           REDIS_URL: redis://@redis:6379
 
       - name: Initialize CodeQL

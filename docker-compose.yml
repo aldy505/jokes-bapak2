@@ -27,10 +27,8 @@ services:
   db:
     build: ./database/postgres/
     command: >
-      -c ssl=on
-      -c ssl_cert_file=/var/lib/postgresql/server.crt
-      -c ssl_key_file=/var/lib/postgresql/server.key
-    restart: always
+      -c ssl=on -c ssl_cert_file=/var/lib/postgresql/server.crt -c ssl_key_file=/var/lib/postgresql/server.key
+    restart: unless-stopped
     ports:
       - 5432:5432
     environment:
@@ -40,17 +38,50 @@ services:
       PGDATA: /data/postgres
       # I got this key from somewhere. It works when you run it locally.
       POSTGRES_SSL_CA_CERT: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURjekNDQWx1Z0F3SUJBZ0lVR3lDaElvR3g0
+    healthcheck:
+      test: pg_isready -U postgres
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     volumes:
       - ./database/postgres/data:/data/postgres
 
   cache:
     image: redis:6.2.4-alpine
-    restart: always
+    restart: unless-stopped
     ports:
       - 6379:6379
+    healthcheck:
+      test: redis-cli -a foobared ping | grep PONG
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     volumes:
       - ./database/redis/etc:/usr/local/etc/redis
       - ./database/redis/data:/data
+
+  bucket:
+    image: quay.io/minio/minio:RELEASE.2022-02-05T04-40-59Z
+    command: server /data --console-address ":9001"
+    restart: unless-stopped
+    ports:
+      - 9001:9001
+      - 9000:9000
+    environment:
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: password
+      MINIO_ACCESS_KEY: minio_access_key
+      MINIO_SECRET_KEY: minio_secret_key
+    healthcheck:
+      test: "curl -f http://localhost:9000/minio/health/live"
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    volumes:
+      - ./data/minio:/data
 
   cache-admin:
     image: rediscommander/redis-commander:latest
