@@ -39,11 +39,26 @@ func GetJokeById(ctx context.Context, bucket *minio.Client, cache *redis.Client,
 	}
 
 	if err == nil {
-		return jokeFromMemory, "", nil
+		contentTypeFromMemory, err := memory.Get("id:" + strconv.Itoa(id) + ":content-type")
+		if err != nil && !errors.Is(err, bigcache.ErrEntryNotFound) {
+			return []byte{}, "", fmt.Errorf("acquiring joke content type from memory: %w", err)
+		}
+
+		return jokeFromMemory, string(contentTypeFromMemory), nil
 	}
 
 	jokeFromCache, err := cache.Get(ctx, "jokes:id:"+strconv.Itoa(id)).Result()
-	if err != nil {
+	if err != nil && !errors.Is(err, redis.Nil) {
+		return []byte{}, "", fmt.Errorf("acquiring joke from cache: %w", err)
+	}
+
+	if err == nil {
+		// Get content type
+		contentTypeFromCache, err := cache.Get(ctx, "jokes:id:"+strconv.Itoa(id)+":content-type").Result()
+		if err != nil && !errors.Is(err, redis.Nil) {
+			return []byte{}, "", fmt.Errorf("acquiring content type from cache: %w", err)
+		}
+
 		// Decode hex string to bytes
 		imageBytes, err := hex.DecodeString(jokeFromCache)
 		if err != nil {
@@ -55,9 +70,14 @@ func GetJokeById(ctx context.Context, bucket *minio.Client, cache *redis.Client,
 			if err != nil {
 				log.Printf("setting memory cache: %s", err.Error())
 			}
+
+			err = memory.Set("id:"+strconv.Itoa(id)+":content-type", []byte(contentTypeFromCache))
+			if err != nil {
+				log.Printf("setting memory cache: %s", err.Error())
+			}
 		}(id, imageBytes)
 
-		return imageBytes, "", nil
+		return imageBytes, contentTypeFromCache, nil
 	}
 
 	jokes, err := ListJokesFromBucket(ctx, bucket, cache)
@@ -88,6 +108,11 @@ func GetJokeById(ctx context.Context, bucket *minio.Client, cache *redis.Client,
 		imageString := hex.EncodeToString(image)
 
 		err := cache.Set(ctx, "jokes:id:"+strconv.Itoa(id), imageString, time.Hour*1).Err()
+		if err != nil {
+			log.Printf("setting cache: %s", err.Error())
+		}
+
+		err = cache.Set(ctx, "jokes:id:"+strconv.Itoa(id)+":content-type", jokes[id].ContentType, time.Hour*1).Err()
 		if err != nil {
 			log.Printf("setting cache: %s", err.Error())
 		}

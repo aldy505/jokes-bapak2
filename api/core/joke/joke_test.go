@@ -2,6 +2,7 @@ package joke_test
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
 	"testing"
@@ -61,11 +62,21 @@ func TestMain(m *testing.M) {
 	memoryInstance, err := bigcache.NewBigCache(bigcache.DefaultConfig(time.Second * 30))
 	if err != nil {
 		log.Fatalf("creating bigcache client: %s", err.Error())
+		return
 	}
 
 	bucket = minioClient
 	cache = redisClient
 	memory = memoryInstance
+
+	setupCtx, setupCancel := context.WithTimeout(context.Background(), time.Minute)
+	defer setupCancel()
+
+	err = setupBucketStorage(setupCtx, minioClient)
+	if err != nil {
+		log.Fatalf("set up bucket storage: %v", err)
+		return
+	}
 
 	exitCode := m.Run()
 
@@ -77,7 +88,12 @@ func TestMain(m *testing.M) {
 		log.Printf("flushing redis: %s", err.Error())
 	}
 
-	err = cache.Close()
+	err = minioClient.RemoveBucketWithOptions(cleanupCtx, "jokesbapak2", minio.RemoveBucketOptions{ForceDelete: true})
+	if err != nil {
+		log.Printf("removing bucket: %s", err.Error())
+	}
+
+	err = memoryInstance.Close()
 	if err != nil {
 		log.Printf("closing cache client: %s", err.Error())
 	}
@@ -88,4 +104,53 @@ func TestMain(m *testing.M) {
 	}
 
 	os.Exit(exitCode)
+}
+
+func setupBucketStorage(ctx context.Context, minioClient *minio.Client) error {
+	bucketFound, err := minioClient.BucketExists(ctx, "jokesbapak2")
+	if err != nil {
+		return fmt.Errorf("checking MinIO bucket: %w", err)
+	}
+
+	if !bucketFound {
+		err = minioClient.MakeBucket(ctx, "jokesbapak2", minio.MakeBucketOptions{})
+		if err != nil {
+			return fmt.Errorf("creating MinIO bucket: %w", err)
+		}
+
+		policy := `{
+			"Version":"2012-10-17",
+			"Statement":[
+			  {
+				"Sid": "AddPerm",
+				"Effect": "Allow",
+				"Principal": "*",
+				"Action":["s3:GetObject"],
+				"Resource":["arn:aws:s3:::jokesbapak2/*"]
+			  }
+			]
+		  }`
+
+		err = minioClient.SetBucketPolicy(ctx, "jokesbapak2", policy)
+		if err != nil {
+			return fmt.Errorf("setting bucket policy: %w", err)
+		}
+	}
+
+	sampleFiles := []string{
+		"../../samples/sample1.jpg",
+		"../../samples/sample2.jpg",
+		"../../samples/sample3.jpg",
+		"../../samples/sample4.jpg",
+		"../../samples/sample5.jpg",
+	}
+
+	for i, file := range sampleFiles {
+		_, err := minioClient.FPutObject(ctx, "jokesbapak2", fmt.Sprintf("sample%d.jpg", i), file, minio.PutObjectOptions{ContentType: "image/jpeg"})
+		if err != nil {
+			return fmt.Errorf("putting object: %w", err)
+		}
+	}
+
+	return nil
 }

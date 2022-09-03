@@ -37,8 +37,18 @@ func ListJokesFromBucket(ctx context.Context, bucket *minio.Client, cache *redis
 			return []Joke{}, fmt.Errorf("enumerating objects: %w", object.Err)
 		}
 
+		var contentType = object.ContentType
+
+		if contentType == "" {
+			stat, err := bucket.StatObject(ctx, JokesBapak2Bucket, object.Key, minio.StatObjectOptions{})
+			if err != nil {
+				return []Joke{}, fmt.Errorf("stat object: %w", err)
+			}
+
+			contentType = stat.ContentType
+		}
 		if !object.IsDeleteMarker {
-			jokes = append(jokes, Joke{ModifiedAt: object.Restore.ExpiryTime, FileName: object.Key, ContentType: object.ContentType})
+			jokes = append(jokes, Joke{ModifiedAt: object.LastModified, FileName: object.Key, ContentType: contentType})
 		}
 	}
 

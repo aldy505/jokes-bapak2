@@ -37,6 +37,12 @@ func GetTodaysJoke(ctx context.Context, bucket *minio.Client, cache *redis.Clien
 	}
 
 	if err == nil {
+		// Get content type
+		contentTypeFromCache, err := cache.Get(ctx, "jokes:today:"+today+":content-type").Result()
+		if err != nil && !errors.Is(err, redis.Nil) {
+			return []byte{}, "", fmt.Errorf("acquiring content type from cache: %w", err)
+		}
+
 		// Decode hex string to bytes
 		imageBytes, err := hex.DecodeString(jokeFromCache)
 		if err != nil {
@@ -48,9 +54,14 @@ func GetTodaysJoke(ctx context.Context, bucket *minio.Client, cache *redis.Clien
 			if err != nil {
 				log.Printf("setting memory cache: %s", err.Error())
 			}
+
+			err = memory.Set("today:"+today+":content-type", []byte(contentTypeFromCache))
+			if err != nil {
+				log.Printf("setting memory cache: %s", err.Error())
+			}
 		}(today, imageBytes)
 
-		return imageBytes, "", nil
+		return imageBytes, contentTypeFromCache, nil
 	}
 
 	// If everything not exists, we get a new random joke
@@ -67,6 +78,11 @@ func GetTodaysJoke(ctx context.Context, bucket *minio.Client, cache *redis.Clien
 		encodedImage := hex.EncodeToString(joke)
 
 		err := cache.Set(ctx, "jokes:today:"+today, encodedImage, time.Hour*24).Err()
+		if err != nil {
+			log.Printf("setting today cache to redis: %s", err.Error())
+		}
+
+		err = cache.Set(ctx, "jokes:today:"+today+":content-type", contentType, time.Hour*24).Err()
 		if err != nil {
 			log.Printf("setting today cache to redis: %s", err.Error())
 		}
