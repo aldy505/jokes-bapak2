@@ -89,8 +89,8 @@ jobs:
           ENV: development
           PORT: 5000
           MINIO_HOST: bucket:9000
-          MINIO_ACCESS_ID: minio
-          MINIO_SECRET_KEY: password
+          MINIO_ACCESS_ID: root
+          MINIO_SECRET_KEY: verysecurepassword
           REDIS_URL: redis://@redis:6379
 
       - name: Initialize CodeQL
