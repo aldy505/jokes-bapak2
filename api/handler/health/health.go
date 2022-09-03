@@ -1,40 +1,44 @@
 package health
 
 import (
+	"context"
+	"net/http"
+	"time"
+
 	"github.com/go-redis/redis/v8"
-	"github.com/gofiber/fiber/v2"
-	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/minio/minio-go/v7"
 )
 
 type Dependencies struct {
-	DB    *pgxpool.Pool
-	Redis *redis.Client
+	Bucket *minio.Client
+	Cache  *redis.Client
 }
 
-func (d *Dependencies) Health(c *fiber.Ctx) error {
-	conn, err := d.DB.Acquire(c.Context())
-	if err != nil {
-		return err
-	}
-	defer conn.Release()
+func (d *Dependencies) Health(w http.ResponseWriter, r *http.Request) {
+	ctx, cancel := context.WithTimeout(r.Context(), time.Second*15)
+	defer cancel()
 
-	// Ping REDIS database
-	err = d.Redis.Ping(c.Context()).Err()
+	var bucketOk = true
+	var cacheOk = true
+
+	cancel, err := d.Bucket.HealthCheck(time.Second * 15)
 	if err != nil {
-		return c.
-			Status(fiber.StatusServiceUnavailable).
-			JSON(Error{
-				Error: "REDIS: " + err.Error(),
-			})
+		bucketOk = false
 	}
 
-	_, err = conn.Query(c.Context(), "SELECT \"id\" FROM \"jokesbapak2\" LIMIT 1")
-	if err != nil {
-		return c.
-			Status(fiber.StatusServiceUnavailable).
-			JSON(Error{
-				Error: "POSTGRESQL: " + err.Error(),
-			})
+	if cancel != nil {
+		cancel()
 	}
-	return c.SendStatus(fiber.StatusOK)
+
+	_, err = d.Cache.Ping(ctx).Result()
+	if err != nil {
+		cacheOk = false
+	}
+
+	if !bucketOk || !cacheOk {
+		w.WriteHeader(http.StatusServiceUnavailable)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
 }

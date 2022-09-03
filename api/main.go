@@ -1,55 +1,72 @@
 package main
 
 import (
+	"errors"
 	"log"
+	"net/http"
 	"os"
 	"os/signal"
 
 	"context"
 	"jokes-bapak2-api/core/joke"
-	"jokes-bapak2-api/platform/database"
 	"jokes-bapak2-api/routes"
+
+	"github.com/go-redis/redis/v8"
+	"github.com/minio/minio-go/v7"
+	"github.com/minio/minio-go/v7/pkg/credentials"
 
 	"time"
 
-	"github.com/gofiber/fiber/v2"
-	_ "github.com/joho/godotenv/autoload"
-
-	"github.com/Masterminds/squirrel"
 	"github.com/allegro/bigcache/v3"
 	"github.com/getsentry/sentry-go"
-	"github.com/go-redis/redis/v8"
-	"github.com/gofiber/fiber/v2/middleware/cors"
-	"github.com/gofiber/fiber/v2/middleware/etag"
-	"github.com/gofiber/fiber/v2/middleware/limiter"
-	"github.com/gojek/heimdall/v7/httpclient"
-	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/go-chi/chi/v5"
 )
 
 func main() {
-	// Setup PostgreSQL
-	poolConfig, err := pgxpool.ParseConfig(os.Getenv("DATABASE_URL"))
-	if err != nil {
-		log.Panicln("Unable to create pool config", err)
+	redisUrl, ok := os.LookupEnv("REDIS_URL")
+	if !ok {
+		redisUrl = "redis://@localhost:6379"
 	}
-	poolConfig.MaxConnIdleTime = time.Minute * 3
-	poolConfig.MaxConnLifetime = time.Minute * 5
-	poolConfig.MaxConns = 15
-	poolConfig.MinConns = 4
 
-	db, err := pgxpool.ConnectConfig(context.Background(), poolConfig)
-	if err != nil {
-		log.Panicln("Unable to create connection", err)
+	minioHost, ok := os.LookupEnv("MINIO_HOST")
+	if !ok {
+		minioHost = "localhost:9000"
 	}
-	defer db.Close()
 
-	// Setup Redis
-	opt, err := redis.ParseURL(os.Getenv("REDIS_URL"))
-	if err != nil {
-		log.Fatalln(err)
+	minioID, ok := os.LookupEnv("MINIO_ACCESS_ID")
+	if !ok {
+		minioID = "minio"
 	}
-	rdb := redis.NewClient(opt)
-	defer rdb.Close()
+
+	minioSecret, ok := os.LookupEnv("MINIO_SECRET_KEY")
+	if !ok {
+		minioSecret = "password"
+	}
+
+	minioToken, ok := os.LookupEnv("MINIO_TOKEN")
+	if !ok {
+		minioToken = ""
+	}
+
+	sentryDsn, ok := os.LookupEnv("SENTRY_DSN")
+	if !ok {
+		sentryDsn = ""
+	}
+
+	port, ok := os.LookupEnv("PORT")
+	if !ok {
+		port = "5000"
+	}
+
+	hostname, ok := os.LookupEnv("HOSTNAME")
+	if !ok {
+		hostname = "127.0.0.1"
+	}
+
+	environment, ok := os.LookupEnv("ENVIRONMENT")
+	if !ok {
+		environment = "development"
+	}
 
 	// Setup In Memory
 	memory, err := bigcache.NewBigCache(bigcache.DefaultConfig(6 * time.Hour))
@@ -58,122 +75,87 @@ func main() {
 	}
 	defer memory.Close()
 
+	// Setup MinIO
+	minioClient, err := minio.New(minioHost, &minio.Options{
+		Creds: credentials.NewStaticV4(minioID, minioSecret, minioToken),
+	})
+	if err != nil {
+		log.Fatalf("setting up minio client: %s", err.Error())
+		return
+	}
+
+	parsedRedisUrl, err := redis.ParseURL(redisUrl)
+	if err != nil {
+		log.Fatalf("parsing redis url: %s", err.Error())
+		return
+	}
+
+	redisClient := redis.NewClient(parsedRedisUrl)
+	defer func() {
+		err := redisClient.Close()
+		if err != nil {
+			log.Printf("closing redis client: %s", err.Error())
+		}
+	}()
+
 	// Setup Sentry
 	err = sentry.Init(sentry.ClientOptions{
-		Dsn:              os.Getenv("SENTRY_DSN"),
-		Environment:      os.Getenv("ENV"),
+		Dsn:              sentryDsn,
+		Environment:      environment,
 		AttachStacktrace: true,
 		// Enable printing of SDK debug messages.
 		// Useful when getting started or trying to figure something out.
-		Debug: true,
+		Debug: environment != "production",
 	})
 	if err != nil {
-		log.Panicln(err)
+		log.Fatalf("setting up sentry: %s", err.Error())
+		return
 	}
 	defer sentry.Flush(2 * time.Second)
 
 	setupCtx, setupCancel := context.WithDeadline(context.Background(), time.Now().Add(time.Minute*4))
 	defer setupCancel()
 
-	err = database.Populate(db, setupCtx)
+	_, _, err = joke.GetTodaysJoke(setupCtx, minioClient, redisClient, memory)
 	if err != nil {
-		sentry.CaptureException(err)
-		log.Panicln(err)
+		log.Fatalf("getting initial joke data: %s", err.Error())
+		return
 	}
 
-	err = joke.SetAllJSONJoke(db, setupCtx, memory)
-	if err != nil {
-		log.Panicln(err)
+	healthRouter := routes.Health(minioClient, redisClient)
+	jokeRouter := routes.Joke(minioClient, redisClient, memory)
+
+	router := chi.NewRouter()
+
+	router.Mount("/health", healthRouter)
+	router.Mount("/", jokeRouter)
+
+	server := &http.Server{
+		Handler:           router,
+		Addr:              hostname + ":" + port,
+		ReadTimeout:       time.Minute,
+		WriteTimeout:      time.Minute,
+		IdleTimeout:       time.Second * 30,
+		ReadHeaderTimeout: time.Minute,
 	}
-	err = joke.SetTotalJoke(db, setupCtx, memory)
-	if err != nil {
-		log.Panicln(err)
-	}
 
-	timeoutDefault := time.Minute * 1
-
-	app := fiber.New(fiber.Config{
-		ReadTimeout:      timeoutDefault,
-		WriteTimeout:     timeoutDefault,
-		CaseSensitive:    true,
-		DisableKeepalive: true,
-		ErrorHandler:     errorHandler,
-	})
-
-	app.Use(limiter.New(limiter.Config{
-		Max:          30,
-		Expiration:   1 * time.Minute,
-		LimitReached: limitHandler,
-	}))
-
-	app.Use(cors.New())
-	app.Use(etag.New())
-
-	route := routes.Dependencies{
-		DB:     db,
-		Redis:  rdb,
-		Memory: memory,
-		HTTP:   httpclient.NewClient(httpclient.WithHTTPTimeout(10 * time.Second)),
-		Query:  squirrel.StatementBuilder.PlaceholderFormat(squirrel.Dollar),
-		App:    app,
-	}
-	route.Health()
-	route.Joke()
-	route.Submit()
-
-	// Start server (with or without graceful shutdown).
-	if os.Getenv("ENV") == "development" {
-		StartServer(app)
-	} else {
-		StartServerWithGracefulShutdown(app)
-	}
-}
-
-func limitHandler(c *fiber.Ctx) error {
-	return c.Status(fiber.StatusTooManyRequests).JSON(fiber.Map{
-		"message": "we only allow up to 15 request per minute",
-	})
-}
-
-func errorHandler(c *fiber.Ctx, err error) error {
-	log.Println(err)
-	sentry.CaptureException(err)
-	return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-		"error": "Something went wrong on our end",
-	})
-}
-
-// StartServerWithGracefulShutdown function for starting server with a graceful shutdown.
-func StartServerWithGracefulShutdown(a *fiber.App) {
-	// Create channel for idle connections.
-	idleConnsClosed := make(chan struct{})
+	exitSignal := make(chan os.Signal, 1)
+	signal.Notify(exitSignal, os.Interrupt)
 
 	go func() {
-		sigint := make(chan os.Signal, 1)
-		signal.Notify(sigint, os.Interrupt) // Catch OS signals.
-		<-sigint
-
-		// Received an interrupt signal, shutdown.
-		if err := a.Shutdown(); err != nil {
-			// Error from closing listeners, or context timeout:
-			log.Printf("Oops... Server is not shutting down! Reason: %v", err)
+		err := server.ListenAndServe()
+		if err != nil && !errors.Is(err, http.ErrServerClosed) {
+			log.Fatalf("listening http server: %v", err)
 		}
-
-		close(idleConnsClosed)
 	}()
 
-	// Run server.
-	if err := a.Listen(os.Getenv("HOST") + ":" + os.Getenv("PORT")); err != nil {
-		log.Printf("Oops... Server is not running! Reason: %v", err)
-	}
+	<-exitSignal
 
-	<-idleConnsClosed
-}
+	shutdownCtx, shutdownCancel := context.WithTimeout(context.Background(), time.Second*30)
+	defer shutdownCancel()
 
-// StartServer func for starting a simple server.
-func StartServer(a *fiber.App) {
-	// Run server.
-	if err := a.Listen(os.Getenv("HOST") + ":" + os.Getenv("PORT")); err != nil {
-		log.Printf("Oops... Server is not running! Reason: %v", err)
+	err = server.Shutdown(shutdownCtx)
+	if err != nil {
+		log.Printf("shutting down http server: %v", err)
 	}
 }

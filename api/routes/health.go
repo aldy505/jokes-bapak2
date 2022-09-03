@@ -2,18 +2,21 @@ package routes
 
 import (
 	"jokes-bapak2-api/handler/health"
-	"time"
 
-	"github.com/gofiber/fiber/v2/middleware/cache"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-redis/redis/v8"
+	"github.com/minio/minio-go/v7"
 )
 
-func (d *Dependencies) Health() {
-	// Health check
-	deps := health.Dependencies{
-		DB:    d.DB,
-		Redis: d.Redis,
+func Health(bucket *minio.Client, cache *redis.Client) *chi.Mux {
+	dependency := &health.Dependencies{
+		Bucket: bucket,
+		Cache:  cache,
 	}
 
-	d.App.Get("/health", cache.New(cache.Config{Expiration: 30 * time.Minute}), deps.Health)
-	d.App.Get("/v1/health", cache.New(cache.Config{Expiration: 30 * time.Minute}), deps.Health)
+	router := chi.NewRouter()
+
+	router.Get("/", dependency.Health)
+
+	return router
 }
