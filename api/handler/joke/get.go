@@ -8,6 +8,7 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
+// TodayJoke provides http handler for today's joke
 func (d *Dependencies) TodayJoke(w http.ResponseWriter, r *http.Request) {
 	joke, contentType, err := core.GetTodaysJoke(r.Context(), d.Bucket, d.Redis, d.Memory)
 	if err != nil {
@@ -22,6 +23,7 @@ func (d *Dependencies) TodayJoke(w http.ResponseWriter, r *http.Request) {
 	w.Write(joke)
 }
 
+// SingleJoke provides http handler for acquiring random single joke
 func (d *Dependencies) SingleJoke(w http.ResponseWriter, r *http.Request) {
 	joke, contentType, err := core.GetRandomJoke(r.Context(), d.Bucket, d.Redis, d.Memory)
 	if err != nil {
@@ -37,6 +39,7 @@ func (d *Dependencies) SingleJoke(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// JokeByID provides http handler for acquiring a joke by ID
 func (d *Dependencies) JokeByID(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParamFromCtx(r.Context(), "id")
 

@@ -6,6 +6,7 @@ import (
 	"strconv"
 )
 
+// TotalJokes provides a HTTP handler for acquiring total jokes
 func (d *Dependencies) TotalJokes(w http.ResponseWriter, r *http.Request) {
 	total, err := core.GetTotalJoke(r.Context(), d.Bucket, d.Redis, d.Memory)
 	if err != nil {

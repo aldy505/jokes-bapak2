@@ -9,11 +9,14 @@ import (
 	"github.com/minio/minio-go/v7"
 )
 
+// Dependencies provides a struct for dependency injection
+// on health package
 type Dependencies struct {
 	Bucket *minio.Client
 	Cache  *redis.Client
 }
 
+// Health provides a http handler for healthcheck
 func (d *Dependencies) Health(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(r.Context(), time.Second*15)
 	defer cancel()
