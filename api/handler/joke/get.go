@@ -44,7 +44,7 @@ func (d *Dependencies) JokeByID(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParamFromCtx(r.Context(), "id")
 
 	// Parse id to int
-	parsedId, err := strconv.Atoi(id)
+	parsedID, err := strconv.Atoi(id)
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
@@ -52,7 +52,7 @@ func (d *Dependencies) JokeByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	joke, contentType, err := core.GetJokeByID(r.Context(), d.Bucket, d.Redis, d.Memory, parsedId)
+	joke, contentType, err := core.GetJokeByID(r.Context(), d.Bucket, d.Redis, d.Memory, parsedID)
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
