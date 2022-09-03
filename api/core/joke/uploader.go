@@ -8,7 +8,8 @@ import (
 	"github.com/minio/minio-go/v7"
 )
 
-func Uploader(bucket *minio.Client, ctx context.Context, key string, payload io.Reader, fileSize int64, contentType string) (string, error) {
+// Uploader uploads a reader stream (io.Reader) to bucket.
+func Uploader(ctx context.Context, bucket *minio.Client, key string, payload io.Reader, fileSize int64, contentType string) (string, error) {
 	info, err := bucket.PutObject(
 		ctx,
 		JokesBapak2Bucket, // bucketName

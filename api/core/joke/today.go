@@ -13,6 +13,9 @@ import (
 	"github.com/minio/minio-go/v7"
 )
 
+// GetTodaysJoke will acquire today's joke. If it's not exists yet,
+// it will acquire a random joke (from the GetRandomJoke method)
+// and set it as today's joke.
 func GetTodaysJoke(ctx context.Context, bucket *minio.Client, cache *redis.Client, memory *bigcache.BigCache) (image []byte, contentType string, err error) {
 	// Today's date:
 	today := time.Now().Format("2006-01-02")

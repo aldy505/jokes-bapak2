@@ -29,7 +29,7 @@ func TestGetJokeById(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*30)
 	defer cancel()
 
-	image, contentType, err := joke.GetJokeById(ctx, bucket, cache, memory, 0)
+	image, contentType, err := joke.GetJokeByID(ctx, bucket, cache, memory, 0)
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
@@ -42,7 +42,7 @@ func TestGetJokeById(t *testing.T) {
 		t.Error("empty image")
 	}
 
-	cachedImage, cachedContentType, err := joke.GetJokeById(ctx, bucket, cache, memory, 0)
+	cachedImage, cachedContentType, err := joke.GetJokeByID(ctx, bucket, cache, memory, 0)
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
@@ -55,7 +55,7 @@ func TestGetJokeById(t *testing.T) {
 		t.Errorf("difference in image bytes")
 	}
 
-	cachedImage2, cachedContentType2, err := joke.GetJokeById(ctx, bucket, cache, memory, 0)
+	cachedImage2, cachedContentType2, err := joke.GetJokeByID(ctx, bucket, cache, memory, 0)
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}

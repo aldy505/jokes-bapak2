@@ -16,6 +16,7 @@ import (
 	"github.com/minio/minio-go/v7"
 )
 
+// GetRandomJoke will acquire a random joke from the bucket.
 func GetRandomJoke(ctx context.Context, bucket *minio.Client, cache *redis.Client, memory *bigcache.BigCache) (image []byte, contentType string, err error) {
 	totalJokes, err := GetTotalJoke(ctx, bucket, cache, memory)
 	if err != nil {
@@ -24,7 +25,7 @@ func GetRandomJoke(ctx context.Context, bucket *minio.Client, cache *redis.Clien
 
 	randomIndex := rand.Intn(totalJokes - 1)
 
-	joke, contentType, err := GetJokeById(ctx, bucket, cache, memory, randomIndex)
+	joke, contentType, err := GetJokeByID(ctx, bucket, cache, memory, randomIndex)
 	if err != nil {
 		return []byte{}, "", fmt.Errorf("getting joke by id: %w", err)
 	}
@@ -32,7 +33,11 @@ func GetRandomJoke(ctx context.Context, bucket *minio.Client, cache *redis.Clien
 	return joke, contentType, nil
 }
 
-func GetJokeById(ctx context.Context, bucket *minio.Client, cache *redis.Client, memory *bigcache.BigCache, id int) (image []byte, contentType string, err error) {
+// GetJokeByID wil acquire a joke by its' ID.
+//
+// An ID is defined as the index on the joke list that is sorted
+// by it's creation (or modification) time.
+func GetJokeByID(ctx context.Context, bucket *minio.Client, cache *redis.Client, memory *bigcache.BigCache, id int) (image []byte, contentType string, err error) {
 	jokeFromMemory, err := memory.Get("id:" + strconv.Itoa(id))
 	if err != nil && !errors.Is(err, bigcache.ErrEntryNotFound) {
 		return []byte{}, "", fmt.Errorf("acquiring joke from memory: %w", err)

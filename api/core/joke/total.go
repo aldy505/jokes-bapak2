@@ -13,6 +13,7 @@ import (
 	"github.com/minio/minio-go/v7"
 )
 
+// GetTotalJoke returns the total jokes that exists on the bucket.
 func GetTotalJoke(ctx context.Context, bucket *minio.Client, cache *redis.Client, memory *bigcache.BigCache) (int, error) {
 	totalJokesFromMemory, err := memory.Get("total")
 	if err != nil && !errors.Is(err, bigcache.ErrEntryNotFound) {

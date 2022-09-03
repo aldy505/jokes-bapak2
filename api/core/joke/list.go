@@ -13,6 +13,9 @@ import (
 	"github.com/minio/minio-go/v7"
 )
 
+// ListJokesFromBucket provides a sorted list of joke by its' last modified field.
+//
+// It will return an empty slice if there is nothing on the bucket.
 func ListJokesFromBucket(ctx context.Context, bucket *minio.Client, cache *redis.Client) ([]Joke, error) {
 	cached, err := cache.Get(ctx, "jokes:list").Result()
 	if err != nil && !errors.Is(err, redis.Nil) {

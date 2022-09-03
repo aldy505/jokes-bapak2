@@ -9,6 +9,7 @@ import (
 	"github.com/minio/minio-go/v7"
 )
 
+// Joke provides route for jokes.
 func Joke(bucket *minio.Client, cache *redis.Client, memory *bigcache.BigCache) *chi.Mux {
 	deps := &joke.Dependencies{
 		Memory: memory,

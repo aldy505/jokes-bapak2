@@ -23,9 +23,9 @@ import (
 )
 
 func main() {
-	redisUrl, ok := os.LookupEnv("REDIS_URL")
+	redisURL, ok := os.LookupEnv("REDIS_URL")
 	if !ok {
-		redisUrl = "redis://@localhost:6379"
+		redisURL = "redis://@localhost:6379"
 	}
 
 	minioHost, ok := os.LookupEnv("MINIO_HOST")
@@ -84,13 +84,13 @@ func main() {
 		return
 	}
 
-	parsedRedisUrl, err := redis.ParseURL(redisUrl)
+	parsedRedisURL, err := redis.ParseURL(redisURL)
 	if err != nil {
 		log.Fatalf("parsing redis url: %s", err.Error())
 		return
 	}
 
-	redisClient := redis.NewClient(parsedRedisUrl)
+	redisClient := redis.NewClient(parsedRedisURL)
 	defer func() {
 		err := redisClient.Close()
 		if err != nil {
