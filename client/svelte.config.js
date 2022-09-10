@@ -1,5 +1,5 @@
 import preprocess from 'svelte-preprocess';
-import adapter from '@sveltejs/adapter-static';
+import adapter from '@sveltejs/adapter-node';
 import { windi } from 'svelte-windicss-preprocess';
 
 /** @type {import('@sveltejs/kit').Config} */
@@ -16,18 +16,18 @@ const config = {
 
   kit: {
     // hydrate the <div id="svelte"> element in src/app.html
-    target: '#svelte',
     trailingSlash: 'never',
     files: {
       routes: './src/routes',
       assets: './static',
-      hooks: './src',
+      hooks: {
+        server: './src',
+        client: './src'
+      },
       lib: './src/lib',
     },
     adapter: adapter({
-      // default options are shown
-      pages: 'dist',
-      assets: 'dist',
+      out: "dist"
     }),
   },
 };

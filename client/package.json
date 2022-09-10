@@ -20,29 +20,29 @@
     "format": "prettier --write --ignore-path .gitignore --plugin-search-dir=. \"./**/*.(ts|json|js|svelte)\""
   },
   "devDependencies": {
-    "@sveltejs/adapter-static": "1.0.0-next.29",
-    "@sveltejs/kit": "1.0.0-next.303",
-    "@typescript-eslint/eslint-plugin": "5.17.0",
-    "@typescript-eslint/parser": "5.17.0",
-    "cssnano": "5.1.5",
-    "eslint": "8.12.0",
+    "@sveltejs/adapter-node": "^1.0.0-next.89",
+    "@sveltejs/kit": "1.0.0-next.480",
+    "@typescript-eslint/eslint-plugin": "5.36.2",
+    "@typescript-eslint/parser": "5.36.2",
+    "cssnano": "5.1.13",
+    "eslint": "8.23.0",
     "eslint-config-prettier": "8.5.0",
-    "eslint-plugin-svelte3": "3.4.1",
-    "prettier": "2.6.1",
-    "prettier-plugin-svelte": "2.6.0",
-    "svelte": "3.46.6",
-    "svelte-check": "2.4.6",
-    "svelte-preprocess": "4.10.4",
-    "svelte-windicss-preprocess": "4.2.6",
-    "tslib": "2.3.1",
-    "typescript": "4.6.3"
+    "eslint-plugin-svelte3": "4.0.0",
+    "prettier": "2.7.1",
+    "prettier-plugin-svelte": "2.7.0",
+    "svelte": "3.50.1",
+    "svelte-check": "2.9.0",
+    "svelte-preprocess": "4.10.7",
+    "svelte-windicss-preprocess": "4.2.8",
+    "tslib": "2.4.0",
+    "typescript": "4.8.3"
   },
   "dependencies": {
-    "@fontsource/fira-mono": "4.5.7",
-    "@fontsource/rubik": "4.5.6",
-    "@sentry/browser": "6.19.3",
-    "dotenv": "16.0.0",
-    "ohmyfetch": "0.4.15",
-    "svelte-i18n": "3.3.13"
+    "@fontsource/fira-mono": "4.5.9",
+    "@fontsource/rubik": "4.5.11",
+    "@sentry/browser": "7.12.1",
+    "dotenv": "16.0.2",
+    "ohmyfetch": "0.4.18",
+    "svelte-i18n": "3.4.0"
   }
 }
