@@ -7,7 +7,7 @@
   <meta name="title" content={$_('navigation.why') + '-' + $_('meta.title')} />
   <meta name="twitter:title" content={$_('navigation.why') + '-' + $_('meta.title')} />
   <meta property="og:title" content={$_('navigation.why') + '-' + $_('meta.title')} />
-  <link rel="canonical" href="https://jokesbapak2.pages.dev/why" />
+  <link rel="canonical" href="https://jokesbapak2.reinaldyrafli.com/why" />
   <meta name="description" content="Largest collection of Indonesian dad jokes as a consumable API" />
   <meta name="twitter:description" content="Largest collection of Indonesian dad jokes as a consumable API" />
   <meta property="og:description" content="Largest collection of Indonesian dad jokes as a consumable API" />

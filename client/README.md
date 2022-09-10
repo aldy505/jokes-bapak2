@@ -1,35 +1,35 @@
 # Jokes Bapak2 Client
 
-Still work in progress
+The frontend.
 
 ## Development
 
 ```bash
 # Install modules
-$ yarn install
+$ npm install
 
 # Run local server
-$ yarn dev
+$ npm run dev
 
 # build everything
-$ yarn build
+$ npm run build
 ```
 
-> You can preview the built app with `yarn preview`, regardless of whether you installed an adapter. This should _not_ be used to serve your app in production.
+> You can preview the built app with `npm run preview`, regardless of whether you installed an adapter. This should _not_ be used to serve your app in production.
 
 ## Used packages
 
-| Name | Version | Type |
-| --- | --- | --- |
-| @sveltejs/kit | `1.0.0-next.195` | Framework |
-| svelte | `3.44.1` | Framework |
-| typescript | `4.4.4` | Static type language |
-| svelte-i18n | `3.3.13` | i18n Library |
-| svelte-windicss-preprocess | `4.1.5` | CSS Library |
-| @fontsource/fira-mono | `4.5.0` | Webfont |
-| @fontsource/rubik | `4.5.0` | Webfont |
-| dotenv | `10.0.0` | Utils |
-| @sentry/browser | `6.14.1` | Logging |
+| Name                       | Version          | Type                 |
+| -------------------------- | ---------------- | -------------------- |
+| @sveltejs/kit              | `1.0.0-next.480` | Framework            |
+| svelte                     | `3.50.1`         | Framework            |
+| typescript                 | `4.8.3`          | Static type language |
+| svelte-i18n                | `3.4.0`          | i18n Library         |
+| svelte-windicss-preprocess | `4.2.8`          | CSS Library          |
+| @fontsource/fira-mono      | `4.5.9`          | Webfont              |
+| @fontsource/rubik          | `4.5.11`         | Webfont              |
+| dotenv                     | `16.0.2`         | Utils                |
+| @sentry/browser            | `7.12.1`         | Logging              |
 
 ## Directory structure
 
@@ -48,8 +48,8 @@ $ yarn build
 ├── static              - Static/public directory
 ├── svelte.config.js    - Svelte configuration file
 ├── tsconfig.json       - Typescript configuration file
-├── windi.config.js     - WindiCSS configuration file
-└── yarn.lock           - Packages lock file
+├── windi.config.ts     - WindiCSS configuration file
+└── package-lock.json   - Packages lock file
 ```
 
 ## `.env` configuration

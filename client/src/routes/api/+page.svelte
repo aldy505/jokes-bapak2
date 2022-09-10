@@ -4,8 +4,8 @@
   import { _ } from 'svelte-i18n';
   import env from '$lib/env';
   import { $fetch as omf } from 'ohmyfetch';
-  import Codeblock from '../components/codeblock.svelte';
-  import Notice from '../components/notice.svelte';
+  import Codeblock from '../../components/codeblock.svelte';
+  import Notice from '../../components/notice.svelte';
 
   interface TotalResponse {
     message: string;
@@ -28,7 +28,7 @@
   <meta name="title" content={$_('navigation.api') + '-' + $_('meta.title')} />
   <meta name="twitter:title" content={$_('navigation.api') + '-' + $_('meta.title')} />
   <meta property="og:title" content={$_('navigation.api') + '-' + $_('meta.title')} />
-  <link rel="canonical" href="https://jokesbapak2.pages.dev/api" />
+  <link rel="canonical" href="https://jokesbapak2.reinaldyrafli.com/api" />
   <meta name="description" content="Largest collection of Indonesian dad jokes as a consumable API" />
   <meta name="twitter:description" content="Largest collection of Indonesian dad jokes as a consumable API" />
   <meta property="og:description" content="Largest collection of Indonesian dad jokes as a consumable API" />

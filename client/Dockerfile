@@ -1,11 +1,11 @@
-FROM node:16.13-bullseye
+FROM node:16.17.0-bullseye
 
 WORKDIR /app
 
 COPY . .
 
-RUN npm install && npm run build
+RUN npm ci && npm run build && rm -rf node_modules && npm ci --omit=dev
 
 EXPOSE ${PORT}
 
-CMD ["npm", "run", "preview"]
+CMD ["node", "dist/index.js"]
