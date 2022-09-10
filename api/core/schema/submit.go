@@ -1,12 +1,12 @@
 package schema
 
 type Submission struct {
-	ID        int    `json:"id,omitempty" db:"id"`
-	Link      string `json:"link" form:"link" db:"link"`
-	Image     string `json:"image,omitempty" form:"image"`
-	CreatedAt string `json:"created_at" db:"created_at"`
-	Author    string `json:"author" form:"author" db:"author"`
-	Status    int    `json:"status" db:"status"`
+	ID        int    `json:"id,omitempty"`
+	Link      string `json:"link"`
+	Image     string `json:"image,omitempty"`
+	CreatedAt string `json:"created_at"`
+	Author    string `json:"author"`
+	Status    int    `json:"status"`
 }
 
 type SubmissionQuery struct {

@@ -2,42 +2,34 @@ package routes
 
 import (
 	"jokes-bapak2-api/handler/joke"
-	"jokes-bapak2-api/middleware"
-	"time"
 
-	"github.com/gofiber/fiber/v2/middleware/cache"
+	"github.com/allegro/bigcache/v3"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-redis/redis/v8"
+	"github.com/minio/minio-go/v7"
 )
 
-func (d *Dependencies) Joke() {
-	deps := joke.Dependencies{
-		DB:     d.DB,
-		Redis:  d.Redis,
-		Memory: d.Memory,
-		HTTP:   d.HTTP,
-		Query:  d.Query,
+// Joke provides route for jokes.
+func Joke(bucket *minio.Client, cache *redis.Client, memory *bigcache.BigCache) *chi.Mux {
+	deps := &joke.Dependencies{
+		Memory: memory,
+		Bucket: bucket,
+		Redis:  cache,
 	}
+
+	router := chi.NewRouter()
+
 	// Single route
-	d.App.Get("/", deps.SingleJoke)
-	d.App.Get("/v1", deps.SingleJoke)
+	router.Get("/", deps.SingleJoke)
 
 	// Today's joke
-	d.App.Get("/today", cache.New(cache.Config{Expiration: 6 * time.Hour}), deps.TodayJoke)
-	d.App.Get("/v1/today", cache.New(cache.Config{Expiration: 6 * time.Hour}), deps.TodayJoke)
+	router.Get("/today", deps.TodayJoke)
 
 	// Joke by ID
-	d.App.Get("/id/:id", middleware.OnlyIntegerAsID(), deps.JokeByID)
-	d.App.Get("/v1/id/:id", middleware.OnlyIntegerAsID(), deps.JokeByID)
+	router.Get("/id/{id}", deps.JokeByID)
 
 	// Count total jokes
-	d.App.Get("/total", cache.New(cache.Config{Expiration: 15 * time.Minute}), deps.TotalJokes)
-	d.App.Get("/v1/total", cache.New(cache.Config{Expiration: 15 * time.Minute}), deps.TotalJokes)
+	router.Get("/total", deps.TotalJokes)
 
-	// Add new joke
-	d.App.Put("/", middleware.RequireAuth(d.DB), deps.AddNewJoke)
-
-	// Update a joke
-	d.App.Patch("/id/:id", middleware.RequireAuth(d.DB), middleware.OnlyIntegerAsID(), deps.UpdateJoke)
-
-	// Delete a joke
-	d.App.Delete("/id/:id", middleware.RequireAuth(d.DB), middleware.OnlyIntegerAsID(), deps.DeleteJoke)
+	return router
 }

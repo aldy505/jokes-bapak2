@@ -2,33 +2,34 @@ name: CI
 
 on:
   push:
-    branches: [ "master" ]
+    branches: ["master"]
 
 jobs:
   api-build:
     name: API
     runs-on: ubuntu-latest
-    container: golang:1.17-buster
+    container: golang:1.19-bullseye
     timeout-minutes: 15
     services:
-      postgres:
-        image: postgres:13-alpine
+      bucket:
+        image: minio/minio:edge-cicd
         env:
-          PGDATABASE: jokesbapak2
-          POSTGRES_DB: jokesbapak2
-          PGUSER: postgres
-          POSTGRES_USER: postgres
-          PGPASSWORD: password
-          POSTGRES_PASSWORD: password
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+          MINIO_ROOT_USER: root
+          MINIO_ROOT_PASSWORD: verysecurepassword
+          MINIO_ACCESS_KEY: minio_access_key
+          MINIO_SECRET_KEY: minio_access_key
         ports:
-          - 5432:5432
+          - 9000:9000
+        options: >-
+          --health-cmd "curl -f http://bucket:9000/minio/health/live"
+          --health-interval 45s
+          --health-timeout 30s
+          --health-retries 10
+          --health-start-period 120s
+        volumes:
+          - minio-data:/data
       redis:
-        image: redis:6-alpine
+        image: redis:6-bullseye
         ports:
           - 6379:6379
     defaults:
@@ -46,11 +47,13 @@ jobs:
         run: go build main.go
 
       - name: Run test & coverage
-        run: go test -v -coverprofile=coverage.out -covermode=atomic ./...
+        run: go test -v -race -coverprofile=coverage.out -covermode=atomic ./...
         env:
           ENV: development
           PORT: 5000
-          DATABASE_URL: postgres://postgres:password@postgres:5432/jokesbapak2
+          MINIO_HOST: bucket:9000
+          MINIO_ACCESS_ID: root
+          MINIO_SECRET_KEY: verysecurepassword
           REDIS_URL: redis://@redis:6379
 
       - name: Initialize CodeQL
@@ -79,7 +82,7 @@ jobs:
   client-build:
     name: Client
     runs-on: ubuntu-latest
-    container: node:16-buster
+    container: node:18-bullseye
     timeout-minutes: 15
     defaults:
       run:

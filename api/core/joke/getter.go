@@ -2,185 +2,126 @@ package joke
 
 import (
 	"context"
+	"encoding/hex"
 	"errors"
-	"jokes-bapak2-api/core/schema"
+	"fmt"
+	"io"
+	"log"
 	"math/rand"
 	"strconv"
+	"time"
 
-	"github.com/Masterminds/squirrel"
 	"github.com/allegro/bigcache/v3"
-	"github.com/georgysavva/scany/pgxscan"
-	"github.com/jackc/pgx"
-	"github.com/jackc/pgx/v4/pgxpool"
-	"github.com/pquerna/ffjson/ffjson"
+	"github.com/go-redis/redis/v8"
+	"github.com/minio/minio-go/v7"
 )
 
-// GetAllJSONJokes fetch the database for all the jokes then output it as a JSON []byte.
-// Keep in mind, you will need to store it to memory yourself.
-func GetAllJSONJokes(db *pgxpool.Pool, ctx context.Context) ([]byte, error) {
-	conn, err := db.Acquire(ctx)
+// GetRandomJoke will acquire a random joke from the bucket.
+func GetRandomJoke(ctx context.Context, bucket *minio.Client, cache *redis.Client, memory *bigcache.BigCache) (image []byte, contentType string, err error) {
+	totalJokes, err := GetTotalJoke(ctx, bucket, cache, memory)
 	if err != nil {
-		return []byte{}, err
-	}
-	defer conn.Release()
-
-	var jokes []schema.Joke
-	results, err := conn.Query(ctx, "SELECT \"id\",\"link\" FROM \"jokesbapak2\" ORDER BY \"id\"")
-	if err != nil {
-		return nil, err
-	}
-	defer results.Close()
-
-	err = pgxscan.ScanAll(&jokes, results)
-	if err != nil {
-		return nil, err
+		return []byte{}, "", fmt.Errorf("getting total joke: %w", err)
 	}
 
-	data, err := ffjson.Marshal(jokes)
+	randomIndex := rand.Intn(totalJokes - 1)
+
+	joke, contentType, err := GetJokeByID(ctx, bucket, cache, memory, randomIndex)
 	if err != nil {
-		return nil, err
+		return []byte{}, "", fmt.Errorf("getting joke by id: %w", err)
 	}
 
-	return data, nil
+	return joke, contentType, nil
 }
 
-// Only return a link
-func GetRandomJokeFromDB(db *pgxpool.Pool, ctx context.Context) (string, error) {
-	conn, err := db.Acquire(ctx)
-	if err != nil {
-		return "", err
-	}
-	defer conn.Release()
-
-	var link string
-	err = conn.QueryRow(ctx, "SELECT link FROM jokesbapak2 ORDER BY random() LIMIT 1").Scan(&link)
-	if err != nil {
-		return "", err
+// GetJokeByID wil acquire a joke by its' ID.
+//
+// An ID is defined as the index on the joke list that is sorted
+// by it's creation (or modification) time.
+func GetJokeByID(ctx context.Context, bucket *minio.Client, cache *redis.Client, memory *bigcache.BigCache, id int) (image []byte, contentType string, err error) {
+	jokeFromMemory, err := memory.Get("id:" + strconv.Itoa(id))
+	if err != nil && !errors.Is(err, bigcache.ErrEntryNotFound) {
+		return []byte{}, "", fmt.Errorf("acquiring joke from memory: %w", err)
 	}
 
-	return link, nil
-}
-
-// GetRandomJokeFromCache returns a link string of a random joke from cache.
-func GetRandomJokeFromCache(memory *bigcache.BigCache) (string, error) {
-	jokes, err := memory.Get("jokes")
-	if err != nil {
-		if errors.Is(err, bigcache.ErrEntryNotFound) {
-			return "", schema.ErrNotFound
+	if err == nil {
+		contentTypeFromMemory, err := memory.Get("id:" + strconv.Itoa(id) + ":content-type")
+		if err != nil && !errors.Is(err, bigcache.ErrEntryNotFound) {
+			return []byte{}, "", fmt.Errorf("acquiring joke content type from memory: %w", err)
 		}
-		return "", err
+
+		return jokeFromMemory, string(contentTypeFromMemory), nil
 	}
 
-	var data []schema.Joke
-	err = ffjson.Unmarshal(jokes, &data)
-	if err != nil {
-		return "", nil
+	jokeFromCache, err := cache.Get(ctx, "jokes:id:"+strconv.Itoa(id)).Result()
+	if err != nil && !errors.Is(err, redis.Nil) {
+		return []byte{}, "", fmt.Errorf("acquiring joke from cache: %w", err)
 	}
 
-	// Return an error if the database is empty
-	dataLength := len(data)
-	if dataLength == 0 {
-		return "", schema.ErrEmpty
-	}
-
-	random := rand.Intn(dataLength)
-	joke := data[random].Link
-
-	return joke, nil
-}
-
-// CheckJokesCache checks if there is some value inside jokes cache.
-func CheckJokesCache(memory *bigcache.BigCache) (bool, error) {
-	_, err := memory.Get("jokes")
-	if err != nil {
-		if errors.Is(err, bigcache.ErrEntryNotFound) {
-			return false, nil
+	if err == nil {
+		// Get content type
+		contentTypeFromCache, err := cache.Get(ctx, "jokes:id:"+strconv.Itoa(id)+":content-type").Result()
+		if err != nil && !errors.Is(err, redis.Nil) {
+			return []byte{}, "", fmt.Errorf("acquiring content type from cache: %w", err)
 		}
-		return false, err
-	}
 
-	return true, nil
-}
-
-// CheckTotalJokesCache literally does what the name is for
-func CheckTotalJokesCache(memory *bigcache.BigCache) (bool, error) {
-	_, err := memory.Get("total")
-	if err != nil {
-		if errors.Is(err, bigcache.ErrEntryNotFound) {
-			return false, nil
+		// Decode hex string to bytes
+		imageBytes, err := hex.DecodeString(jokeFromCache)
+		if err != nil {
+			return []byte{}, "", fmt.Errorf("decoding hex string: %w", err)
 		}
-		return false, err
+
+		defer func(id int, imageBytes []byte) {
+			err := memory.Set("id:"+strconv.Itoa(id), imageBytes)
+			if err != nil {
+				log.Printf("setting memory cache: %s", err.Error())
+			}
+
+			err = memory.Set("id:"+strconv.Itoa(id)+":content-type", []byte(contentTypeFromCache))
+			if err != nil {
+				log.Printf("setting memory cache: %s", err.Error())
+			}
+		}(id, imageBytes)
+
+		return imageBytes, contentTypeFromCache, nil
 	}
 
-	return true, nil
-}
-
-// GetCachedJokeByID returns a link string of a certain ID from cache.
-func GetCachedJokeByID(memory *bigcache.BigCache, id int) (string, error) {
-	jokes, err := memory.Get("jokes")
+	jokes, err := ListJokesFromBucket(ctx, bucket, cache)
 	if err != nil {
-		if errors.Is(err, bigcache.ErrEntryNotFound) {
-			return "", schema.ErrNotFound
+		return []byte{}, "", fmt.Errorf("listing jokes: %w", err)
+	}
+
+	object, err := bucket.GetObject(ctx, JokesBapak2Bucket, jokes[id].FileName, minio.GetObjectOptions{})
+	if err != nil {
+		return []byte{}, "", fmt.Errorf("getting object: %w", err)
+	}
+	defer func() {
+		err := object.Close()
+		if err != nil {
+			log.Printf("closing image reader: %s", err.Error())
 		}
-		return "", err
-	}
+	}()
 
-	var data []schema.Joke
-	err = ffjson.Unmarshal(jokes, &data)
+	image, err = io.ReadAll(object)
 	if err != nil {
-		return "", err
+		return []byte{}, "", fmt.Errorf("reading object: %w", err)
 	}
 
-	// This is a simple solution, might convert it to goroutines and channels sometime soon.
-	for _, v := range data {
-		if v.ID == id {
-			return v.Link, nil
+	defer func(id int, image []byte) {
+		ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+		defer cancel()
+
+		imageString := hex.EncodeToString(image)
+
+		err := cache.Set(ctx, "jokes:id:"+strconv.Itoa(id), imageString, time.Hour*1).Err()
+		if err != nil {
+			log.Printf("setting cache: %s", err.Error())
 		}
-	}
 
-	return "", nil
-}
-
-// GetCachedTotalJokes
-func GetCachedTotalJokes(memory *bigcache.BigCache) (int, error) {
-	total, err := memory.Get("total")
-	if err != nil {
-		if errors.Is(err, bigcache.ErrEntryNotFound) {
-			return 0, schema.ErrNotFound
+		err = cache.Set(ctx, "jokes:id:"+strconv.Itoa(id)+":content-type", jokes[id].ContentType, time.Hour*1).Err()
+		if err != nil {
+			log.Printf("setting cache: %s", err.Error())
 		}
-		return 0, err
-	}
-	i, err := strconv.Atoi(string(total))
-	if err != nil {
-		return 0, err
-	}
+	}(id, image)
 
-	return i, nil
-}
-
-func CheckJokeExists(db *pgxpool.Pool, ctx context.Context, id string) (bool, error) {
-	conn, err := db.Acquire(ctx)
-	if err != nil {
-		return false, err
-	}
-	defer conn.Release()
-
-	var query = squirrel.StatementBuilder.PlaceholderFormat(squirrel.Dollar)
-
-	sql, args, err := query.
-		Select("id").
-		From("jokesbapak2").
-		Where(squirrel.Eq{"id": id}).
-		ToSql()
-	if err != nil {
-		return false, err
-	}
-
-	var jokeID int
-	err = conn.QueryRow(ctx, sql, args...).Scan(&jokeID)
-	if err != nil && errors.Is(err, pgx.ErrNoRows) {
-		return false, err
-	}
-
-	return strconv.Itoa(jokeID) == id, nil
+	return image, jokes[id].ContentType, nil
 }
