@@ -22,12 +22,12 @@ const config = {
       assets: './static',
       hooks: {
         server: './src',
-        client: './src'
+        client: './src',
       },
       lib: './src/lib',
     },
     adapter: adapter({
-      out: "dist"
+      out: 'dist',
     }),
   },
 };
