@@ -16,6 +16,7 @@ require (
 require (
 	github.com/go-chi/chi/v5 v5.0.7
 	github.com/minio/minio-go/v7 v7.0.35
+	github.com/rs/cors v1.8.2
 )
 
 require (

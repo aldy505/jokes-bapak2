@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"log"
+	"net"
 	"net/http"
 	"os"
 	"os/signal"
@@ -20,6 +21,7 @@ import (
 	"github.com/allegro/bigcache/v3"
 	"github.com/getsentry/sentry-go"
 	"github.com/go-chi/chi/v5"
+	"github.com/rs/cors"
 )
 
 func main() {
@@ -69,7 +71,7 @@ func main() {
 	}
 
 	// Setup In Memory
-	memory, err := bigcache.NewBigCache(bigcache.DefaultConfig(6 * time.Hour))
+	memory, err := bigcache.NewBigCache(bigcache.DefaultConfig(10 * time.Minute))
 	if err != nil {
 		log.Panicln(err)
 	}
@@ -127,12 +129,19 @@ func main() {
 
 	router := chi.NewRouter()
 
+	router.Use(cors.New(cors.Options{
+		AllowedMethods:   []string{http.MethodGet},
+		AllowCredentials: false,
+		MaxAge:           int(60 * 60 * 24 * 365),
+		Debug:            false,
+	}).Handler)
+
 	router.Mount("/health", healthRouter)
 	router.Mount("/", jokeRouter)
 
 	server := &http.Server{
 		Handler:           router,
-		Addr:              hostname + ":" + port,
+		Addr:              net.JoinHostPort(hostname, port),
 		ReadTimeout:       time.Minute,
 		WriteTimeout:      time.Minute,
 		IdleTimeout:       time.Second * 30,

@@ -10,6 +10,8 @@ FROM debian:bullseye AS runtime
 
 WORKDIR /app
 
+RUN apt-get update && apt-get upgrade -y && apt-get install -y curl
+
 COPY --from=builder /app/main .
 
 ENV PORT=5000

@@ -1,16 +1,35 @@
 services:
   api:
     build: ./api/
-    restart: always
     env_file: ./api/.env
     ports:
       - 5000:5000
+    healthcheck:
+      test: "curl -f http://api:5000/health/"
+      interval: 15s
+      timeout: 12s
+      retries: 10
+      start_period: 30s
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 30s
+        max_attempts: 20
+        window: 60s
+      resources:
+        limits:
+          memory: 1GB
+          cpus: '1'
+        reservations:
+          memory: 50MB
+          cpus: '0.1'
     depends_on:
-      - db
-      - cache
-    # Uncomment these if you want to have it on
-    # volumes:
-    #   ./api:/app
+      bucket:
+        condition: service_healthy
+      cache:
+        condition: service_healthy
 
   client:
     build: ./client/
@@ -18,38 +37,33 @@ services:
     env_file: ./client/.env
     ports:
       - 3000:3000
-    depends_on:
-      - api
-    # Uncomment these if you want to have it on
-    # volumes:
-    #   ./client:/app
-
-  db:
-    build: ./database/postgres/
-    command: >
-      -c ssl=on -c ssl_cert_file=/var/lib/postgresql/server.crt -c ssl_key_file=/var/lib/postgresql/server.key
-    restart: unless-stopped
-    ports:
-      - 5432:5432
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: jokesbapak2
-      PGDATA: /data/postgres
-      # I got this key from somewhere. It works when you run it locally.
-      POSTGRES_SSL_CA_CERT: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURjekNDQWx1Z0F3SUJBZ0lVR3lDaElvR3g0
     healthcheck:
-      test: pg_isready -U postgres
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      test: "curl -f http://client:3000/"
+      interval: 15s
+      timeout: 12s
+      retries: 10
       start_period: 30s
-    volumes:
-      - ./database/postgres/data:/data/postgres
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 30s
+        max_attempts: 20
+        window: 60s
+      resources:
+        limits:
+          memory: 500MB
+          cpus: '1'
+        reservations:
+          memory: 50MB
+          cpus: '0.1'
+    depends_on:
+      api:
+        condition: service_healthy
 
   cache:
-    image: redis:6.2.4-alpine
-    restart: unless-stopped
+    image: redis:6.2.7-alpine
     ports:
       - 6379:6379
     healthcheck:
@@ -58,12 +72,27 @@ services:
       timeout: 5s
       retries: 5
       start_period: 30s
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 30s
+        max_attempts: 20
+        window: 60s
+      resources:
+        limits:
+          memory: 2GB
+          cpus: '1'
+        reservations:
+          memory: 100MB
+          cpus: '0.1'
     volumes:
-      - ./database/redis/etc:/usr/local/etc/redis
-      - ./database/redis/data:/data
+      - ./data/redis/etc:/usr/local/etc/redis
+      - ./data/redis/data:/data
 
   bucket:
-    image: quay.io/minio/minio:RELEASE.2022-02-05T04-40-59Z
+    image: quay.io/minio/minio:RELEASE.2022-09-07T22-25-02Z
     command: server /data --console-address ":9001"
     restart: unless-stopped
     ports:
@@ -80,28 +109,20 @@ services:
       timeout: 10s
       retries: 5
       start_period: 60s
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 30s
+        max_attempts: 20
+        window: 60s
+      resources:
+        limits:
+          memory: 4GB
+          cpus: '2'
+        reservations:
+          memory: 50MB
+          cpus: '0.1'
     volumes:
       - ./data/minio:/data
-
-  cache-admin:
-    image: rediscommander/redis-commander:latest
-    restart: always
-    environment:
-      REDIS_PORT: 6379
-      REDIS_HOST: redis
-    ports:
-      - 2084:8081
-    depends_on:
-      - cache
-
-  db-admin:
-    image: sosedoff/pgweb:0.11.8
-    restart: always
-    ports:
-      - 2086:8081
-    links:
-      - postgres:postgres
-    environment:
-      DATABASE_URL: postgres://postgres:password@db/jokesbapak2
-    depends_on:
-      - db
