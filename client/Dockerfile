@@ -8,6 +8,11 @@ WORKDIR /app
 
 COPY . .
 
+ENV VITE_NODE_ENV="development"
+ENV VITE_SERVER_API_ENDPOINT="https://jokesbapak2.reinaldyrafli.com/api/"
+ENV VITE_BROWSER_API_ENDPOINT="http://api:5000/"
+ENV VITE_SENTRY_DSN=""
+
 RUN npm ci && npm run build && rm -rf node_modules && npm ci --omit=dev
 
 EXPOSE ${PORT}

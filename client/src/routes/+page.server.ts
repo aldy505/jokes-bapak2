@@ -9,7 +9,7 @@ interface TotalResponse {
 export async function load() {
   const response = await $fetch<TotalResponse>('total', {
     method: 'GET',
-    baseURL: env.API_ENDPOINT,
+    baseURL: env.SERVER_API_ENDPOINT,
     parseResponse: JSON.parse,
   });
 
