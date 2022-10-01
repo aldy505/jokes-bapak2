@@ -45,22 +45,22 @@
   <h2>{$_('api.get.random.title')}</h2>
   <p>{$_('api.get.random.body')}</p>
   <Codeblock>
-    GET {env.API_ENDPOINT}/
+    GET {env.BROWSER_API_ENDPOINT}/
   </Codeblock>
   <h2>{$_('api.get.today.title')}</h2>
   <p>{$_('api.get.today.body')}</p>
   <Codeblock>
-    GET {env.API_ENDPOINT}/today
+    GET {env.BROWSER_API_ENDPOINT}/today
   </Codeblock>
   <h2>{$_('api.get.id.title')}</h2>
   <p>{$_('api.get.id.body', { values: { total } })}</p>
   <Codeblock>
-    GET {env.API_ENDPOINT}/id/&lcub;id&rcub;
+    GET {env.BROWSER_API_ENDPOINT}/id/&lcub;id&rcub;
   </Codeblock>
   <h2>{$_('api.get.total.title')}</h2>
   <p>{$_('api.get.total.body')}</p>
   <Codeblock>
-    GET {env.API_ENDPOINT}/total
+    GET {env.BROWSER_API_ENDPOINT}/total
   </Codeblock>
 </section>
 

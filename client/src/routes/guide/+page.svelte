@@ -1,6 +1,7 @@
 <script lang="ts">
   import Codeblock from '../../components/codeblock.svelte';
   import { _ } from 'svelte-i18n';
+  import env from '$lib/env';
   // This page is meant to guide people on how to use the API.
 </script>
 
@@ -25,14 +26,14 @@
 
 <section class="guide_page">
   <h2>{$_('guide.direct.1')} <code>&lt;img&gt;</code> {$_('guide.direct.2')}</h2>
-  <Codeblock>&lt;img src="https://jokesbapak2.reinaldyrafli.com/api/" /&gt;</Codeblock>
+  <Codeblock>&lt;img src="{env.BROWSER_API_ENDPOINT}/" /&gt;</Codeblock>
 </section>
 
 <section class="guide_page">
   <h2>{$_('guide.fetch.1')}</h2>
   <p>{$_('guide.fetch.2')}</p>
   <Codeblock>
-    const response = await fetch(&quot;https://jokesbapak2.reinaldyrafli.com/api/&quot;);<br />
+    const response = await fetch(&quot;{env.BROWSER_API_ENDPOINT}/&quot;);<br />
     <br />
     if (!response.ok) &#123;<br />
     &nbsp;&nbsp;// {$_('guide.fetch.3')}<br />

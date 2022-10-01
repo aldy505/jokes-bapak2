@@ -29,7 +29,7 @@
     </div>
     <div class="flex-1 md:px-6 w-full">
       <div class="max-w-xs mx-auto">
-        <img src={env.API_ENDPOINT + `/today`} alt="Sample joke" class="py-6 shadow-2xl" />
+        <img src={env.BROWSER_API_ENDPOINT + `/today`} alt="Sample joke" class="py-6 shadow-2xl" />
       </div>
       <Codeblock>$ curl -XGET 'https://jokesbapak2.reinaldyrafli.com/api/'</Codeblock>
       <p class="text-sm text-center py-4 opacity-70 hover:opacity-100 transition duration-300 ease-in-out">
