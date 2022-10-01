@@ -71,7 +71,7 @@
     }
   },
   "api": {
-    "limit": "Kami membatasi request menjadi 30 request/menit.",
+    "limit": "Kami membatasi request menjadi 120 request/menit.",
     "get": {
       "title": "Dapatkan Jokes",
       "random": {
@@ -105,7 +105,7 @@
     "fetch": {
       "1": "Menggunakan fetch API",
       "2": "Bapak bisa menggunakannya, tapi saya secara personal tidak merekomendasikannya.",
-      "3": "data adalah string dengan isi base64"
+      "3": "Periksa dan jangan abaikan errornya jika request gagal"
     }
   }
 }

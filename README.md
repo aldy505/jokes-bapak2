@@ -7,9 +7,9 @@
   <br>
 </h1>
 
-👋 Hey there! Still a work in progress, if you'd like to contribute this while this repo is still growing, that would be so great!
+👋 Hey there! Always a work in progress, if you'd like to contribute this while this repo is still growing, that would be so great!
 
-It's on alpha phase now. You can access the front facing web on [jokesbapak2.pages.dev](http://jokesbapak2.pages.dev/).
+ou can access the front facing web on [jokesbapak2.reinaldyrafli.com](http://jokesbapak2.reinaldyrafli.com/).
 
 ## Brief explanation of what is this
 

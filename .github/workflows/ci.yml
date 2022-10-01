@@ -93,17 +93,17 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Installling dependencies
-        run: yarn install
+        run: npm install
 
       - name: Lint
-        run: yarn lint
+        run: npm run lint
 
       - name: Build
-        run: yarn build
+        run: npm run build
         env:
           VITE_SENTRY_DSN: https://examplePublicKey@o0.ingest.sentry.io/0
           VITE_NODE_ENV: development
-          VITE_API_ENDPOINT: https://jokesbapak2.herokuapp.com/v1
+          VITE_API_ENDPOINT: https://jokesbapak2.reinaldyrafli.com/api/v1
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v1

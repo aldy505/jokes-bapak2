@@ -14,9 +14,9 @@ info:
     name: GNU General Public License v3.0
     url: https://github.com/aldy505/jokes-bapak2/blob/master/LICENSE
 servers:
-  - url: "https://jokesbapak2.herokuapp.com/v1"
+  - url: "https://jokesbapak2.reinaldyrafli.com/api/v1"
     description: Production
-  - url: "https://jokesbapak2.herokuapp.com"
+  - url: "https://jokesbapak2.reinaldyrafli.com/api"
     description: Production
   - url: "http://localhost:5000"
     description: Development
@@ -31,9 +31,9 @@ paths:
         200:
           description: Image data
           content:
-            'image/gif': {}
-            'image/png': {}
-            'image/jpeg': {}
+            "image/gif": {}
+            "image/png": {}
+            "image/jpeg": {}
     put:
       summary: Add a new joke into database
       description: asd
@@ -46,15 +46,15 @@ paths:
           application/json:
             schema:
               allOf:
-                - $ref: '#/components/schemas/request.auth'
-                - $ref: '#/components/schemas/request.joke'
+                - $ref: "#/components/schemas/request.auth"
+                - $ref: "#/components/schemas/request.joke"
       responses:
         201:
           description: Image has been added
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/request.joke'
+                $ref: "#/components/schemas/request.joke"
               example:
                 link: https://link.to/image.jpg
         400:
@@ -62,7 +62,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/response.error'
+                $ref: "#/components/schemas/response.error"
               example:
                 error: URL provided is not a valid image
         403:
@@ -70,7 +70,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/response.error'
+                $ref: "#/components/schemas/response.error"
   /id/{id}:
     parameters:
       - in: path
@@ -88,17 +88,16 @@ paths:
         200:
           description: Image data
           content:
-            'image/jpeg': {}
-            'image/png': {}
-            'image/gif': {}
+            "image/jpeg": {}
+            "image/png": {}
+            "image/gif": {}
         404:
           description: Provided image ID was not found
           content:
             text/plain:
               schema:
                 type: string
-              example:
-                Requested ID was not found.
+              example: Requested ID was not found.
     patch:
       summary: Update a Joke with certain image ID
       description: Returns consistent image for every call.
@@ -111,26 +110,26 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/response.confirmation'
-                  - $ref: '#/components/schemas/request.joke'
+                  - $ref: "#/components/schemas/response.confirmation"
+                  - $ref: "#/components/schemas/request.joke"
         400:
           description: Link provided is not a valid image
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/response.error'
+                $ref: "#/components/schemas/response.error"
         403:
           description: Must be authenticated to submit a joke
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/response.error'
+                $ref: "#/components/schemas/response.error"
         406:
           description: If the Joke ID does not exists
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/response.error'
+                $ref: "#/components/schemas/response.error"
     delete:
       summary: Delete a Joke with certain image ID
       description: hi
@@ -142,19 +141,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/response.confirmation'
+                $ref: "#/components/schemas/response.confirmation"
         403:
           description: Must be authenticated to submit a joke
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/response.error'
+                $ref: "#/components/schemas/response.error"
         406:
           description: If the Joke ID does not exists
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/response.error'
+                $ref: "#/components/schemas/response.error"
   /today:
     get:
       summary: Get the joke of the day
@@ -165,9 +164,9 @@ paths:
         200:
           description: Image data
           content:
-            'image/jpeg': {}
-            'image/png': {}
-            'image/gif': {}
+            "image/jpeg": {}
+            "image/png": {}
+            "image/gif": {}
   /total:
     get:
       summary: Get total amount of jokes in database
@@ -179,7 +178,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/response.confirmation'
+                $ref: "#/components/schemas/response.confirmation"
               example:
                 message: "154"
   /submit:
@@ -223,7 +222,7 @@ paths:
                   jokes:
                     type: array
                     items:
-                      $ref: '#/components/schemas/response.submission'
+                      $ref: "#/components/schemas/response.submission"
     post:
       summary: Submit a joke
       description: >
@@ -256,17 +255,17 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/response.confirmation'
+                  - $ref: "#/components/schemas/response.confirmation"
                   - type: object
                     properties:
                       data:
-                        $ref: '#/components/schemas/response.submission'
+                        $ref: "#/components/schemas/response.submission"
         400:
           description: Invalid data was sent
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/response.error'
+                $ref: "#/components/schemas/response.error"
   /health:
     get:
       summary: Health check
@@ -281,7 +280,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/response.error'
+                $ref: "#/components/schemas/response.error"
 
 components:
   schemas:

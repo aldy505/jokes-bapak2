@@ -4,8 +4,8 @@
   import { _ } from 'svelte-i18n';
   import env from '$lib/env';
   import { $fetch as omf } from 'ohmyfetch';
-  import Codeblock from '../components/codeblock.svelte';
-  import Notice from '../components/notice.svelte';
+  import Codeblock from '../../components/codeblock.svelte';
+  import Notice from '../../components/notice.svelte';
 
   interface TotalResponse {
     message: string;
@@ -28,7 +28,7 @@
   <meta name="title" content={$_('navigation.api') + '-' + $_('meta.title')} />
   <meta name="twitter:title" content={$_('navigation.api') + '-' + $_('meta.title')} />
   <meta property="og:title" content={$_('navigation.api') + '-' + $_('meta.title')} />
-  <link rel="canonical" href="https://jokesbapak2.pages.dev/api" />
+  <link rel="canonical" href="https://jokesbapak2.reinaldyrafli.com/api" />
   <meta name="description" content="Largest collection of Indonesian dad jokes as a consumable API" />
   <meta name="twitter:description" content="Largest collection of Indonesian dad jokes as a consumable API" />
   <meta property="og:description" content="Largest collection of Indonesian dad jokes as a consumable API" />
@@ -40,7 +40,7 @@
   </Notice>
 </section>
 
-<section>
+<section class="api_page">
   <h1>{$_('api.get.title')}</h1>
   <h2>{$_('api.get.random.title')}</h2>
   <p>{$_('api.get.random.body')}</p>
@@ -66,12 +66,19 @@
 
 <style>
   h1 {
-    @apply text-4xl font-bold py-4;
+    @apply text-4xl;
+    @apply font-bold;
+    @apply py-4;
   }
   h2 {
-    @apply text-2xl font-bold pt-6 pb-1;
+    @apply text-2xl;
+    @apply font-bold;
+    @apply pt-6;
+    @apply pb-1;
   }
   p {
-    @apply text-base opacity-80 py-2;
+    @apply text-base;
+    @apply opacity-80;
+    @apply py-2;
   }
 </style>

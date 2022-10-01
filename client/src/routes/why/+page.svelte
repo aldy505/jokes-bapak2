@@ -7,18 +7,18 @@
   <meta name="title" content={$_('navigation.why') + '-' + $_('meta.title')} />
   <meta name="twitter:title" content={$_('navigation.why') + '-' + $_('meta.title')} />
   <meta property="og:title" content={$_('navigation.why') + '-' + $_('meta.title')} />
-  <link rel="canonical" href="https://jokesbapak2.pages.dev/why" />
+  <link rel="canonical" href="https://jokesbapak2.reinaldyrafli.com/why" />
   <meta name="description" content="Largest collection of Indonesian dad jokes as a consumable API" />
   <meta name="twitter:description" content="Largest collection of Indonesian dad jokes as a consumable API" />
   <meta property="og:description" content="Largest collection of Indonesian dad jokes as a consumable API" />
 </svelte:head>
 
-<section>
+<section class="why_page">
   <h1 id="why-does-this-project-exists">{$_('why.exists.title')}</h1>
   <p>{$_('why.exists.body.1')} {$_('why.exists.body.2')} {$_('why.exists.body.3')} {$_('why.exists.body.4')}</p>
   <p>{$_('why.exists.body.5')} {$_('why.exists.body.6')}</p>
 </section>
-<section>
+<section class="why_page">
   <h1 id="can-i-submit-my-dad-joke">{$_('why.submit.title')}</h1>
   <p>
     {$_('why.submit.body.1')}
@@ -29,7 +29,7 @@
     {$_('why.submit.body.6')}
   </p>
 </section>
-<section>
+<section class="why_page">
   <h1 id="can-i-contribute">{$_('why.contribute.title')}</h1>
   <p>
     {$_('why.contribute.body.1')}
@@ -38,7 +38,7 @@
     {$_('why.contribute.body.4')}
   </p>
 </section>
-<section>
+<section class="why_page">
   <h1 id="other-inquiries">{$_('why.inquiries.title')}</h1>
   <p>
     {$_('why.inquiries.body.1')}
@@ -48,15 +48,23 @@
 
 <style>
   p {
-    @apply text-base py-2 'lg:w-2/3';
+    @apply text-base;
+    @apply py-2;
+    @apply lg\:w-2\/3;
   }
+
   h1 {
-    @apply text-3xl font-bold py-2;
+    @apply text-3xl;
+    @apply font-bold;
+    @apply py-2;
   }
+
   a {
-    /* This would probably be an error if you installed WindiCSS extension on VSCode */
-    @apply 'hover:underline' 'dark:text-dodger-200' text-dodger-700;
+    @apply hover\:underline;
+    @apply dark\:text-dodger-200;
+    @apply text-dodger-700;
   }
+
   section {
     @apply pt-6;
   }

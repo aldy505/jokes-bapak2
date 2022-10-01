@@ -42,14 +42,8 @@
           <p class="text-sm opacity-50 hover:opacity-90 transition duration-300 ease-in-out inline-block">
             {$_('footer.language')}
             <a href="?lang=en" target="_top" class="hover:underline">{$_('footer.english')}</a>
+            |
             <a href="?lang=id" target="_top" class="hover:underline">{$_('footer.indonesian')}</a>.
-          </p>
-        </div>
-        <div class="flex-initial pr-3">
-          <p class="text-sm opacity-50 hover:opacity-90 transition duration-300 ease-in-out inline-block">
-            <a href="https://jokesbapak2-analytics.herokuapp.com/share/1xYuVSyl/Jokes%20Bapak2" class="hover:underline"
-              >Analytics</a
-            >.
           </p>
         </div>
       </div>
@@ -57,5 +51,5 @@
   </div>
 </div>
 
-<style windi:preflights:global windi:safelist:global>
+<style windi:global windi:preflights:global windi:safelist:global>
 </style>
