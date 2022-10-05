@@ -33,7 +33,7 @@ func GetRandomJoke(ctx context.Context, bucket *minio.Client, cache *redis.Clien
 	return joke, contentType, nil
 }
 
-// GetJokeByID wil acquire a joke by its' ID.
+// GetJokeByID will acquire a joke by its' ID.
 //
 // An ID is defined as the index on the joke list that is sorted
 // by it's creation (or modification) time.
