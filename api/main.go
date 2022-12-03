@@ -35,6 +35,16 @@ func main() {
 		minioHost = "localhost:9000"
 	}
 
+	minioRegion, ok := os.LookupEnv("MINIO_REGION")
+	if !ok {
+		minioRegion = ""
+	}
+
+	minioSecure, ok := os.LookupEnv("MINIO_SECURE")
+	if !ok {
+		minioSecure = "false"
+	}
+
 	minioID, ok := os.LookupEnv("MINIO_ACCESS_ID")
 	if !ok {
 		minioID = "minio"
@@ -79,7 +89,9 @@ func main() {
 
 	// Setup MinIO
 	minioClient, err := minio.New(minioHost, &minio.Options{
-		Creds: credentials.NewStaticV4(minioID, minioSecret, minioToken),
+		Creds:  credentials.NewStaticV4(minioID, minioSecret, minioToken),
+		Region: minioRegion,
+		Secure: minioSecure == "true",
 	})
 	if err != nil {
 		log.Fatalf("setting up minio client: %s", err.Error())
