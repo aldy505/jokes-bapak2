@@ -1,4 +1,4 @@
-import preprocess from 'svelte-preprocess';
+import { vitePreprocess } from '@sveltejs/kit/vite';
 import adapter from '@sveltejs/adapter-node';
 import { windi } from 'svelte-windicss-preprocess';
 
@@ -11,7 +11,7 @@ const config = {
       configPath: './windi.config.ts',
       preflights: false,
     }),
-    preprocess({ postcss: false }),
+    vitePreprocess({ postcss: false }),
   ],
 
   kit: {
