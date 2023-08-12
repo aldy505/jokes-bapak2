@@ -7,13 +7,13 @@
 
 <svelte:head>
   <title>{$_('navigation.guide')} - {$_('meta.title')}</title>
-  <meta name="title" content={$_('navigation.guide') + '-' + $_('meta.title')} />
-  <meta name="twitter:title" content={$_('navigation.guide') + '-' + $_('meta.title')} />
-  <meta property="og:title" content={$_('navigation.guide') + '-' + $_('meta.title')} />
-  <link rel="canonical" href="https://jokesbapak2.reinaldyrafli.com/guide" />
-  <meta name="description" content="Largest collection of Indonesian dad jokes as a consumable API" />
-  <meta name="twitter:description" content="Largest collection of Indonesian dad jokes as a consumable API" />
-  <meta property="og:description" content="Largest collection of Indonesian dad jokes as a consumable API" />
+  <meta content={$_('navigation.guide') + '-' + $_('meta.title')} name="title" />
+  <meta content={$_('navigation.guide') + '-' + $_('meta.title')} name="twitter:title" />
+  <meta content={$_('navigation.guide') + '-' + $_('meta.title')} property="og:title" />
+  <link href="https://jokesbapak2.reinaldyrafli.com/guide" rel="canonical" />
+  <meta content="Largest collection of Indonesian dad jokes as a consumable API" name="description" />
+  <meta content="Largest collection of Indonesian dad jokes as a consumable API" name="twitter:description" />
+  <meta content="Largest collection of Indonesian dad jokes as a consumable API" property="og:description" />
 </svelte:head>
 
 <section class="guide_page">
@@ -71,6 +71,7 @@
     @apply dark\:text-dodger-200;
     @apply text-dodger-700;
   }
+
   section {
     @apply pt-6;
   }

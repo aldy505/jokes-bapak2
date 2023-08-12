@@ -1,4 +1,4 @@
-<script lang="ts" context="module">
+<script context="module" lang="ts">
   import '$lib/locale';
 </script>
 
@@ -10,7 +10,7 @@
 </script>
 
 <svelte:head>
-  <meta property="og:site_name" content={$_('meta.title')} />
+  <meta content={$_('meta.title')} property="og:site_name" />
 </svelte:head>
 
 <div
@@ -35,15 +35,15 @@
         <div class="flex-initial pr-3">
           <p class="text-sm opacity-50 hover:opacity-90 transition duration-300 ease-in-out inline-block">
             {$_('footer.available')}
-            <a href="https://www.github.com/aldy505/jokes-bapak2" class="hover:underline">{$_('footer.github')}</a>.
+            <a class="hover:underline" href="https://www.github.com/aldy505/jokes-bapak2">{$_('footer.github')}</a>.
           </p>
         </div>
         <div class="flex-initial pr-3">
           <p class="text-sm opacity-50 hover:opacity-90 transition duration-300 ease-in-out inline-block">
             {$_('footer.language')}
-            <a href="?lang=en" target="_top" class="hover:underline">{$_('footer.english')}</a>
+            <a class="hover:underline" href="?lang=en" target="_top">{$_('footer.english')}</a>
             |
-            <a href="?lang=id" target="_top" class="hover:underline">{$_('footer.indonesian')}</a>.
+            <a class="hover:underline" href="?lang=id" target="_top">{$_('footer.indonesian')}</a>.
           </p>
         </div>
       </div>

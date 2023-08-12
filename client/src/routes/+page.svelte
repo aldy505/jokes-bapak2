@@ -12,13 +12,13 @@
 
 <svelte:head>
   <title>{$_('meta.title')} - {$_('meta.tagline')}</title>
-  <meta name="title" content={$_('meta.title') + '-' + $_('meta.tagline')} />
-  <meta name="twitter:title" content={$_('meta.title') + '-' + $_('meta.tagline')} />
-  <meta property="og:title" content={$_('meta.title') + '-' + $_('meta.tagline')} />
-  <link rel="canonical" href="https://jokesbapak2.reinaldyrafli.com/" />
-  <meta name="description" content="Largest collection of Indonesian dad jokes as a consumable API" />
-  <meta name="twitter:description" content="Largest collection of Indonesian dad jokes as a consumable API" />
-  <meta property="og:description" content="Largest collection of Indonesian dad jokes as a consumable API" />
+  <meta content={$_('meta.title') + '-' + $_('meta.tagline')} name="title" />
+  <meta content={$_('meta.title') + '-' + $_('meta.tagline')} name="twitter:title" />
+  <meta content={$_('meta.title') + '-' + $_('meta.tagline')} property="og:title" />
+  <link href="https://jokesbapak2.reinaldyrafli.com/" rel="canonical" />
+  <meta content="Largest collection of Indonesian dad jokes as a consumable API" name="description" />
+  <meta content="Largest collection of Indonesian dad jokes as a consumable API" name="twitter:description" />
+  <meta content="Largest collection of Indonesian dad jokes as a consumable API" property="og:description" />
 </svelte:head>
 
 <section>
@@ -29,7 +29,7 @@
     </div>
     <div class="flex-1 md:px-6 w-full">
       <div class="max-w-xs mx-auto">
-        <img src={env.BROWSER_API_ENDPOINT + `/today`} alt="Sample joke" class="py-6 shadow-2xl" />
+        <img alt="Sample joke" class="py-6 shadow-2xl" src={env.BROWSER_API_ENDPOINT + `/today`} />
       </div>
       <Codeblock>$ curl -XGET 'https://jokesbapak2.reinaldyrafli.com/api/'</Codeblock>
       <p class="text-sm text-center py-4 opacity-70 hover:opacity-100 transition duration-300 ease-in-out">

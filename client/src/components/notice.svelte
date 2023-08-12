@@ -7,6 +7,8 @@
 >
   <div class="flex flex-row items-center content-center">
     <div class="flex-initial px-4 text-center text-lg">{emoji}</div>
-    <div class="flex-auto"><slot /></div>
+    <div class="flex-auto">
+      <slot />
+    </div>
   </div>
 </div>

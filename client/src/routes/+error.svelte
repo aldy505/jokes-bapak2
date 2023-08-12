@@ -1,4 +1,4 @@
-<script lang="ts" context="module">
+<script context="module" lang="ts">
   import type { ErrorLoad } from '@sveltejs/kit';
   import Sentry from '$lib/logging';
 
