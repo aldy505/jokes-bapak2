@@ -17,24 +17,25 @@ $ go run main.go
 $ go build main.go
 ```
 
-There is a placeholder data ready for you to query it manually in `/platform/database/placeholder.sql`. Have a good time developing!
+There is a placeholder data ready for you to query it manually in `/platform/database/placeholder.sql`. Have a good time
+developing!
 
 ## Used packages
 
-| Name | Version | Type |
-| --- | --- | --- |
-| [gofiber/fiber](https://github.com/gofiber/fiber) | `v2.21.0` | Framework |
-| [jackc/pgx](https://github.com/jackc/pgx) | `v4.13.0` | Database |
-| [go-redis/redis](https://github.com/go-redis/redis) | `v8.11.4` | Cache |
-| [allegro/bigcache](https://github.com/allegro/bigcache) | `v3.0.1` | Cache |
-| [joho/godotenv](https://github.com/joho/godotenv) | `v1.4.0` | Config |
-| [getsentry/sentry-go](https://github.com/getsentry/sentry-go) | `v0.11.0` | Logging |
-| [aldy505/phc-crypto](https://github.com/aldy505/phc-crypto) | `v1.1.0` | Utils |
-| [Masterminds/squirrel](https://github.com/Masterminds/squirrel ) | `v1.5.1` | Utils |
-| [aldy505/bob](https://github.com/aldy505/bob) | `v0.0.4` | Utils |
-| [gojek/heimdall](https://github.com/gojek/heimdall) | `v7.0.2` | Utils |
-| [georgysavva/scany](https://github.com/georgysavva/scany) | `v0.2.9` | Utils |
-| [pquerna/ffjson](https://github.com/pquerna/ffjson) | `v0.0.0-20190930134022-aa0246cd15f7` | Utils |
+| Name                                                             | Version                              | Type      |
+|------------------------------------------------------------------|--------------------------------------|-----------|
+| [gofiber/fiber](https://github.com/gofiber/fiber)                | `v2.21.0`                            | Framework |
+| [jackc/pgx](https://github.com/jackc/pgx)                        | `v4.13.0`                            | Database  |
+| [go-redis/redis](https://github.com/go-redis/redis)              | `v8.11.4`                            | Cache     |
+| [allegro/bigcache](https://github.com/allegro/bigcache)          | `v3.0.1`                             | Cache     |
+| [joho/godotenv](https://github.com/joho/godotenv)                | `v1.4.0`                             | Config    |
+| [getsentry/sentry-go](https://github.com/getsentry/sentry-go)    | `v0.11.0`                            | Logging   |
+| [aldy505/phc-crypto](https://github.com/aldy505/phc-crypto)      | `v1.1.0`                             | Utils     |
+| [Masterminds/squirrel](https://github.com/Masterminds/squirrel ) | `v1.5.1`                             | Utils     |
+| [aldy505/bob](https://github.com/aldy505/bob)                    | `v0.0.4`                             | Utils     |
+| [gojek/heimdall](https://github.com/gojek/heimdall)              | `v7.0.2`                             | Utils     |
+| [georgysavva/scany](https://github.com/georgysavva/scany)        | `v0.2.9`                             | Utils     |
+| [pquerna/ffjson](https://github.com/pquerna/ffjson)              | `v0.0.0-20190930134022-aa0246cd15f7` | Utils     |
 
 ## Directory structure
 

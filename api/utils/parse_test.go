@@ -1,9 +1,10 @@
 package utils_test
 
 import (
-	"jokes-bapak2-api/utils"
 	"strings"
 	"testing"
+
+	"jokes-bapak2-api/utils"
 )
 
 func TestParseToJSONBody(t *testing.T) {

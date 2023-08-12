@@ -31,9 +31,9 @@ paths:
         200:
           description: Image data
           content:
-            "image/gif": {}
-            "image/png": {}
-            "image/jpeg": {}
+            "image/gif": { }
+            "image/png": { }
+            "image/jpeg": { }
     put:
       summary: Add a new joke into database
       description: asd
@@ -88,9 +88,9 @@ paths:
         200:
           description: Image data
           content:
-            "image/jpeg": {}
-            "image/png": {}
-            "image/gif": {}
+            "image/jpeg": { }
+            "image/png": { }
+            "image/gif": { }
         404:
           description: Provided image ID was not found
           content:
@@ -164,9 +164,9 @@ paths:
         200:
           description: Image data
           content:
-            "image/jpeg": {}
-            "image/png": {}
-            "image/gif": {}
+            "image/jpeg": { }
+            "image/png": { }
+            "image/gif": { }
   /total:
     get:
       summary: Get total amount of jokes in database

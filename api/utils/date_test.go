@@ -1,9 +1,10 @@
 package utils_test
 
 import (
-	"jokes-bapak2-api/utils"
 	"testing"
 	"time"
+
+	"jokes-bapak2-api/utils"
 )
 
 func TestIsToday_Today(t *testing.T) {

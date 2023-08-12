@@ -1,22 +1,21 @@
 package main
 
 import (
+	"context"
 	"errors"
 	"log"
 	"net"
 	"net/http"
 	"os"
 	"os/signal"
+	"time"
 
-	"context"
 	"jokes-bapak2-api/core/joke"
 	"jokes-bapak2-api/routes"
 
 	"github.com/go-redis/redis/v8"
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
-
-	"time"
 
 	"github.com/allegro/bigcache/v3"
 	"github.com/getsentry/sentry-go"

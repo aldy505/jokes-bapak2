@@ -1,9 +1,10 @@
 package utils_test
 
 import (
-	"jokes-bapak2-api/utils"
 	"net/http"
 	"testing"
+
+	"jokes-bapak2-api/utils"
 )
 
 func TestRequest_Get(t *testing.T) {

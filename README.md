@@ -7,15 +7,19 @@
   <br>
 </h1>
 
-👋 Hey there! Always a work in progress, if you'd like to contribute this while this repo is still growing, that would be so great!
+👋 Hey there! Always a work in progress, if you'd like to contribute this while this repo is still growing, that would be
+so great!
 
 ou can access the front facing web on [jokesbapak2.reinaldyrafli.com](http://jokesbapak2.reinaldyrafli.com/).
 
 ## Brief explanation of what is this
 
-Jokes Bapak2 is an image API that you can use for free! I've been seeing lots and lots of Indonesian dad jokes on Twitter, Facebook and Instagram on early 2020. In a month, I made a Discord bot that provides the jokes. But I thought, why not make it as an API?
+Jokes Bapak2 is an image API that you can use for free! I've been seeing lots and lots of Indonesian dad jokes on
+Twitter, Facebook and Instagram on early 2020. In a month, I made a Discord bot that provides the jokes. But I thought,
+why not make it as an API?
 
-This is some kind of [icanhazdadjokes](https://icanhazdadjoke.com/) but it's Indonesian and it's not text, it's images. Dad jokes in Indonesia is somewhat a bit different than in US/UK because, I guess, here, it's a lot dumber.
+This is some kind of [icanhazdadjokes](https://icanhazdadjoke.com/) but it's Indonesian and it's not text, it's images.
+Dad jokes in Indonesia is somewhat a bit different than in US/UK because, I guess, here, it's a lot dumber.
 
 ## Project Directories
 
@@ -24,29 +28,31 @@ This is some kind of [icanhazdadjokes](https://icanhazdadjoke.com/) but it's Ind
 
 You can consume this API via a website (linked in the front facing web) with a few endpoints:
 
- * `/` - Random jokes bapak2
- * `/id/{number}` - Jokes bapak2 based on ID
- * `/today` - Jokes bapak2 of the day
- * `/total` - Total available jokes bapak2
+* `/` - Random jokes bapak2
+* `/id/{number}` - Jokes bapak2 based on ID
+* `/today` - Jokes bapak2 of the day
+* `/total` - Total available jokes bapak2
 
 Currently I'm (still) searching for an alternative for AWS S3 that I can use for free.
 
 ## Tech stacks
 
- * Go (for `api` / back end)
- * Node.js (for `client` / front end)
- * Postgres
- * Redis
+* Go (for `api` / back end)
+* Node.js (for `client` / front end)
+* Postgres
+* Redis
 
 That's it.
 
 ## Development
 
 Two ways of doing this:
-  1. Install all the tech stack on your local machine
-  2. Using docker-compose
 
-See [CONTRIBUTING](./CONTRIBUTING.md) or README files on each project directory for further instruction on how to run the development environment.
+1. Install all the tech stack on your local machine
+2. Using docker-compose
+
+See [CONTRIBUTING](./CONTRIBUTING.md) or README files on each project directory for further instruction on how to run
+the development environment.
 
 ## Thanks to
 

@@ -1,8 +1,9 @@
 package utils_test
 
 import (
-	"jokes-bapak2-api/utils"
 	"testing"
+
+	"jokes-bapak2-api/utils"
 )
 
 func TestRandomString_Valid(t *testing.T) {
