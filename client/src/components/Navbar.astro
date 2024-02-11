@@ -1,13 +1,19 @@
-<script lang="ts">
-  import { goto } from '$app/navigation';
-  import { _ } from 'svelte-i18n';
+---
+import { getAbsoluteLocaleUrl } from "astro:i18n"; 
+import * as indonesianTranslation from "../languages/id.json";
+import * as englishTranslation from "../languages/en.json";
+let open = false;
+let duration = 0.4;
+let burgerColor = 'rgb(18.4, 18.4, 18.4)';
+let menuColor = 'rgb(180, 180, 180)';
 
-  let open = false;
-  let duration = 0.4;
-  let burgerColor = 'rgb(18.4, 18.4, 18.4)';
-  let menuColor = 'rgb(180, 180, 180)';
+
+---
+<script>
+export function goto(path: string) {
+  getAbsoluteLocaleUrl()
+}
 </script>
-
 <nav class="flex flex-row py-6 font-body items-center">
   <div class="hover:cursor-pointer flex-5 font-bold text-2xl" on:click={() => goto('/')}>Jokesbapak2</div>
   <div class="navigation-item" on:click={() => goto('/why')}>{$_('navigation.why')}</div>
@@ -48,14 +54,14 @@
   </div>
 </nav>
 
-{#if open}
+{open &&
   <menu
     class="top-of-the-world dark:bg-gray-900 dark:text-white bg-lavender-200 bg-gradient-to-br to-lavender-400 dark:to-lavender-900 text-black w-full h-full overscroll-none"
   >
     <div class="container -pr-10">
       <div class="flex flex-col items-center content-center text-center pt-20">
         <div
-          on:click={() => {
+          onclick={() => {
             open = false;
             return goto('/');
           }}
@@ -93,7 +99,7 @@
       </div>
     </div>
   </menu>
-{/if}
+}
 
 <style>
   .navigation-item {

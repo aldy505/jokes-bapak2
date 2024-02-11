@@ -1,0 +1,80 @@
+---
+import Codeblock from '../../components/Codeblock.astro';
+import Layout from '../../layout/Layout.astro';
+// This page is meant to guide people on how to use the API.
+const browserAPIEndpoint = import.meta.env.BROWSER_API_ENDPOINT;
+---
+
+<!-- <svelte:head>
+  <title>{$_('navigation.guide')} - {$_('meta.title')}</title>
+  <meta content={$_('navigation.guide') + '-' + $_('meta.title')} name="title" />
+  <meta content={$_('navigation.guide') + '-' + $_('meta.title')} name="twitter:title" />
+  <meta content={$_('navigation.guide') + '-' + $_('meta.title')} property="og:title" />
+  <link href="https://jokesbapak2.reinaldyrafli.com/guide" rel="canonical" />
+  <meta content="Largest collection of Indonesian dad jokes as a consumable API" name="description" />
+  <meta content="Largest collection of Indonesian dad jokes as a consumable API" name="twitter:description" />
+  <meta content="Largest collection of Indonesian dad jokes as a consumable API" property="og:description" />
+</svelte:head> -->
+
+<Layout>
+  <section class="guide_page">
+    <h1>Guide</h1>
+    <p>
+      To access the API, there are a few ways to do it.
+      It depends on what you are trying to accomplish with it.
+    </p>
+  </section>
+  
+  <section class="guide_page">
+    <h2>Direct request with <code>&lt;img&gt;</code> block</h2>
+    <Codeblock>&lt;img src="{browserAPIEndpoint}/" /&gt;</Codeblock>
+  </section>
+  
+  <section class="guide_page">
+    <h2>Using fetch API</h2>
+    <p>You can use it, but I personally don't recommend it.</p>
+    <Codeblock>
+      const response = await fetch(&quot;{browserAPIEndpoint}/&quot;);<br />
+      <br />
+      if (!response.ok) &#123;<br />
+      &nbsp;&nbsp;// Do some error handling if the request fails<br />
+      &#125;<br />
+      <br />
+      const blob = await response.blob();<br />
+      <br />
+      const objectURL = URL.createObjectURL(blob);<br />
+      <br />
+      &lt;img src=&quot;&#123; objectURL &#125;&quot; /&gt;
+    </Codeblock>
+  </section>
+  
+  <style>
+    p {
+      @apply text-base;
+      @apply py-2;
+      @apply lg\:w-2\/3;
+    }
+  
+    h1 {
+      @apply text-4xl;
+      @apply font-bold;
+      @apply py-2;
+    }
+  
+    h2 {
+      @apply text-2xl;
+      @apply font-bold;
+      @apply py-2;
+    }
+  
+    a {
+      @apply hover\:underline;
+      @apply dark\:text-dodger-200;
+      @apply text-dodger-700;
+    }
+  
+    section {
+      @apply pt-6;
+    }
+  </style>  
+</Layout>
