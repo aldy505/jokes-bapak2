@@ -1,9 +1,10 @@
 package joke
 
 import (
-	core "jokes-bapak2-api/core/joke"
 	"net/http"
 	"strconv"
+
+	core "jokes-bapak2-api/core/joke"
 
 	"github.com/go-chi/chi/v5"
 )

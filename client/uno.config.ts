@@ -1,4 +1,4 @@
-import { defineConfig } from 'windicss/helpers';
+import { defineConfig } from 'unocss';
 
 export default defineConfig({
   darkMode: 'media',

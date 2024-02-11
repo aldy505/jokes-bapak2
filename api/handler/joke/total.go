@@ -1,9 +1,10 @@
 package joke
 
 import (
-	core "jokes-bapak2-api/core/joke"
 	"net/http"
 	"strconv"
+
+	core "jokes-bapak2-api/core/joke"
 )
 
 // TotalJokes provides a HTTP handler for acquiring total jokes

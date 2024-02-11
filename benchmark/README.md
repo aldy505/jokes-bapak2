@@ -14,6 +14,6 @@ $ yarn start
 
 ## Used package
 
-| Name | Version | Type |
-| --- | --- | --- |
+| Name                                                          | Version  | Type              |
+|---------------------------------------------------------------|----------|-------------------|
 | [mcollina/autocannon](https://github.com/mcollina/autocannon) | `v7.4.0` | Benchmarking Tool |

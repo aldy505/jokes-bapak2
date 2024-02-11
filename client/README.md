@@ -15,12 +15,13 @@ $ npm run dev
 $ npm run build
 ```
 
-> You can preview the built app with `npm run preview`, regardless of whether you installed an adapter. This should _not_ be used to serve your app in production.
+> You can preview the built app with `npm run preview`, regardless of whether you installed an adapter. This should
+_not_ be used to serve your app in production.
 
 ## Used packages
 
 | Name                       | Version          | Type                 |
-| -------------------------- | ---------------- | -------------------- |
+|----------------------------|------------------|----------------------|
 | @sveltejs/kit              | `1.0.0-next.480` | Framework            |
 | svelte                     | `3.50.1`         | Framework            |
 | typescript                 | `4.8.3`          | Static type language |
