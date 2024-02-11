@@ -68,7 +68,7 @@ Jokes Bapak2 API is licensed under [GNU GENERAL PUBLIC LICENSE v3 license](./LIC
 
 ```
 Jokes Bapak2 API is a free-to-use image API of Indonesian dad jokes.
-Copyright (C) 2021-present  Jokes Bapak2 Contributors
+Copyright (C) 2021-present  Reinaldy Rafli <aldy505@proton.me>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
